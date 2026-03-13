@@ -1,0 +1,205 @@
+{
+  "@@locale": "ru",
+
+  "water": "Вода",
+  "@water": { "description": "Метка для показателя воды" },
+  "sleep": "Сон",
+  "@sleep": { "description": "Метка для показателя сна" },
+  "calories": "Калории",
+  "@calories": { "description": "Метка для показателя калорий" },
+
+  "settings": "Настройки",
+  "@settings": { "description": "Заголовок экрана Настройки" },
+  "theme": "Тема",
+  "@theme": { "description": "Метка для выбора темы" },
+  "darkMode": "Тёмная тема",
+  "@darkMode": { "description": "Переключатель тёмной темы" },
+  "lightMode": "Светлая тема",
+  "@lightMode": { "description": "Переключатель светлой темы" },
+
+  "dark": "Темная",
+  "@dark": { "description": "Тема: темная" },
+  "light": "Светлая",
+  "@light": { "description": "Тема: светлая" },
+
+  "language": "Язык",
+  "@language": { "description": "Метка для выбора языка" },
+  "selectLanguage": "Выберите язык",
+  "@selectLanguage": { "description": "Заголовок диалога выбора языка" },
+
+  "home": "Главная",
+  "@home": { "description": "Пункт нижней панели: Главная" },
+  "statistics": "Статистика",
+  "@statistics": { "description": "Пункт нижней панели: Статистика" },
+  "challenges": "Челленджи",
+  "@challenges": { "description": "Пункт нижней панели и заголовок экрана: Челленджи" },
+  "achievements": "Достижения",
+  "@achievements": { "description": "Пункт нижней панели: Достижения" },
+  "profile": "Профиль",
+  "@profile": { "description": "Пункт нижней панели: Профиль" },
+
+  "notifications": "Уведомления",
+  "@notifications": { "description": "Переключатель уведомлений" },
+  "resetSettings": "Сбросить настройки",
+  "@resetSettings": { "description": "Сброс всех настроек" },
+  "version": "Версия",
+  "@version": { "description": "Метка версии приложения" },
+  "logout": "Выйти",
+  "@logout": { "description": "Кнопка выхода" },
+
+  "name": "Имя",
+  "@name": { "description": "Метка для имени пользователя" },
+  "email": "Email",
+  "@email": { "description": "Метка для электронной почты пользователя" },
+  "newPassword": "Новый пароль",
+  "@newPassword": { "description": "Поле ввода для смены пароля" },
+  "saveChanges": "Сохранить изменения",
+  "@saveChanges": { "description": "Кнопка для сохранения изменений профиля" },
+
+  "enterName": "Введите имя",
+  "@enterName": { "description": "Заголовок диалога ввода имени" },
+  "cancel": "Отмена",
+  "@cancel": { "description": "Кнопка отмены" },
+  "save": "Сохранить",
+  "@save": { "description": "Кнопка сохранения" },
+
+  "editGoals": "Изменить цели",
+  "@editGoals": { "description": "Подзаголовок для редактирования целей челленджей" },
+
+  "goodMorning": "Доброе утро,",
+  "@goodMorning": { "description": "Приветствие на главном экране" },
+  "dailySummary": "Дневная сводка",
+  "@dailySummary": { "description": "Заголовок секции на главном" },
+  "cups": "стаканов",
+  "@cups": { "description": "Единица – стаканы" },
+  "hours": "ч",
+  "@hours": { "description": "Единица – часы" },
+
+  "nameNotSet": "Имя не указано",
+  "@nameNotSet": { "description": "Текст, когда имя пользователя не установлено" },
+  "nameUpdated": "Имя успешно обновлено!",
+  "@nameUpdated": { "description": "Сообщение Snackbar после успешного обновления имени" },
+  "confirmResetSettings": "Вы уверены, что хотите сбросить все настройки до значений по умолчанию?",
+  "@confirmResetSettings": { "description": "Сообщение для подтверждения сброса настроек" },
+  "reset": "Сбросить",
+  "@reset": { "description": "Кнопка для подтверждения сброса" },
+  "settingsReset": "Настройки сброшены!",
+  "@settingsReset": { "description": "Сообщение Snackbar после сброса настроек" },
+  "confirmLogout": "Вы уверены, что хотите выйти?",
+  "@confirmLogout": { "description": "Сообщение для подтверждения выхода" },
+  "goalsUpdated": "Цели успешно обновлены!",
+  "@goalsUpdated": { "description": "Сообщение Snackbar после обновления целей" },
+
+  "waterUnit": "стаканов",
+  "@waterUnit": { "description": "Единица для цели по воде, например, 8 стаканов" },
+  "stepsUnit": "шагов",
+  "@stepsUnit": { "description": "Единица для цели по шагам, например, 10000 шагов" },
+  "sleepUnit": "часов",
+  "@sleepUnit": { "description": "Единица для цели по сну, например, 8 часов" },
+
+  "goalWaterTitle": "Выпить {count} стаканов воды",
+  "@goalWaterTitle": {
+    "description": "Заголовок для цели по воде с плейсхолдером для количества",
+    "placeholders": {
+      "count": { "type": "String", "example": "8" }
+    }
+  },
+  "goalStepsTitle": "Пройти {count} шагов",
+  "@goalStepsTitle": {
+    "description": "Заголовок для цели по шагам с плейсхолдером для количества",
+    "placeholders": {
+      "count": { "type": "String", "example": "10000" }
+    }
+  },
+  "goalSleepTitle": "Спать {count} часов",
+  "@goalSleepTitle": {
+    "description": "Заголовок для цели по сну с плейсхолдером для количества",
+    "placeholders": {
+      "count": { "type": "String", "example": "8" }
+    }
+  },
+
+  "offline": "Оффлайн",
+  "@offline": { "description": "Метка, показывающая, что пользователь оффлайн" },
+
+  "showAnalytics": "Показать аналитику",
+  "@showAnalytics": { "description": "Кнопка для показа аналитики" },
+
+  "challengeStreakText": "Идёшь 7 дней подряд — получи медаль!",
+  "@challengeStreakText": { "description": "Текст, мотивирующий пользователя продолжать челлендж" },
+
+  "search": "Поиск по названию",
+  "@search": { "description": "Метка поля поиска по названию" },
+
+  "nothingFound": "Ничего не найдено",
+  "@nothingFound": { "description": "Сообщение, если результаты поиска пусты" },
+
+  "lastWeekData": "Данные за последнюю неделю",
+  "@lastWeekData": { "description": "Заголовок секции с данными за последнюю неделю" },
+
+  "filterByFrequency": "Фильтр по частоте",
+  "@filterByFrequency": { "description": "Метка для фильтрации по частоте" },
+
+  "daily": "Ежедневно",
+  "@daily": { "description": "Параметр фильтра: ежедневно" },
+
+  "weekly": "Еженедельно",
+  "@weekly": { "description": "Параметр фильтра: еженедельно" },
+
+  "searchAchievements": "Поиск достижений...",
+  "@searchAchievements": { "description": "Метка поля поиска достижений" },
+
+  "filterByStatus": "Фильтр по статусу",
+  "@filterByStatus": { "description": "Метка для фильтрации достижений по статусу" },
+
+  "filterAll": "Все",
+  "@filterAll": { "description": "Фильтр: все достижения" },
+
+  "filterCompleted": "Завершено",
+  "@filterCompleted": { "description": "Фильтр: завершенные достижения" },
+
+  "filterIncomplete": "Не завершено",
+  "@filterIncomplete": { "description": "Фильтр: незавершенные достижения" },
+
+  "history": "История",
+  "@history": { "description": "Заголовок секции истории на странице профиля" },
+  "noHistoryYet": "История пока пуста.",
+  "@noHistoryYet": { "description": "Отображается, когда история пуста" },
+  "noTitle": "Без названия",
+  "@noTitle": { "description": "Заголовок по умолчанию для элемента истории" },
+  "synced": "Синхронизировано",
+  "@synced": { "description": "Текст статуса для синхронизированных данных" },
+  "local": "Локально",
+  "@local": { "description": "Текст статуса для локальных данных" },
+  "viewAllHistory": "Посмотреть всю историю",
+  "@viewAllHistory": { "description": "Кнопка для просмотра всех записей истории" },
+
+  "goalsSaved": "Цели сохранены!",
+  "@goalsSaved": { "description": "Сообщение Snackbar о сохранении целей" },
+  "generalSettings": "Общие настройки",
+  "@generalSettings": { "description": "Заголовок раздела общих настроек" },
+  "goalsAndChallenges": "Цели и вызовы",
+  "@goalsAndChallenges": { "description": "Заголовок раздела целей и вызовов" },
+  "waterCupsGoal": "Дневная цель по воде (стаканы)",
+  "@waterCupsGoal": { "description": "Метка для поля ввода цели по воде" },
+  "stepsGoal": "Дневная цель по шагам",
+  "@stepsGoal": { "description": "Метка для поля ввода цели по шагам" },
+  "sleepHoursGoal": "Дневная цель по сну (часы)",
+  "@sleepHoursGoal": { "description": "Метка для поля ввода цели по сну" },
+  "saveGoals": "Сохранить цели",
+  "@saveGoals": { "description": "Кнопка для сохранения целей" },
+  "goalsReset": "Цели сброшены к значениям по умолчанию!",
+  "@goalsReset": { "description": "Сообщение Snackbar о сбросе целей" },
+  "resetGoals": "Сбросить цели по умолчанию",
+  "@resetGoals": { "description": "Кнопка для сброса целей по умолчанию" },
+  "otherSettings": "Прочие настройки",
+  "@otherSettings": { "description": "Заголовок раздела прочих настроек" },
+  "resetAllSettings": "Сбросить все настройки",
+  "@resetAllSettings": { "description": "Опция сброса всех настроек приложения" },
+  "confirmReset": "Подтвердите сброс",
+  "@confirmReset": { "description": "Заголовок диалога подтверждения сброса" },
+  "resetSettingsWarning": "Вы уверены, что хотите сбросить все настройки к значениям по умолчанию? Это действие нельзя отменить.",
+  "@resetSettingsWarning": { "description": "Предупреждение перед сбросом настроек" },
+  "allSettingsReset": "Все настройки сброшены к значениям по умолчанию!",
+  "@allSettingsReset": { "description": "Сообщение Snackbar после сброса всех настроек" }
+}
