@@ -1,34 +1,35 @@
 import 'dart:async';
-import 'package:flutter/foundation.dart';                 // ← для debugPrint
+import 'package:flutter/foundation.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:internet_connection_checker/internet_connection_checker.dart';
 
 class NetworkService {
   NetworkService._() {
-    // реагируем на смену подключения (Wi-Fi / Cellular / Wired / None)
-    _conn.onConnectivityChanged.listen((result) async {
-      debugPrint('CONNECTIVITY_CHANGED → $result');       // ← лог №1
-      await _check();
+    // Подписываемся на изменения типа подключения
+    _connectivity.onConnectivityChanged.listen((ConnectivityResult result) {
+      _updateStatus(result);
     });
-
-    // периодический DNS-пинг (актуально для Windows/macOS)
-    _timer = Timer.periodic(const Duration(seconds: 10), (_) => _check());
-
-    // начальная проверка сразу после запуска
-    _check();
+    
+    // Начальная проверка
+    _init();
   }
 
   static final NetworkService instance = NetworkService._();
-
+  final Connectivity _connectivity = Connectivity();
   final _controller = StreamController<bool>.broadcast();
+  
+  // true = OFFLINE, false = ONLINE
   Stream<bool> get status => _controller.stream;
 
-  final _conn = Connectivity();
-  late final Timer _timer;
+  Future<void> _init() async {
+    final result = await _connectivity.checkConnectivity();
+    _updateStatus(result);
+  }
 
-  Future<void> _check() async {
-    final hasNet = await InternetConnectionChecker().hasConnection;
-    debugPrint('CHECK → hasNet=$hasNet');                 // ← лог №2
-    _controller.add(!hasNet);                             // true = OFFLINE
+  void _updateStatus(ConnectivityResult result) {
+    // В вебе мы полагаемся на ConnectivityResult.none
+    // На мобилках ConnectivityResult.none также означает отсутствие сети
+    final bool isOffline = result == ConnectivityResult.none;
+    debugPrint('Network Status: ${isOffline ? "OFFLINE" : "ONLINE"} ($result)');
+    _controller.add(isOffline);
   }
 }

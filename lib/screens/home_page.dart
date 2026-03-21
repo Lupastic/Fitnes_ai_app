@@ -1,352 +1,279 @@
-// Redesigned HomePage with Dark Mode Support and Modern UI
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../providers/settings_provider.dart';
-import '../providers/connectivity_provider.dart';
 import '../providers/summary_provider.dart';
-import '../services/sync_service.dart';
+import '../models/challenge.dart';
+import 'profile_page.dart';
 import '../widgets/network_icon.dart';
 import '../widgets/offline_banner.dart';
-
-class AnimatedFlame extends StatefulWidget {
-  final bool active;
-  const AnimatedFlame({super.key, required this.active});
-  @override
-  State<AnimatedFlame> createState() => _AnimatedFlameState();
-}
-
-class _AnimatedFlameState extends State<AnimatedFlame> with SingleTickerProviderStateMixin {
-  late final AnimationController _c;
-  late final Animation<double> _a;
-  @override
-  void initState() {
-    super.initState();
-    _c = AnimationController(vsync: this, duration: const Duration(milliseconds: 500));
-    _a = Tween<double>(begin: 0.95, end: 1.05).animate(_c);
-    _maybeStart();
-  }
-
-  void _maybeStart() {
-    if (widget.active) {
-      _c.repeat(reverse: true);
-      Future.delayed(const Duration(seconds: 2), () {
-        if (mounted) _c.stop();
-      });
-    }
-  }
-
-  @override
-  void didUpdateWidget(covariant AnimatedFlame old) {
-    super.didUpdateWidget(old);
-    if (!old.active && widget.active) _maybeStart();
-    if (old.active && !widget.active) _c.stop();
-  }
-
-  @override
-  void dispose() {
-    _c.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext _) => AnimatedBuilder(
-    animation: _a,
-    child: const Icon(Icons.local_fire_department, color: Colors.deepOrangeAccent, size: 32),
-    builder: (_, child) => Transform.scale(scale: _a.value, child: child),
-  );
-}
-
-class AnimatedWater extends StatefulWidget {
-  final bool active;
-  const AnimatedWater({super.key, required this.active});
-  @override
-  State<AnimatedWater> createState() => _AnimatedWaterState();
-}
-
-class _AnimatedWaterState extends State<AnimatedWater> with SingleTickerProviderStateMixin {
-  late final AnimationController _c;
-  late final Animation<double> _a;
-  @override
-  void initState() {
-    super.initState();
-    _c = AnimationController(vsync: this, duration: const Duration(seconds: 1));
-    _a = Tween<double>(begin: 0, end: 5).animate(_c);
-    _maybeStart();
-  }
-
-  void _maybeStart() {
-    if (widget.active) {
-      _c.repeat(reverse: true);
-      Future.delayed(const Duration(seconds: 2), () {
-        if (mounted) _c.stop();
-      });
-    }
-  }
-
-  @override
-  void didUpdateWidget(covariant AnimatedWater old) {
-    super.didUpdateWidget(old);
-    if (!old.active && widget.active) _maybeStart();
-    if (old.active && !widget.active) _c.stop();
-  }
-
-  @override
-  void dispose() {
-    _c.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext _) => AnimatedBuilder(
-    animation: _a,
-    child: const Icon(Icons.local_drink, color: Colors.cyanAccent, size: 32),
-    builder: (_, child) => Transform.translate(offset: Offset(0, _a.value), child: child),
-  );
-}
-
-class AnimatedMoon extends StatefulWidget {
-  final bool active;
-  const AnimatedMoon({super.key, required this.active});
-  @override
-  State<AnimatedMoon> createState() => _AnimatedMoonState();
-}
-
-class _AnimatedMoonState extends State<AnimatedMoon> with SingleTickerProviderStateMixin {
-  late final AnimationController _c;
-  late final Animation<double> _a;
-  @override
-  void initState() {
-    super.initState();
-    _c = AnimationController(vsync: this, duration: const Duration(seconds: 2));
-    _a = Tween<double>(begin: -30, end: 30).animate(_c);
-    _maybeStart();
-  }
-
-  void _maybeStart() {
-    if (widget.active) {
-      _c.repeat(reverse: true);
-      Future.delayed(const Duration(seconds: 2), () {
-        if (mounted) _c.stop();
-      });
-    }
-  }
-
-  @override
-  void didUpdateWidget(covariant AnimatedMoon old) {
-    super.didUpdateWidget(old);
-    if (!old.active && widget.active) _maybeStart();
-    if (old.active && !widget.active) _c.stop();
-  }
-
-  @override
-  void dispose() {
-    _c.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext _) => AnimatedBuilder(
-    animation: _a,
-    child: const Icon(Icons.bedtime, color: Colors.deepPurpleAccent, size: 32),
-    builder: (_, child) => Transform.translate(offset: Offset(_a.value, 0), child: child),
-  );
-}
-
-class AnimatedPerson extends StatefulWidget {
-  final bool active;
-  const AnimatedPerson({super.key, required this.active});
-  @override
-  State<AnimatedPerson> createState() => _AnimatedPersonState();
-}
-
-class _AnimatedPersonState extends State<AnimatedPerson> with SingleTickerProviderStateMixin {
-  late final AnimationController _c;
-  late final Animation<double> _dx, _scale;
-  @override
-  void initState() {
-    super.initState();
-    _c = AnimationController(vsync: this, duration: const Duration(milliseconds: 800));
-    _dx = Tween<double>(begin: -2, end: 2).animate(_c);
-    _scale = Tween<double>(begin: 0.98, end: 1.02).animate(_c);
-    _maybeStart();
-  }
-
-  void _maybeStart() {
-    if (widget.active) {
-      _c.repeat(reverse: true);
-      Future.delayed(const Duration(seconds: 2), () {
-        if (mounted) _c.stop();
-      });
-    }
-  }
-
-  @override
-  void didUpdateWidget(covariant AnimatedPerson old) {
-    super.didUpdateWidget(old);
-    if (!old.active && widget.active) _maybeStart();
-    if (old.active && !widget.active) _c.stop();
-  }
-
-  @override
-  void dispose() {
-    _c.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext _) => AnimatedBuilder(
-    animation: _c,
-    child: const Icon(Icons.directions_walk, color: Colors.cyanAccent, size: 32),
-    builder: (_, child) => Transform.translate(
-      offset: Offset(_dx.value, 0),
-      child: Transform.scale(scale: _scale.value, child: child),
-    ),
-  );
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// MAIN SCREEN (HomePage)
-////////////////////////////////////////////////////////////////////////////////
 
 class HomePage extends StatelessWidget {
   final bool active;
   const HomePage({super.key, required this.active});
 
-  Widget summaryCard(Widget icon, String title, String subtitle) {
-    return Expanded(
-      child: Container(
-        margin: const EdgeInsets.all(8),
-        padding: const EdgeInsets.all(16),
+  static const List<Challenge> _allTypes = [
+    Challenge(id: 'water', title: 'Water', frequency: 'Daily', unit: 'cups', target: 8, icon: Icons.local_drink_rounded),
+    Challenge(id: 'steps', title: 'Steps', frequency: 'Daily', unit: 'steps', target: 10000, icon: Icons.directions_run_rounded),
+    Challenge(id: 'sleep', title: 'Sleep', frequency: 'Daily', unit: 'h', target: 8, icon: Icons.nightlight_round),
+    Challenge(id: 'calories', title: 'Calories', frequency: 'Daily', unit: 'kcal', target: 2000, icon: Icons.local_fire_department_rounded),
+    Challenge(id: 'yoga', title: 'Yoga', frequency: 'Weekly', unit: 'sess', target: 3, icon: Icons.self_improvement_rounded),
+    Challenge(id: 'running', title: 'Running', frequency: 'Weekly', unit: 'km', target: 15, icon: Icons.speed_rounded),
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    final settings = context.watch<SettingsProvider>();
+    final summaryProv = context.watch<SummaryProvider>();
+    final summary = summaryProv.today;
+
+    final selectedChallenges = _allTypes.where((c) => settings.selectedChallengeIds.contains(c.id)).toList();
+
+    return Scaffold(
+      backgroundColor: theme.scaffoldBackgroundColor,
+      body: Container(
         decoration: BoxDecoration(
-          color: const Color(0xFF1F1F1F),
-          borderRadius: BorderRadius.circular(12),
+          gradient: RadialGradient(
+            center: Alignment.topRight, // ГРАДИЕНТ ТЕПЕРЬ СПРАВА
+            radius: 1.2,
+            colors: [
+              isDark ? Colors.tealAccent.withOpacity(0.05) : Colors.blueAccent.withOpacity(0.1),
+              theme.scaffoldBackgroundColor,
+            ],
+          ),
         ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            icon,
-            const SizedBox(height: 8),
-            Text(title, style: const TextStyle(fontSize: 16, color: Colors.white)),
-            Text(subtitle, style: const TextStyle(color: Colors.grey)),
-          ],
+        child: SafeArea(
+          child: Column(
+            children: [
+              const OfflineBanner(),
+              Expanded(
+                child: SingleChildScrollView(
+                  physics: const BouncingScrollPhysics(),
+                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // --- HEADER (Аватарка теперь СПРАВА) ---
+                      Row(
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                loc.goodMorning,
+                                style: TextStyle(color: isDark ? Colors.white70 : Colors.black54, fontSize: 14, fontWeight: FontWeight.w500),
+                              ),
+                              Text(
+                                "${settings.name}!",
+                                style: TextStyle(fontSize: 26, fontWeight: FontWeight.w900, color: isDark ? Colors.white : Colors.black),
+                              ),
+                            ],
+                          ),
+                          const Spacer(),
+                          const NetworkIcon(),
+                          const SizedBox(width: 12),
+                          // ДИНАМИЧЕСКАЯ АВАТАРКА (Кнопка перехода в профиль)
+                          GestureDetector(
+                            onTap: () => Navigator.push(context, MaterialPageRoute(builder: (c) => const ProfilePage())),
+                            child: Container(
+                              padding: const EdgeInsets.all(3),
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                gradient: LinearGradient(colors: [Colors.tealAccent, isDark ? Colors.blueAccent : Colors.teal]),
+                              ),
+                              child: CircleAvatar(
+                                radius: 26,
+                                backgroundColor: theme.scaffoldBackgroundColor,
+                                child: Icon(Icons.person_rounded, color: isDark ? Colors.tealAccent : Colors.teal, size: 30),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 40),
+
+                      _buildMotivationCard(isDark),
+                      const SizedBox(height: 35),
+
+                      const Text(
+                        "Your Progress",
+                        style: TextStyle(fontSize: 24, fontWeight: FontWeight.w800, letterSpacing: -0.5),
+                      ),
+                      const SizedBox(height: 20),
+
+                      // --- GRID ---
+                      if (selectedChallenges.isEmpty)
+                        _buildEmptyState(isDark)
+                      else
+                        GridView.builder(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            crossAxisSpacing: 18,
+                            mainAxisSpacing: 18,
+                            childAspectRatio: 0.82,
+                          ),
+                          itemCount: selectedChallenges.length,
+                          itemBuilder: (context, index) {
+                            final ch = selectedChallenges[index];
+                            return _buildMetricCard(ch, summary, summaryProv, isDark, theme);
+                          },
+                        ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    final loc = AppLocalizations.of(context)!;
-    final offline = context.watch<ConnectivityProvider>().isOffline;
-    final summary = context.watch<SummaryProvider>().today;
-    final syncServ = context.read<SyncService>();
-
-    return SafeArea(
-      child: Column(
+  Widget _buildMotivationCard(bool isDark) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(24),
+        color: isDark ? Colors.white.withOpacity(0.02) : Colors.white,
+        gradient: isDark ? null : LinearGradient(colors: [Colors.teal.shade50, Colors.blue.shade50]),
+        border: Border.all(color: isDark ? Colors.tealAccent.withOpacity(0.2) : Colors.teal.withOpacity(0.1)),
+        boxShadow: isDark ? [] : [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10)],
+      ),
+      child: Row(
         children: [
-          const OfflineBanner(),
+          const Icon(Icons.bolt_rounded, color: Colors.tealAccent, size: 30),
+          const SizedBox(width: 15),
           Expanded(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Header
-                  Row(
-                    children: [
-                      const CircleAvatar(radius: 28, backgroundImage: AssetImage('assets/user.png')),
-                      const SizedBox(width: 12),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(loc.goodMorning, style: const TextStyle(color: Colors.white70, fontSize: 16)),
-                          Consumer<SettingsProvider>(
-                            builder: (_, p, __) => Text(
-                              "${p.name.isEmpty ? 'Алекс' : p.name}!",
-                              style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                        ],
-                      ),
-                      const Spacer(),
-                      const NetworkIcon(),
-                    ],
-                  ),
-                  const SizedBox(height: 24),
-
-                  // Summary
-                  Text(loc.dailySummary, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                  const SizedBox(height: 8),
-                  Row(children: [
-                    summaryCard(AnimatedWater(active: active), "${summary.waterCups}/8", loc.cups),
-                    summaryCard(AnimatedMoon(active: active), "${summary.sleepHours.toStringAsFixed(1)} ${loc.hours}", "8 ${loc.hours}"),
-                  ]),
-                  Row(children: [
-                    summaryCard(AnimatedFlame(active: active), "${summary.calories}", "2200 kcal"),
-                    summaryCard(AnimatedPerson(active: active), "${summary.steps}", "10 000 ${loc.stepsUnit}"),
-                  ]),
-                  Row(children: [
-                    summaryCard(const Icon(Icons.self_improvement, color: Colors.orangeAccent, size: 32), "${summary.yogaSessions}", "йога"),
-                    summaryCard(const Icon(Icons.accessibility_new, color: Colors.pinkAccent, size: 32), "${summary.plankMinutes} мин", "планка"),
-                  ]),
-                  Row(children: [
-                    summaryCard(const Icon(Icons.directions_run, color: Colors.lightGreenAccent, size: 32), "${summary.runningKm} км", "пробежка"),
-                    summaryCard(const Icon(Icons.spa, color: Colors.lightBlueAccent, size: 32), "${summary.meditationMinutes} мин", "медитация"),
-                  ]),
-                  Row(children: [
-                    summaryCard(const Icon(Icons.no_food, color: Colors.redAccent, size: 32), "${summary.sugarFreeDays}", "без сахара"),
-                  ]),
-
-                  const SizedBox(height: 16),
-
-                  // Analytics Button
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.grey[800],
-                      minimumSize: const Size(double.infinity, 50),
-                    ),
-                    onPressed: offline ? null : () {/* TODO: show analytics */},
-                    child: Text(offline ? loc.offline : loc.showAnalytics),
-                  ),
-                  const SizedBox(height: 12),
-
-                  // Sync Button
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.teal,
-                      minimumSize: const Size(double.infinity, 50),
-                    ),
-                    onPressed: offline ? null : () async => await syncServ.sync(),
-                    child: Text(offline ? loc.offline : loc.sync, style: const TextStyle(color: Colors.white)),
-                  ),
-
-                  const SizedBox(height: 24),
-
-                  // Challenge Section
-                  Text(loc.challenges, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                  const SizedBox(height: 8),
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFF1F1F1F),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Row(
-                      children: [
-                        const Icon(Icons.military_tech, color: Colors.deepPurpleAccent, size: 32),
-                        const SizedBox(width: 12),
-                        Expanded(child: Text(loc.challengeStreakText, style: const TextStyle(fontSize: 16))),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                ],
-              ),
+            child: Text(
+              "\"Believe you can and you're halfway there.\"",
+              style: TextStyle(fontSize: 15, fontStyle: FontStyle.italic, color: isDark ? Colors.white : Colors.black87),
             ),
           ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildMetricCard(Challenge ch, dynamic summary, dynamic provider, bool isDark, ThemeData theme) {
+    Color accentColor;
+    switch (ch.id) {
+      case 'water': accentColor = Colors.lightBlueAccent; break;
+      case 'steps': accentColor = Colors.greenAccent; break;
+      case 'sleep': accentColor = Colors.purpleAccent; break;
+      case 'calories': accentColor = Colors.orangeAccent; break;
+      default: accentColor = Colors.tealAccent;
+    }
+
+    double currentVal = 0;
+    if (ch.id == 'water') currentVal = summary.waterCups.toDouble();
+    if (ch.id == 'steps') currentVal = summary.steps.toDouble();
+    if (ch.id == 'sleep') currentVal = summary.sleepHours;
+    if (ch.id == 'calories') currentVal = summary.calories.toDouble();
+
+    double progress = (currentVal / ch.target).clamp(0.0, 1.0);
+
+    return GestureDetector(
+      onTap: () {
+        if (ch.id == 'water') provider.update(water: 1, add: true);
+      },
+      child: Container(
+        decoration: BoxDecoration(
+          color: theme.cardTheme.color,
+          borderRadius: BorderRadius.circular(32),
+          border: Border.all(color: isDark ? Colors.white.withOpacity(0.05) : Colors.black.withOpacity(0.05)),
+          boxShadow: isDark ? [] : [
+            BoxShadow(color: accentColor.withOpacity(0.1), blurRadius: 20, spreadRadius: 2, offset: const Offset(0, 10)),
+          ],
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(32),
+          child: Stack(
+            children: [
+              Positioned(
+                bottom: 0,
+                left: 0,
+                right: 0,
+                child: Container(
+                  height: 6,
+                  color: accentColor.withOpacity(0.1),
+                  child: FractionallySizedBox(
+                    alignment: Alignment.centerLeft,
+                    widthFactor: progress,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: accentColor,
+                        boxShadow: [BoxShadow(color: accentColor.withOpacity(0.5), blurRadius: 8)],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        color: accentColor.withOpacity(0.1),
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(ch.icon, color: accentColor, size: 24),
+                    ),
+                    const Spacer(),
+                    Text(
+                      ch.title,
+                      style: TextStyle(color: isDark ? Colors.white54 : Colors.black54, fontSize: 13, fontWeight: FontWeight.w600),
+                    ),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Text(
+                          currentVal.toStringAsFixed(currentVal is double ? 1 : 0),
+                          style: const TextStyle(fontSize: 28, fontWeight: FontWeight.w900),
+                        ),
+                        const SizedBox(width: 4),
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 4),
+                          child: Text(
+                            "/ ${ch.target}",
+                            style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: isDark ? Colors.white24 : Colors.black26),
+                          ),
+                        ),
+                      ],
+                    ),
+                    Text(
+                      ch.unit,
+                      style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: accentColor, letterSpacing: 1),
+                    ),
+                    const SizedBox(height: 8),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildEmptyState(bool isDark) {
+    return Center(
+      child: Column(
+        children: [
+          const SizedBox(height: 40),
+          Icon(Icons.add_circle_outline_rounded, size: 80, color: isDark ? Colors.white10 : Colors.black12),
+          const SizedBox(height: 20),
+          const Text("Your Dashboard is Empty", style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700)),
+          const Text("Add goals from the Challenges tab", style: TextStyle(color: Colors.grey, fontSize: 14)),
         ],
       ),
     );
