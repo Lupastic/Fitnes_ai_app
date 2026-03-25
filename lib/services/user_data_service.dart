@@ -1,5 +1,8 @@
+import 'dart:convert';
+import 'package:crypto/crypto.dart'; 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'dart:developer' as developer;
 import '../models/history_entry.dart';
 import '../models/daily_summary.dart';
 
@@ -17,6 +20,12 @@ class UserDataService {
     return _firestore.collection('users').doc(user.uid);
   }
 
+  String _hashPin(String pin) {
+    final bytes = utf8.encode(pin);
+    final digest = sha256.convert(bytes);
+    return digest.toString();
+  }
+
   Future<void> updateProfileData({
     String? name,
     Map<String, int>? goals,
@@ -28,7 +37,9 @@ class UserDataService {
     int? age,
     String? goalType,
     String? pinCode,
-    List<String>? selectedChallenges, // НОВОЕ ПОЛЕ
+    List<String>? selectedChallenges,
+    List<String>? completedQuests,
+    int? points,
   }) async {
     final userDocRef = getUserDocRef();
     if (userDocRef == null) return;
@@ -36,20 +47,46 @@ class UserDataService {
     final Map<String, dynamic> dataToUpdate = {};
     if (name != null) dataToUpdate['name'] = name;
     if (goals != null) dataToUpdate['goals'] = goals;
-    if (languageCode != null) dataToUpdate['language'] = languageCode;
+    // Используем 'languageCode' для консистентности с провайдером
+    if (languageCode != null) dataToUpdate['languageCode'] = languageCode;
     if (weight != null) dataToUpdate['weight'] = weight;
     if (weightUnit != null) dataToUpdate['weightUnit'] = weightUnit;
     if (height != null) dataToUpdate['height'] = height;
     if (heightUnit != null) dataToUpdate['heightUnit'] = heightUnit;
     if (age != null) dataToUpdate['age'] = age;
     if (goalType != null) dataToUpdate['goalType'] = goalType;
-    if (pinCode != null) dataToUpdate['pinCode'] = pinCode;
+    
+    if (pinCode != null) {
+      dataToUpdate['pinCode'] = _hashPin(pinCode);
+    }
+    
     if (selectedChallenges != null) dataToUpdate['selectedChallenges'] = selectedChallenges;
+    if (completedQuests != null) dataToUpdate['completedQuests'] = completedQuests;
+    if (points != null) dataToUpdate['points'] = points;
 
     try {
       await userDocRef.set(dataToUpdate, SetOptions(merge: true));
+      developer.log("Profile updated successfully with languageCode: $languageCode", name: "UserDataService");
+    } catch (e, stackTrace) {
+      developer.log("Error updating profile", error: e, stackTrace: stackTrace, name: "UserDataService");
+    }
+  }
+
+  Future<List<Map<String, dynamic>>> getLeaderboard() async {
+    try {
+      final snapshot = await _firestore
+          .collection('users')
+          .orderBy('points', descending: true)
+          .limit(20)
+          .get();
+      return snapshot.docs.map((doc) => {
+        'name': doc.data()['name'] ?? 'Anonymous',
+        'points': doc.data()['points'] ?? 0,
+        'uid': doc.id,
+      }).toList();
     } catch (e) {
-      print("Error updating profile: $e");
+      developer.log("Error fetching leaderboard", error: e);
+      return [];
     }
   }
 
@@ -59,12 +96,11 @@ class UserDataService {
     try {
       final docId = formatDateKey(summary.date);
       await userDocRef.collection('summaries').doc(docId).set(summary.toMap(), SetOptions(merge: true));
-    } catch (e) {
-      print("Error saving summary: $e");
+    } catch (e, stackTrace) {
+      developer.log("Error saving summary", error: e, stackTrace: stackTrace, name: "UserDataService");
     }
   }
 
-  // Получение итога за конкретный день
   Future<DailySummary?> getDailySummary(DateTime date) async {
     final userDocRef = getUserDocRef();
     if (userDocRef == null) return null;
@@ -74,8 +110,8 @@ class UserDataService {
       if (doc.exists && doc.data() != null) {
         return DailySummary.fromMap(doc.data()!);
       }
-    } catch (e) {
-      print("Error fetching summary: $e");
+    } catch (e, stackTrace) {
+      developer.log("Error fetching summary", error: e, stackTrace: stackTrace, name: "UserDataService");
     }
     return null;
   }
@@ -111,8 +147,8 @@ class UserDataService {
       final list = grouped.values.toList();
       list.sort((a, b) => a.date.compareTo(b.date));
       return list;
-    } catch (e) {
-      print("Error fetching range: $e");
+    } catch (e, stackTrace) {
+      developer.log("Error fetching range", error: e, stackTrace: stackTrace, name: "UserDataService");
       return [];
     }
   }
@@ -120,7 +156,11 @@ class UserDataService {
   Future<void> addHistoryEntry(HistoryEntry entry) async {
     final userDocRef = getUserDocRef();
     if (userDocRef == null) return;
-    try { await userDocRef.collection('history').add(entry.toMap()); } catch (e) {}
+    try {
+      await userDocRef.collection('history').add(entry.toMap());
+    } catch (e, stackTrace) {
+      developer.log("Error adding history entry", error: e, stackTrace: stackTrace, name: "UserDataService");
+    }
   }
 
   Future<List<HistoryEntry>> getUserHistory() async {
@@ -129,6 +169,9 @@ class UserDataService {
     try {
       final snapshot = await userDocRef.collection('history').orderBy('timestamp', descending: true).limit(10).get();
       return snapshot.docs.map((doc) => HistoryEntry.fromMap(doc.data())).toList();
-    } catch (e) { return []; }
+    } catch (e, stackTrace) {
+      developer.log("Error fetching history", error: e, stackTrace: stackTrace, name: "UserDataService");
+      return [];
+    }
   }
 }

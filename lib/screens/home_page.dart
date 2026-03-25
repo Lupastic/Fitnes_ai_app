@@ -4,23 +4,88 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../providers/settings_provider.dart';
 import '../providers/summary_provider.dart';
+import '../providers/step_counter_provider.dart';
 import '../models/challenge.dart';
 import 'profile_page.dart';
 import '../widgets/network_icon.dart';
 import '../widgets/offline_banner.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   final bool active;
   const HomePage({super.key, required this.active});
 
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  // We keep the IDs but will translate titles and units in the UI
   static const List<Challenge> _allTypes = [
     Challenge(id: 'water', title: 'Water', frequency: 'Daily', unit: 'cups', target: 8, icon: Icons.local_drink_rounded),
     Challenge(id: 'steps', title: 'Steps', frequency: 'Daily', unit: 'steps', target: 10000, icon: Icons.directions_run_rounded),
     Challenge(id: 'sleep', title: 'Sleep', frequency: 'Daily', unit: 'h', target: 8, icon: Icons.nightlight_round),
     Challenge(id: 'calories', title: 'Calories', frequency: 'Daily', unit: 'kcal', target: 2000, icon: Icons.local_fire_department_rounded),
-    Challenge(id: 'yoga', title: 'Yoga', frequency: 'Weekly', unit: 'sess', target: 3, icon: Icons.self_improvement_rounded),
-    Challenge(id: 'running', title: 'Running', frequency: 'Weekly', unit: 'km', target: 15, icon: Icons.speed_rounded),
   ];
+
+  String _getTranslatedTitle(String id, AppLocalizations loc) {
+    switch (id) {
+      case 'water': return loc.water;
+      case 'steps': return loc.steps;
+      case 'sleep': return loc.sleep;
+      case 'calories': return loc.calories;
+      default: return id;
+    }
+  }
+
+  String _getTranslatedUnit(String id, AppLocalizations loc) {
+    switch (id) {
+      case 'water': return loc.cups;
+      case 'steps': return loc.steps; // or loc.stepsUnit if available
+      case 'sleep': return loc.hours;
+      case 'calories': return "kcal";
+      default: return "";
+    }
+  }
+
+  void _showManualInputDialog(Challenge ch, SummaryProvider provider, AppLocalizations loc) {
+    final TextEditingController controller = TextEditingController();
+    final title = _getTranslatedTitle(ch.id, loc);
+    final unit = _getTranslatedUnit(ch.id, loc);
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text("${loc.save} $title"),
+        content: TextField(
+          controller: controller,
+          keyboardType: const TextInputType.numberWithOptions(decimal: true),
+          decoration: InputDecoration(
+            labelText: "${loc.email} ($unit)", // Using email as a proxy for 'Amount' if not available, but let's just use text
+            hintText: "...",
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(loc.cancel),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              final val = double.tryParse(controller.text) ?? 0;
+              if (val > 0) {
+                if (ch.id == 'water') provider.update(water: val.toInt(), add: true);
+                if (ch.id == 'steps') provider.update(steps: val.toInt(), add: true);
+                if (ch.id == 'sleep') provider.update(sleep: val, add: true);
+                if (ch.id == 'calories') provider.update(cal: val.toInt(), add: true);
+              }
+              Navigator.pop(context);
+            },
+            child: Text(loc.save),
+          ),
+        ],
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +103,7 @@ class HomePage extends StatelessWidget {
       body: Container(
         decoration: BoxDecoration(
           gradient: RadialGradient(
-            center: Alignment.topRight, // ГРАДИЕНТ ТЕПЕРЬ СПРАВА
+            center: Alignment.topRight,
             radius: 1.2,
             colors: [
               isDark ? Colors.tealAccent.withOpacity(0.05) : Colors.blueAccent.withOpacity(0.1),
@@ -57,7 +122,6 @@ class HomePage extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // --- HEADER (Аватарка теперь СПРАВА) ---
                       Row(
                         children: [
                           Column(
@@ -76,7 +140,6 @@ class HomePage extends StatelessWidget {
                           const Spacer(),
                           const NetworkIcon(),
                           const SizedBox(width: 12),
-                          // ДИНАМИЧЕСКАЯ АВАТАРКА (Кнопка перехода в профиль)
                           GestureDetector(
                             onTap: () => Navigator.push(context, MaterialPageRoute(builder: (c) => const ProfilePage())),
                             child: Container(
@@ -96,16 +159,15 @@ class HomePage extends StatelessWidget {
                       ),
                       const SizedBox(height: 40),
 
-                      _buildMotivationCard(isDark),
+                      _buildMotivationCard(isDark, loc),
                       const SizedBox(height: 35),
 
-                      const Text(
-                        "Your Progress",
-                        style: TextStyle(fontSize: 24, fontWeight: FontWeight.w800, letterSpacing: -0.5),
+                      Text(
+                        loc.yourProgress,
+                        style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w800, letterSpacing: -0.5),
                       ),
                       const SizedBox(height: 20),
 
-                      // --- GRID ---
                       if (selectedChallenges.isEmpty)
                         _buildEmptyState(isDark)
                       else
@@ -121,7 +183,7 @@ class HomePage extends StatelessWidget {
                           itemCount: selectedChallenges.length,
                           itemBuilder: (context, index) {
                             final ch = selectedChallenges[index];
-                            return _buildMetricCard(ch, summary, summaryProv, isDark, theme);
+                            return _buildMetricCard(ch, summary, summaryProv, isDark, theme, loc);
                           },
                         ),
                     ],
@@ -135,7 +197,7 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  Widget _buildMotivationCard(bool isDark) {
+  Widget _buildMotivationCard(bool isDark, AppLocalizations loc) {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(20),
@@ -152,7 +214,7 @@ class HomePage extends StatelessWidget {
           const SizedBox(width: 15),
           Expanded(
             child: Text(
-              "\"Believe you can and you're halfway there.\"",
+              "\"${loc.motivationQuote}\"",
               style: TextStyle(fontSize: 15, fontStyle: FontStyle.italic, color: isDark ? Colors.white : Colors.black87),
             ),
           ),
@@ -161,7 +223,7 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  Widget _buildMetricCard(Challenge ch, dynamic summary, dynamic provider, bool isDark, ThemeData theme) {
+  Widget _buildMetricCard(Challenge ch, dynamic summary, SummaryProvider provider, bool isDark, ThemeData theme, AppLocalizations loc) {
     Color accentColor;
     switch (ch.id) {
       case 'water': accentColor = Colors.lightBlueAccent; break;
@@ -180,9 +242,7 @@ class HomePage extends StatelessWidget {
     double progress = (currentVal / ch.target).clamp(0.0, 1.0);
 
     return GestureDetector(
-      onTap: () {
-        if (ch.id == 'water') provider.update(water: 1, add: true);
-      },
+      onTap: () => _showManualInputDialog(ch, provider, loc),
       child: Container(
         decoration: BoxDecoration(
           color: theme.cardTheme.color,
@@ -230,28 +290,32 @@ class HomePage extends StatelessWidget {
                     ),
                     const Spacer(),
                     Text(
-                      ch.title,
+                      _getTranslatedTitle(ch.id, loc),
                       style: TextStyle(color: isDark ? Colors.white54 : Colors.black54, fontSize: 13, fontWeight: FontWeight.w600),
                     ),
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        Text(
-                          currentVal.toStringAsFixed(currentVal is double ? 1 : 0),
-                          style: const TextStyle(fontSize: 28, fontWeight: FontWeight.w900),
-                        ),
-                        const SizedBox(width: 4),
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 4),
-                          child: Text(
-                            "/ ${ch.target}",
-                            style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: isDark ? Colors.white24 : Colors.black26),
+                    FittedBox(
+                      fit: BoxFit.scaleDown,
+                      alignment: Alignment.centerLeft,
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Text(
+                            currentVal.toStringAsFixed(currentVal is double && currentVal % 1 != 0 ? 1 : 0),
+                            style: const TextStyle(fontSize: 28, fontWeight: FontWeight.w900),
                           ),
-                        ),
-                      ],
+                          const SizedBox(width: 4),
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 4),
+                            child: Text(
+                              "/ ${ch.target}",
+                              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: isDark ? Colors.white24 : Colors.black26),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                     Text(
-                      ch.unit,
+                      _getTranslatedUnit(ch.id, loc),
                       style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: accentColor, letterSpacing: 1),
                     ),
                     const SizedBox(height: 8),

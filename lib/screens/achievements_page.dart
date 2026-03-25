@@ -1,165 +1,159 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 import 'package:provider/provider.dart';
-import '../providers/theme_provider.dart';
+import '../models/quest.dart';
+import '../providers/settings_provider.dart';
 import '../providers/summary_provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-class AchievementsPage extends StatefulWidget {
-  const AchievementsPage({super.key});
-
-  @override
-  State<AchievementsPage> createState() => _AchievementsPageState();
-}
-
-class _AchievementsPageState extends State<AchievementsPage> {
-  String query = '';
-  String filterStatus = 'All';
+class QuestsPage extends StatelessWidget {
+  const QuestsPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context)!;
-    final themeProvider = Provider.of<ThemeProvider>(context);
-    final isDarkMode = themeProvider.themeMode == ThemeMode.dark;
-    
-    // Получаем текущие данные из провайдера
+    final settings = context.watch<SettingsProvider>();
     final summary = context.watch<SummaryProvider>().today;
 
-    // Список достижений, зависящий от реальных данных
-    final List<Map<String, dynamic>> allAchievements = [
-      {
-        'id': 'early_bird',
-        'title': loc.achievementEarlyBird, 
-        'icon': Icons.wb_sunny, 
-        'done': true // Заглушка: всегда выполнено
-      },
-      {
-        'id': 'hydrated',
-        'title': loc.achievementHydrated, 
-        'icon': Icons.opacity, 
-        'value': '${summary.waterCups}/8',
-        'done': summary.waterCups >= 8 // ДИНАМИЧЕСКИ: выполнено, если выпито 8 стаканов
-      },
-      {
-        'id': 'steps_master',
-        'title': "10k Steps Master", 
-        'icon': Icons.directions_walk, 
-        'value': '${summary.steps}/10000',
-        'done': summary.steps >= 10000
-      },
-      {
-        'id': 'marathon',
-        'title': loc.achievementMarathon, 
-        'icon': Icons.stars,
-        'done': false
-      },
+    final List<Quest> allQuests = [
+      Quest(
+        id: 'water_5',
+        title: 'Hydration Starter',
+        description: 'Drink 5 cups of water today',
+        icon: Icons.local_drink,
+        difficulty: QuestDifficulty.easy,
+        points: 10,
+        isCompleted: (data) => (data as int) >= 5,
+      ),
+      Quest(
+        id: 'steps_5k',
+        title: 'Active Mover',
+        description: 'Walk 5,000 steps',
+        icon: Icons.directions_walk,
+        difficulty: QuestDifficulty.easy,
+        points: 15,
+        isCompleted: (data) => (data as int) >= 5000,
+      ),
+      Quest(
+        id: 'water_10',
+        title: 'Aqua Master',
+        description: 'Drink 10 cups of water today',
+        icon: Icons.water_drop,
+        difficulty: QuestDifficulty.medium,
+        points: 30,
+        isCompleted: (data) => (data as int) >= 10,
+      ),
+      Quest(
+        id: 'steps_10k',
+        title: 'Step Legend',
+        description: 'Walk 10,000 steps',
+        icon: Icons.directions_run,
+        difficulty: QuestDifficulty.medium,
+        points: 50,
+        isCompleted: (data) => (data as int) >= 10000,
+      ),
+      Quest(
+        id: 'sleep_8',
+        title: 'Well Rested',
+        description: 'Sleep for 8 hours',
+        icon: Icons.bedtime,
+        difficulty: QuestDifficulty.medium,
+        points: 25,
+        isCompleted: (data) => (data as double) >= 8.0,
+      ),
+      Quest(
+        id: 'perfect_day',
+        title: 'Ultimate Champion',
+        description: 'Complete all your daily goals',
+        icon: Icons.emoji_events,
+        difficulty: QuestDifficulty.hard,
+        points: 100,
+        isCompleted: (data) {
+          final s = data as dynamic;
+          return s.waterCups >= 8 && s.steps >= 10000 && s.sleepHours >= 8;
+        },
+      ),
     ];
 
-    final filteredAchievements = allAchievements.where((a) {
-      final matchTitle = a['title'].toString().toLowerCase().contains(query.toLowerCase());
-      final matchStatus = filterStatus == 'All'
-          || (filterStatus == 'Completed' && a['done'] == true)
-          || (filterStatus == 'Incomplete' && a['done'] != true);
-      return matchTitle && matchStatus;
-    }).toList();
+    // Check for completions
+    for (var q in allQuests) {
+      if (!settings.completedQuests.contains(q.id)) {
+        dynamic data;
+        if (q.id.contains('water')) data = summary.waterCups;
+        else if (q.id.contains('steps')) data = summary.steps;
+        else if (q.id.contains('sleep')) data = summary.sleepHours;
+        else if (q.id == 'perfect_day') data = summary;
+
+        if (data != null && q.isCompleted(data)) {
+          Future.microtask(() => settings.completeQuest(q.id, q.points));
+        }
+      }
+    }
 
     return Scaffold(
-      backgroundColor: isDarkMode ? Colors.grey.shade900 : const Color(0xFFF3F6FA),
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        foregroundColor: isDarkMode ? Colors.white : Colors.black87,
-        elevation: 0,
-        centerTitle: true,
-        title: Text(loc.achievements, style: const TextStyle(fontWeight: FontWeight.bold)),
+        title: const Text('Daily Quests'),
+        actions: [
+          Center(
+            child: Padding(
+              padding: const EdgeInsets.only(right: 16),
+              child: Text(
+                '${settings.points} pts',
+                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: Colors.tealAccent),
+              ),
+            ),
+          )
+        ],
       ),
-      body: Padding(
+      body: ListView.builder(
         padding: const EdgeInsets.all(16),
-        child: Column(
-          children: [
-            TextField(
-              decoration: InputDecoration(
-                hintText: loc.searchAchievements,
-                prefixIcon: const Icon(Icons.search),
-                filled: true,
-                fillColor: isDarkMode ? Colors.grey.shade800 : Colors.white,
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+        itemCount: allQuests.length,
+        itemBuilder: (context, index) {
+          final quest = allQuests[index];
+          final isDone = settings.completedQuests.contains(quest.id);
+
+          return Card(
+            margin: const EdgeInsets.only(bottom: 12),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+            child: ListTile(
+              contentPadding: const EdgeInsets.all(16),
+              leading: CircleAvatar(
+                backgroundColor: isDone ? Colors.tealAccent.withOpacity(0.2) : Colors.grey.withOpacity(0.1),
+                child: Icon(quest.icon, color: isDone ? Colors.tealAccent : Colors.grey),
               ),
-              onChanged: (value) => setState(() => query = value),
-            ),
-            const SizedBox(height: 12),
-            Expanded(
-              child: GridView.builder(
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  crossAxisSpacing: 16,
-                  mainAxisSpacing: 16,
-                ),
-                itemCount: filteredAchievements.length,
-                itemBuilder: (context, index) {
-                  final a = filteredAchievements[index];
-                  return AchievementCard(
-                    title: a['title'] as String,
-                    icon: a['icon'] as IconData,
-                    value: a['value'] as String?,
-                    done: a['done'] == true,
-                  );
-                },
+              title: Text(quest.title, style: const TextStyle(fontWeight: FontWeight.bold)),
+              subtitle: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(quest.description),
+                  const SizedBox(height: 4),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                    decoration: BoxDecoration(
+                      color: _getDifficultyColor(quest.difficulty).withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Text(
+                      '${quest.difficulty.name.toUpperCase()} • ${quest.points} pts',
+                      style: TextStyle(fontSize: 10, color: _getDifficultyColor(quest.difficulty), fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ],
               ),
+              trailing: isDone 
+                ? const Icon(Icons.check_circle, color: Colors.tealAccent)
+                : const Icon(Icons.radio_button_unchecked, color: Colors.grey),
             ),
-          ],
-        ),
+          );
+        },
       ),
     );
   }
-}
 
-class AchievementCard extends StatelessWidget {
-  final String title;
-  final IconData icon;
-  final String? value;
-  final bool done;
-
-  const AchievementCard({
-    super.key,
-    required this.title,
-    required this.icon,
-    required this.value,
-    required this.done,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
-
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
-        color: done 
-          ? (isDarkMode ? Colors.teal.shade900 : Colors.teal.shade50)
-          : (isDarkMode ? Colors.grey.shade800 : Colors.white),
-        border: done ? Border.all(color: Colors.tealAccent, width: 2) : null,
-      ),
-      padding: const EdgeInsets.all(12),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(icon, size: 40, color: done ? Colors.tealAccent : Colors.grey),
-          const SizedBox(height: 8),
-          Text(
-            title,
-            style: TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.bold,
-              color: done ? (isDarkMode ? Colors.white : Colors.teal.shade900) : Colors.grey,
-            ),
-            textAlign: TextAlign.center,
-          ),
-          if (value != null)
-            Text(value!, style: const TextStyle(fontSize: 12, color: Colors.blueAccent)),
-          if (done) 
-            const Icon(Icons.check_circle, color: Colors.tealAccent, size: 20).animate().scale(),
-        ],
-      ),
-    );
+  Color _getDifficultyColor(QuestDifficulty d) {
+    switch (d) {
+      case QuestDifficulty.easy: return Colors.green;
+      case QuestDifficulty.medium: return Colors.orange;
+      case QuestDifficulty.hard: return Colors.red;
+    }
   }
 }
