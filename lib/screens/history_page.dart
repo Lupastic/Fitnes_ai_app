@@ -47,9 +47,6 @@ class _HistoryPageState extends State<HistoryPage> {
         }).toList();
 
         allHistory.addAll(firebaseHistory);
-        print("Fetched ${firebaseHistory.length} entries from Firebase.");
-      } else {
-        print("User is not logged in.");
       }
     } catch (e) {
       print("Firebase error: $e");
@@ -57,7 +54,6 @@ class _HistoryPageState extends State<HistoryPage> {
 
     try {
       final box = await Hive.openBox<HistoryEntry>('history');
-
       final localHistory = box.values.map((entry) {
         return {
           'title': entry.title,
@@ -65,17 +61,28 @@ class _HistoryPageState extends State<HistoryPage> {
           'source': 'local',
         };
       }).toList();
-
-      print("Fetched ${localHistory.length} entries from Hive.");
       allHistory.addAll(localHistory);
     } catch (e) {
       print("Hive error: $e");
     }
 
+    // Удаление дубликатов по заголовку и времени (с точностью до минуты)
+    final seen = <String>{};
+    final uniqueHistory = <Map<String, dynamic>>[];
+    
     allHistory.sort((a, b) => b['timestamp'].compareTo(a['timestamp']));
 
+    for (var entry in allHistory) {
+      final ts = entry['timestamp'] as DateTime;
+      final key = "${entry['title']}_${ts.year}${ts.month}${ts.day}${ts.hour}${ts.minute}";
+      if (!seen.contains(key)) {
+        seen.add(key);
+        uniqueHistory.add(entry);
+      }
+    }
+
     setState(() {
-      _history = allHistory;
+      _history = uniqueHistory;
       _loading = false;
     });
   }
@@ -83,29 +90,84 @@ class _HistoryPageState extends State<HistoryPage> {
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context)!;
-    final dateFormatter = DateFormat('yyyy-MM-dd HH:mm');
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    final dateFormatter = DateFormat('dd MMM, HH:mm');
 
     return Scaffold(
-      appBar: AppBar(title: Text(loc.history)),
+      appBar: AppBar(
+        title: Text(loc.history, style: const TextStyle(fontWeight: FontWeight.bold)),
+        centerTitle: true,
+      ),
       body: _loading
           ? const Center(child: CircularProgressIndicator())
           : _history.isEmpty
-          ? Center(child: Text(loc.noHistoryYet))
-          : ListView.builder(
-        padding: const EdgeInsets.all(10),
-        itemCount: _history.length,
-        itemBuilder: (context, index) {
-          final entry = _history[index];
-          final formattedDate = dateFormatter.format(entry['timestamp']);
-          final source = entry['source'] == 'firebase' ? loc.synced : loc.local;
+          ? Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.history_toggle_off_rounded, size: 64, color: theme.disabledColor),
+                  const SizedBox(height: 16),
+                  Text(loc.noHistoryYet, style: TextStyle(color: theme.disabledColor, fontSize: 16)),
+                ],
+              ),
+            )
+          : RefreshIndicator(
+              onRefresh: _loadHistory,
+              child: ListView.separated(
+                padding: const EdgeInsets.all(16),
+                itemCount: _history.length,
+                separatorBuilder: (context, index) => const SizedBox(height: 12),
+                itemBuilder: (context, index) {
+                  final entry = _history[index];
+                  final DateTime ts = entry['timestamp'];
+                  final bool isSynced = entry['source'] == 'firebase';
 
-          return ListTile(
-            leading: Icon(Icons.history, color: entry['source'] == 'firebase' ? Colors.blue : Colors.grey),
-            title: Text(entry['title'] ?? loc.noTitle),
-            subtitle: Text('$formattedDate • $source'),
-          );
-        },
-      ),
+                  return Container(
+                    decoration: BoxDecoration(
+                      color: theme.cardTheme.color,
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(color: isSynced ? Colors.tealAccent.withOpacity(0.1) : Colors.transparent),
+                      boxShadow: isDark ? [] : [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10, offset: const Offset(0, 4))],
+                    ),
+                    child: ListTile(
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                      leading: CircleAvatar(
+                        backgroundColor: isSynced ? Colors.tealAccent.withOpacity(0.1) : Colors.grey.withOpacity(0.1),
+                        child: Icon(
+                          isSynced ? Icons.cloud_done_rounded : Icons.access_time_rounded,
+                          color: isSynced ? Colors.tealAccent : Colors.grey,
+                          size: 20,
+                        ),
+                      ),
+                      title: Text(
+                        entry['title'] ?? loc.noTitle,
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      subtitle: Text(
+                        dateFormatter.format(ts),
+                        style: TextStyle(color: theme.textTheme.bodyMedium?.color?.withOpacity(0.6)),
+                      ),
+                      trailing: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: isSynced ? Colors.tealAccent.withOpacity(0.1) : Colors.grey.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Text(
+                          isSynced ? loc.synced : loc.local,
+                          style: TextStyle(
+                            fontSize: 10, 
+                            fontWeight: FontWeight.bold,
+                            color: isSynced ? Colors.tealAccent : Colors.grey,
+                          ),
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
     );
   }
 }

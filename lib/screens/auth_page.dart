@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
-import '../providers/google_sign_in_provider.dart';
+import '../providers/auth_provider.dart';
 import '../providers/settings_provider.dart';
 import 'register_page.dart';
 
@@ -16,52 +16,77 @@ class _AuthPageState extends State<AuthPage> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
-  bool _isLoading = false;
   bool _obscurePassword = true;
 
   Future<void> _signIn() async {
     if (!_formKey.currentState!.validate()) return;
 
-    setState(() => _isLoading = true);
+    final auth = context.read<AppAuthProvider>();
     try {
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: _emailController.text.trim(),
-        password: _passwordController.text.trim(),
+      await auth.signInWithEmail(
+        _emailController.text.trim(),
+        _passwordController.text.trim(),
       );
       if (mounted) {
-        await context.read<SettingsProvider>().loadSettingsFromFirebase();
-        Navigator.pushReplacementNamed(context, '/pin');
+        // Просто закрываем экран входа. 
+        // AuthGate сам переключится на Главную или ПИН-код.
+        Navigator.pop(context);
       }
     } on FirebaseAuthException catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(e.message ?? "Authentication error"), backgroundColor: Colors.red),
+        SnackBar(
+          content: Text(auth.mapErrorMessage(e.code)),
+          backgroundColor: Colors.red,
+        ),
       );
-    } finally {
-      if (mounted) setState(() => _isLoading = false);
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Ошибка: $e"), backgroundColor: Colors.red),
+      );
     }
   }
 
   Future<void> _signInWithGoogle() async {
-    setState(() => _isLoading = true);
+    final auth = context.read<AppAuthProvider>();
     try {
-      final googleProvider = context.read<GoogleSignInProvider>();
-      await googleProvider.signInWithGoogle();
+      await auth.signInWithGoogle();
       if (mounted) {
-        await context.read<SettingsProvider>().loadSettingsFromFirebase();
-        Navigator.pushReplacementNamed(context, '/pin');
+        Navigator.pop(context);
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Google Sign-In failed: $e"), backgroundColor: Colors.red),
+        SnackBar(content: Text("Ошибка Google Sign-In: $e"), backgroundColor: Colors.red),
       );
-    } finally {
-      if (mounted) setState(() => _isLoading = false);
+    }
+  }
+
+  Future<void> _forgotPassword() async {
+    final email = _emailController.text.trim();
+    if (email.isEmpty || !email.contains('@')) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Введите корректный email для сброса пароля")),
+      );
+      return;
+    }
+
+    try {
+      await context.read<AppAuthProvider>().resetPassword(email);
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Инструкция по сбросу пароля отправлена на email"), backgroundColor: Colors.green),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Ошибка при отправке письма"), backgroundColor: Colors.red),
+      );
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final isLoading = context.watch<AppAuthProvider>().isLoading;
+
     return Scaffold(
+      appBar: AppBar(backgroundColor: Colors.transparent, elevation: 0),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 30),
@@ -70,29 +95,27 @@ class _AuthPageState extends State<AuthPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const SizedBox(height: 60),
-                const Text("Welcome Back", style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold)),
-                const Text("Sign in to continue your progress", style: TextStyle(color: Colors.grey)),
+                const Text("С возвращением!", style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold)),
+                const Text("Войдите, чтобы продолжить прогресс", style: TextStyle(color: Colors.grey)),
                 const SizedBox(height: 50),
 
-                // Email Field
                 TextFormField(
                   controller: _emailController,
+                  keyboardType: TextInputType.emailAddress,
                   decoration: InputDecoration(
                     labelText: "Email",
                     prefixIcon: const Icon(Icons.email_outlined),
                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
                   ),
-                  validator: (v) => v!.isEmpty ? "Enter email" : null,
+                  validator: (v) => (v == null || v.isEmpty) ? "Введите email" : null,
                 ),
                 const SizedBox(height: 20),
 
-                // Password Field
                 TextFormField(
                   controller: _passwordController,
                   obscureText: _obscurePassword,
                   decoration: InputDecoration(
-                    labelText: "Password",
+                    labelText: "Пароль",
                     prefixIcon: const Icon(Icons.lock_outline),
                     suffixIcon: IconButton(
                       icon: Icon(_obscurePassword ? Icons.visibility_off : Icons.visibility),
@@ -100,40 +123,41 @@ class _AuthPageState extends State<AuthPage> {
                     ),
                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
                   ),
-                  validator: (v) => v!.isEmpty ? "Enter password" : null,
+                  validator: (v) => (v == null || v.isEmpty) ? "Введите пароль" : null,
                 ),
                 const SizedBox(height: 10),
                 Align(
                   alignment: Alignment.centerRight,
-                  child: TextButton(onPressed: () {}, child: const Text("Forgot Password?")),
+                  child: TextButton(
+                    onPressed: isLoading ? null : _forgotPassword,
+                    child: const Text("Забыли пароль?"),
+                  ),
                 ),
                 const SizedBox(height: 30),
 
-                // Login Button
                 SizedBox(
                   width: double.infinity,
                   height: 55,
                   child: ElevatedButton(
-                    onPressed: _isLoading ? null : _signIn,
+                    onPressed: isLoading ? null : _signIn,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.tealAccent.shade700,
+                      backgroundColor: Colors.teal,
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
                     ),
-                    child: _isLoading 
+                    child: isLoading 
                       ? const CircularProgressIndicator(color: Colors.white)
-                      : const Text("Login", style: TextStyle(fontSize: 18, color: Colors.white, fontWeight: FontWeight.bold)),
+                      : const Text("Войти", style: TextStyle(fontSize: 18, color: Colors.white, fontWeight: FontWeight.bold)),
                   ),
                 ),
                 const SizedBox(height: 20),
 
-                // Google Sign In
                 SizedBox(
                   width: double.infinity,
                   height: 55,
                   child: OutlinedButton.icon(
-                    onPressed: _isLoading ? null : _signInWithGoogle,
+                    onPressed: isLoading ? null : _signInWithGoogle,
                     icon: const Icon(Icons.login),
-                    label: const Text("Sign in with Google"),
+                    label: const Text("Войти через Google"),
                     style: OutlinedButton.styleFrom(
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
                       side: BorderSide(color: Colors.grey.shade300),
@@ -143,14 +167,13 @@ class _AuthPageState extends State<AuthPage> {
                 
                 const SizedBox(height: 40),
 
-                // Footer
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Text("Don't have an account?"),
+                    const Text("Нет аккаунта?"),
                     TextButton(
                       onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (c) => const RegisterPage())),
-                      child: const Text("Sign Up", style: TextStyle(fontWeight: FontWeight.bold)),
+                      child: const Text("Создать", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.teal)),
                     ),
                   ],
                 ),

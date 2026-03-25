@@ -8,6 +8,7 @@ import '../providers/settings_provider.dart';
 import 'home_page.dart';
 import 'challenges_page.dart';
 import 'statistics_page.dart';
+import 'ai_chat_page.dart';
 
 class NavigationWrapper extends StatefulWidget {
   final bool isGuest;
@@ -40,12 +41,11 @@ class _NavigationWrapperState extends State<NavigationWrapper> {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
 
-    // ТЕПЕРЬ 4 ВКЛАДКИ
     final List<Widget> pages = [
       HomePage(active: _currentIndex == 0),
       const StatisticsPage(),
       const ChallengesPage(),
-      const AiChatPlaceholder(), // НОВАЯ ВКЛАДКА
+      const AiChatPage(), 
     ];
 
     return Scaffold(
@@ -81,60 +81,9 @@ class _NavigationWrapperState extends State<NavigationWrapper> {
               icon: Icon(_currentIndex == 2 ? Icons.emoji_events_rounded : Icons.emoji_events_outlined),
               label: loc.challenges,
             ),
-            // ИКОНКА ДЛЯ ЧАТА С ИИ
-            const BottomNavigationBarItem(
-              icon: Icon(Icons.auto_awesome_rounded),
-              label: "AI Chat",
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-// ПРОСТАЯ ЗАГЛУШКА ДЛЯ ЧАТА
-class AiChatPlaceholder extends StatelessWidget {
-  const AiChatPlaceholder({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    
-    return Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              padding: const EdgeInsets.all(24),
-              decoration: BoxDecoration(
-                color: Colors.tealAccent.withOpacity(0.1),
-                shape: BoxShape.circle,
-              ),
-              child: const Icon(Icons.auto_awesome_rounded, size: 64, color: Colors.tealAccent),
-            ),
-            const SizedBox(height: 24),
-            const Text(
-              "AI Health Assistant",
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              "Coming Soon...",
-              style: TextStyle(color: isDark ? Colors.white54 : Colors.black54, fontSize: 16),
-            ),
-            const SizedBox(height: 40),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-              decoration: BoxDecoration(
-                color: Colors.grey.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: const Text(
-                "Currently unavailable",
-                style: TextStyle(fontWeight: FontWeight.w600, color: Colors.grey),
-              ),
+            BottomNavigationBarItem(
+              icon: const Icon(Icons.auto_awesome_rounded),
+              label: loc.aiChat,
             ),
           ],
         ),

@@ -21,12 +21,22 @@ class SettingsRepository {
     } catch (e) {
       print("Error decoding goals from SharedPreferences: $e");
     }
-    return {}; // Возвращаем пустую мапу по умолчанию при ошибке или отсутствии данных
+    return {};
   }
 
   Future<void> setGoal(String id, int val) {
-    final Map<String, int> currentGoals = Map.from(goals); // Получаем текущие цели
-    currentGoals[id] = val; // Обновляем или добавляем новую
+    final Map<String, int> currentGoals = Map.from(goals);
+    currentGoals[id] = val;
     return prefs.setString(_kGoalsKey, json.encode(currentGoals));
+  }
+
+  Future<void> clearAll() async {
+    await prefs.remove(_kNameKey);
+    await prefs.remove(_kGoalsKey);
+    await prefs.remove('selectedChallenges');
+    await prefs.remove('completedQuests');
+    await prefs.remove('points');
+    await prefs.remove('languageCode');
+    await prefs.remove('pin_code');
   }
 }
