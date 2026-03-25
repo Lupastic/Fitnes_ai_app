@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'package:crypto/crypto.dart'; // Нужно добавить в pubspec: crypto: ^3.0.3
+import 'package:crypto/crypto.dart'; 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'dart:developer' as developer;
@@ -20,7 +20,6 @@ class UserDataService {
     return _firestore.collection('users').doc(user.uid);
   }
 
-  // Хэширование ПИН-кода (SHA-256)
   String _hashPin(String pin) {
     final bytes = utf8.encode(pin);
     final digest = sha256.convert(bytes);
@@ -39,7 +38,8 @@ class UserDataService {
     String? goalType,
     String? pinCode,
     List<String>? selectedChallenges,
-    List<String>? achievements,
+    List<String>? completedQuests,
+    int? points,
   }) async {
     final userDocRef = getUserDocRef();
     if (userDocRef == null) return;
@@ -47,7 +47,8 @@ class UserDataService {
     final Map<String, dynamic> dataToUpdate = {};
     if (name != null) dataToUpdate['name'] = name;
     if (goals != null) dataToUpdate['goals'] = goals;
-    if (languageCode != null) dataToUpdate['language'] = languageCode;
+    // Используем 'languageCode' для консистентности с провайдером
+    if (languageCode != null) dataToUpdate['languageCode'] = languageCode;
     if (weight != null) dataToUpdate['weight'] = weight;
     if (weightUnit != null) dataToUpdate['weightUnit'] = weightUnit;
     if (height != null) dataToUpdate['height'] = height;
@@ -55,19 +56,37 @@ class UserDataService {
     if (age != null) dataToUpdate['age'] = age;
     if (goalType != null) dataToUpdate['goalType'] = goalType;
     
-    // ПИН-код теперь хэшируется перед отправкой
     if (pinCode != null) {
       dataToUpdate['pinCode'] = _hashPin(pinCode);
     }
     
     if (selectedChallenges != null) dataToUpdate['selectedChallenges'] = selectedChallenges;
-    if (achievements != null) dataToUpdate['achievements'] = achievements;
+    if (completedQuests != null) dataToUpdate['completedQuests'] = completedQuests;
+    if (points != null) dataToUpdate['points'] = points;
 
     try {
       await userDocRef.set(dataToUpdate, SetOptions(merge: true));
-      developer.log("Profile updated successfully", name: "UserDataService");
+      developer.log("Profile updated successfully with languageCode: $languageCode", name: "UserDataService");
     } catch (e, stackTrace) {
       developer.log("Error updating profile", error: e, stackTrace: stackTrace, name: "UserDataService");
+    }
+  }
+
+  Future<List<Map<String, dynamic>>> getLeaderboard() async {
+    try {
+      final snapshot = await _firestore
+          .collection('users')
+          .orderBy('points', descending: true)
+          .limit(20)
+          .get();
+      return snapshot.docs.map((doc) => {
+        'name': doc.data()['name'] ?? 'Anonymous',
+        'points': doc.data()['points'] ?? 0,
+        'uid': doc.id,
+      }).toList();
+    } catch (e) {
+      developer.log("Error fetching leaderboard", error: e);
+      return [];
     }
   }
 

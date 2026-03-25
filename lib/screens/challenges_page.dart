@@ -12,14 +12,62 @@ class ChallengesPage extends StatefulWidget {
 }
 
 class _ChallengesPageState extends State<ChallengesPage> {
-  static const List<Challenge> _allChallenges = [
-    Challenge(id: 'water', title: 'Drink Water', frequency: 'Daily', unit: 'cups', target: 8, icon: Icons.local_drink_rounded),
-    Challenge(id: 'steps', title: 'Walk Steps', frequency: 'Daily', unit: 'steps', target: 10000, icon: Icons.directions_walk_rounded),
-    Challenge(id: 'sleep', title: 'Sleep Quality', frequency: 'Daily', unit: 'h', target: 8, icon: Icons.nightlight_round),
-    Challenge(id: 'calories', title: 'Active Burn', frequency: 'Daily', unit: 'kcal', target: 2000, icon: Icons.bolt_rounded),
-    Challenge(id: 'yoga', title: 'Yoga Session', frequency: 'Weekly', unit: 'sess', target: 3, icon: Icons.self_improvement_rounded),
-    Challenge(id: 'running', title: 'Long Run', frequency: 'Weekly', unit: 'km', target: 15, icon: Icons.speed_rounded),
+  final List<Challenge> _challengeTemplates = [
+    const Challenge(id: 'water', title: 'Drink Water', frequency: 'Daily', unit: 'cups', target: 8, icon: Icons.local_drink_rounded),
+    const Challenge(id: 'steps', title: 'Walk Steps', frequency: 'Daily', unit: 'steps', target: 10000, icon: Icons.directions_walk_rounded),
+    const Challenge(id: 'sleep', title: 'Sleep Quality', frequency: 'Daily', unit: 'h', target: 8, icon: Icons.nightlight_round),
+    const Challenge(id: 'calories', title: 'Active Burn', frequency: 'Daily', unit: 'kcal', target: 2000, icon: Icons.bolt_rounded),
   ];
+
+  String _getTranslatedTitle(String id, AppLocalizations loc) {
+    switch (id) {
+      case 'water': return loc.drinkWater;
+      case 'steps': return loc.walkSteps;
+      case 'sleep': return loc.sleepQuality;
+      case 'calories': return loc.activeBurn;
+      default: return id;
+    }
+  }
+
+  String _getTranslatedUnit(String id, AppLocalizations loc) {
+    switch (id) {
+      case 'water': return loc.cups;
+      case 'steps': return loc.steps;
+      case 'sleep': return loc.hours;
+      case 'calories': return "kcal";
+      default: return "";
+    }
+  }
+
+  void _showEditGoalDialog(BuildContext context, String id, int currentGoal, String unitLabel) {
+    final TextEditingController controller = TextEditingController(text: currentGoal.toString());
+    final loc = AppLocalizations.of(context)!;
+    
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(loc.editGoalFor(unitLabel)),
+        content: TextField(
+          controller: controller,
+          keyboardType: TextInputType.number,
+          decoration: InputDecoration(suffixText: unitLabel),
+        ),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(context), child: Text(loc.cancel)),
+          ElevatedButton(
+            onPressed: () {
+              final newVal = int.tryParse(controller.text);
+              if (newVal != null) {
+                context.read<SettingsProvider>().updateGoal(id, newVal);
+                Navigator.pop(context);
+              }
+            },
+            child: Text(loc.save),
+          ),
+        ],
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -56,8 +104,13 @@ class _ChallengesPageState extends State<ChallengesPage> {
             sliver: SliverList(
               delegate: SliverChildBuilderDelegate(
                 (ctx, i) {
-                  final ch = _allChallenges[i];
+                  final ch = _challengeTemplates[i];
                   final isSelected = settings.selectedChallengeIds.contains(ch.id);
+                  final currentTarget = settings.goals[ch.id] ?? ch.target;
+                  
+                  final translatedTitle = _getTranslatedTitle(ch.id, loc);
+                  final translatedUnit = _getTranslatedUnit(ch.id, loc);
+                  final translatedFreq = ch.frequency == 'Daily' ? loc.daily : loc.weekly;
 
                   return Container(
                     margin: const EdgeInsets.only(bottom: 16),
@@ -82,15 +135,35 @@ class _ChallengesPageState extends State<ChallengesPage> {
                         ),
                         const SizedBox(width: 16),
                         Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(ch.title, style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 17)),
-                              Text(
-                                "${ch.frequency} • Goal: ${ch.target} ${ch.unit}",
-                                style: TextStyle(color: theme.textTheme.bodyMedium?.color),
-                              ),
-                            ],
+                          child: GestureDetector(
+                            onTap: () => _showEditGoalDialog(context, ch.id, currentTarget, translatedUnit),
+                            behavior: HitTestBehavior.opaque,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  translatedTitle, 
+                                  style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 17),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                                Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Flexible(
+                                      child: Text(
+                                        "$translatedFreq • ${loc.goalLabel}: $currentTarget $translatedUnit",
+                                        style: TextStyle(color: theme.textTheme.bodyMedium?.color),
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 4),
+                                    Icon(Icons.edit, size: 14, color: theme.hintColor),
+                                  ],
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                         IconButton(
@@ -105,7 +178,7 @@ class _ChallengesPageState extends State<ChallengesPage> {
                     ),
                   );
                 },
-                childCount: _allChallenges.length, // ИСПРАВЛЕНО
+                childCount: _challengeTemplates.length,
               ),
             ),
           ),

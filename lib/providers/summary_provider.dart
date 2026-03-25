@@ -13,7 +13,6 @@ class SummaryProvider with ChangeNotifier {
   }
 
   void _loadToday() {
-    // Сначала берем локально
     _today = _repo.getToday() ??
         DailySummary(
           date: DateTime.now(),
@@ -26,12 +25,15 @@ class SummaryProvider with ChangeNotifier {
 
   DailySummary get today => _today;
 
-  // НОВЫЙ МЕТОД: Синхронизация с облаком при запуске
+  void reset() {
+    _loadToday();
+    notifyListeners();
+  }
+
   Future<void> syncFromFirebase() async {
     try {
       final remoteSummary = await _userDataService.getDailySummary(DateTime.now());
       if (remoteSummary != null) {
-        // Если в облаке данных больше (или они новее), обновляем локально
         _today = remoteSummary;
         await _repo.save(_today);
         notifyListeners();
@@ -42,13 +44,23 @@ class SummaryProvider with ChangeNotifier {
     }
   }
 
-  void update({int? water, double? sleep, int? cal, int? steps, bool add = false}) async {
+  void update({
+    int? water,
+    double? sleep,
+    int? cal,
+    int? steps,
+    int? yoga,
+    double? running,
+    bool add = false,
+  }) async {
     _today = DailySummary(
       date: _today.date,
       waterCups: add ? (_today.waterCups + (water ?? 0)) : (water ?? _today.waterCups),
-      sleepHours: add ? (_today.sleepHours + (sleep ?? 0)) : (sleep ?? _today.sleepHours),
+      sleepHours: add ? (_today.sleepHours + (sleep ?? 0.0)) : (sleep ?? _today.sleepHours),
       calories: add ? (_today.calories + (cal ?? 0)) : (cal ?? _today.calories),
       steps: add ? (_today.steps + (steps ?? 0)) : (steps ?? _today.steps),
+      yogaSessions: add ? (_today.yogaSessions + (yoga ?? 0)) : (yoga ?? _today.yogaSessions),
+      runningKm: add ? (_today.runningKm + (running ?? 0.0)) : (running ?? _today.runningKm),
       synced: false,
     );
     

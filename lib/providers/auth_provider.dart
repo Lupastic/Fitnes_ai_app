@@ -4,6 +4,11 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:provider/provider.dart';
+import '../services/local_repository.dart';
+import '../services/settings_repository.dart';
+import 'settings_provider.dart';
+import 'summary_provider.dart';
 
 class AppAuthProvider extends ChangeNotifier {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -14,7 +19,6 @@ class AppAuthProvider extends ChangeNotifier {
 
   User? get user => _auth.currentUser;
 
-  // Флаг того, что ПИН-код был успешно введен в текущей сессии
   bool _isPinVerified = false;
   bool get isPinVerified => _isPinVerified;
 
@@ -23,13 +27,11 @@ class AppAuthProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  // Метод для подтверждения ПИН-кода
   void verifyPin() {
     _isPinVerified = true;
     notifyListeners();
   }
 
-  // --- Вход через Email ---
   Future<void> signInWithEmail(String email, String password) async {
     _setLoading(true);
     try {
@@ -41,7 +43,6 @@ class AppAuthProvider extends ChangeNotifier {
     }
   }
 
-  // --- Регистрация ---
   Future<void> registerWithEmail(String email, String password, String name) async {
     _setLoading(true);
     try {
@@ -54,7 +55,6 @@ class AppAuthProvider extends ChangeNotifier {
     }
   }
 
-  // --- Google Sign-In ---
   Future<void> signInWithGoogle() async {
     _setLoading(true);
     try {
@@ -80,41 +80,61 @@ class AppAuthProvider extends ChangeNotifier {
     }
   }
 
-  // --- Выход ---
-  Future<void> signOut() async {
+  // МАКСИМАЛЬНО НАДЕЖНЫЙ ВЫХОД
+  Future<void> signOut(BuildContext context) async {
     _setLoading(true);
     try {
+      // 1. Сначала выходим из Firebase и Google, чтобы гарантировать разлогин
       await _auth.signOut();
-      // Также выходим из Google, чтобы при следующем входе можно было выбрать аккаунт
       final GoogleSignIn googleSignIn = GoogleSignIn();
       if (await googleSignIn.isSignedIn()) {
         await googleSignIn.signOut();
       }
-      _isPinVerified = false; // Сбрасываем флаг ПИН-кода
+      
+      _isPinVerified = false;
+
+      // 2. Пытаемся очистить локальные данные, но не прерываемся при ошибках
+      try {
+        final localRepo = Provider.of<LocalRepository>(context, listen: false);
+        await localRepo.clearAll();
+      } catch (e) {
+        debugPrint('Non-critical: Local repo clear failed: $e');
+      }
+
+      try {
+        final settingsRepo = Provider.of<SettingsRepository>(context, listen: false);
+        await settingsRepo.clearAll();
+      } catch (e) {
+        debugPrint('Non-critical: Settings repo clear failed: $e');
+      }
+
+      // 3. Сбрасываем состояния провайдеров
+      try {
+        Provider.of<SettingsProvider>(context, listen: false).reset();
+        Provider.of<SummaryProvider>(context, listen: false).reset();
+      } catch (e) {
+        debugPrint('Non-critical: Provider reset failed: $e');
+      }
+
       notifyListeners();
     } catch (e) {
-      debugPrint('Sign out error: $e');
+      debugPrint('CRITICAL Sign out error: $e');
     } finally {
       _setLoading(false);
     }
   }
 
-  // --- Сброс пароля ---
   Future<void> resetPassword(String email) async {
     await _auth.sendPasswordResetEmail(email: email);
   }
 
-  // --- Проверка необходимости ПИН-кода (Синхронизация) ---
   Future<bool> shouldShowPin() async {
     final currentUser = _auth.currentUser;
     if (currentUser == null) return false;
 
     final prefs = await SharedPreferences.getInstance();
-    
-    // 1. Проверяем локально
     if (prefs.containsKey('pin_code')) return true;
 
-    // 2. Если локально нет, проверяем в Firestore (синхронизация для нового устройства)
     try {
       final doc = await _firestore.collection('users').doc(currentUser.uid).get();
       final cloudPin = doc.data()?['pinCode'];
@@ -130,18 +150,15 @@ class AppAuthProvider extends ChangeNotifier {
     return false;
   }
 
-  // --- Удаление аккаунта ---
-  Future<void> deleteAccount() async {
+  Future<void> deleteAccount(BuildContext context) async {
     final currentUser = _auth.currentUser;
     if (currentUser == null) return;
 
     await _firestore.collection('users').doc(currentUser.uid).delete();
+    await signOut(context);
     await currentUser.delete();
-    _isPinVerified = false;
-    notifyListeners();
   }
 
-  // Маппинг ошибок на русский язык
   String mapErrorMessage(String code) {
     switch (code) {
       case 'user-not-found':

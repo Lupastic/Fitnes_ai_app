@@ -22,10 +22,6 @@ class _SettingsPageState extends State<SettingsPage> {
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _pinController = TextEditingController();
 
-  final TextEditingController _waterGoalController = TextEditingController();
-  final TextEditingController _stepsGoalController = TextEditingController();
-  final TextEditingController _sleepGoalController = TextEditingController();
-
   bool _isLoading = false;
 
   @override
@@ -34,10 +30,6 @@ class _SettingsPageState extends State<SettingsPage> {
     final settings = context.read<SettingsProvider>();
     _nameController.text = settings.name;
     _emailController.text = FirebaseAuth.instance.currentUser?.email ?? '';
-    
-    _waterGoalController.text = (settings.goals['water'] ?? 8).toString();
-    _stepsGoalController.text = (settings.goals['steps'] ?? 10000).toString();
-    _sleepGoalController.text = (settings.goals['sleep'] ?? 8).toString();
   }
 
   Future<void> _updateAccount() async {
@@ -49,12 +41,10 @@ class _SettingsPageState extends State<SettingsPage> {
     final userDataService = context.read<UserDataService>();
 
     try {
-      // 1. Обновляем имя
       if (_nameController.text != settings.name) {
         await settings.updateName(_nameController.text);
       }
 
-      // 2. Обновляем ПИН-код
       if (_pinController.text.isNotEmpty) {
         final newPin = _pinController.text.trim();
         final prefs = await SharedPreferences.getInstance();
@@ -62,7 +52,6 @@ class _SettingsPageState extends State<SettingsPage> {
         await userDataService.updateProfileData(pinCode: newPin);
       }
 
-      // 3. Обновляем Email или Пароль (требует недавнего входа)
       bool sensitiveDataChanged = (_emailController.text != user.email) || (_passwordController.text.isNotEmpty);
 
       if (sensitiveDataChanged) {
@@ -120,7 +109,7 @@ class _SettingsPageState extends State<SettingsPage> {
               try {
                 await user.reauthenticateWithCredential(cred);
                 Navigator.pop(context);
-                _updateAccount(); // Пробуем обновить еще раз после подтверждения
+                _updateAccount();
               } catch (e) {
                 ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Wrong password"), backgroundColor: Colors.red));
               }
@@ -132,10 +121,49 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
+  void _showLanguageDialog() {
+    final localeProvider = context.read<LocaleProvider>();
+    final settingsProvider = context.read<SettingsProvider>();
+    
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(AppLocalizations.of(context)!.selectLanguage),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            _buildLanguageOption("English", const Locale('en'), localeProvider, settingsProvider),
+            _buildLanguageOption("Русский", const Locale('ru'), localeProvider, settingsProvider),
+            _buildLanguageOption("Қазақша", const Locale('kk'), localeProvider, settingsProvider),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildLanguageOption(String label, Locale locale, LocaleProvider localeProvider, SettingsProvider settingsProvider) {
+    return ListTile(
+      title: Text(label),
+      trailing: localeProvider.locale == locale ? const Icon(Icons.check, color: Colors.tealAccent) : null,
+      onTap: () async {
+        // Обновляем язык в интерфейсе
+        await localeProvider.setLocale(locale);
+        // Сохраняем язык в Firebase через SettingsProvider
+        await settingsProvider.setLocale(locale.languageCode);
+        if (mounted) Navigator.pop(context);
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context)!;
     final themeProvider = context.watch<ThemeProvider>();
+    final localeProvider = context.watch<LocaleProvider>();
+
+    String currentLangName = "English";
+    if (localeProvider.locale.languageCode == 'ru') currentLangName = "Русский";
+    if (localeProvider.locale.languageCode == 'kk') currentLangName = "Қазақша";
 
     return Scaffold(
       appBar: AppBar(title: Text(loc.settings)),
@@ -150,8 +178,8 @@ class _SettingsPageState extends State<SettingsPage> {
                   color: Colors.tealAccent.withOpacity(0.1),
                   child: ListTile(
                     leading: const Icon(Icons.history, color: Colors.tealAccent),
-                    title: const Text("View Activity History", style: TextStyle(fontWeight: FontWeight.bold)),
-                    subtitle: const Text("Check your past logs and logins"),
+                    title: Text(loc.history, style: const TextStyle(fontWeight: FontWeight.bold)),
+                    subtitle: const Text("Check your past activity logs"),
                     trailing: const Icon(Icons.arrow_forward_ios, size: 16),
                     onTap: () => Navigator.pushNamed(context, '/history'),
                   ),
@@ -181,28 +209,29 @@ class _SettingsPageState extends State<SettingsPage> {
                 ),
                 const SizedBox(height: 24),
 
-                Text("Daily Goals", style: Theme.of(context).textTheme.titleLarge),
+                Text("Preferences", style: Theme.of(context).textTheme.titleLarge),
                 const SizedBox(height: 12),
                 Card(
-                  child: Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Column(
-                      children: [
-                        TextField(controller: _waterGoalController, decoration: const InputDecoration(labelText: "Water (cups)"), keyboardType: TextInputType.number),
-                        TextField(controller: _stepsGoalController, decoration: const InputDecoration(labelText: "Steps"), keyboardType: TextInputType.number),
-                        TextField(controller: _sleepGoalController, decoration: const InputDecoration(labelText: "Sleep (hours)"), keyboardType: TextInputType.number),
-                      ],
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 24),
-
-                ListTile(
-                  leading: const Icon(Icons.brightness_6),
-                  title: Text(loc.theme),
-                  trailing: Switch(
-                    value: themeProvider.themeMode == ThemeMode.dark,
-                    onChanged: (v) => themeProvider.toggleTheme(),
+                  child: Column(
+                    children: [
+                      ListTile(
+                        leading: const Icon(Icons.brightness_6),
+                        title: Text(loc.theme),
+                        subtitle: Text(themeProvider.themeMode == ThemeMode.dark ? "Dark Mode" : "Light Mode"),
+                        trailing: Switch(
+                          value: themeProvider.themeMode == ThemeMode.dark,
+                          onChanged: (v) => themeProvider.toggleTheme(),
+                        ),
+                      ),
+                      const Divider(height: 1),
+                      ListTile(
+                        leading: const Icon(Icons.language),
+                        title: Text(loc.language),
+                        subtitle: Text(currentLangName),
+                        trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+                        onTap: _showLanguageDialog,
+                      ),
+                    ],
                   ),
                 ),
               ],

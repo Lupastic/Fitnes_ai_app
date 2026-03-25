@@ -19,23 +19,72 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  // We keep the IDs but will translate titles and units in the UI
   static const List<Challenge> _allTypes = [
     Challenge(id: 'water', title: 'Water', frequency: 'Daily', unit: 'cups', target: 8, icon: Icons.local_drink_rounded),
     Challenge(id: 'steps', title: 'Steps', frequency: 'Daily', unit: 'steps', target: 10000, icon: Icons.directions_run_rounded),
     Challenge(id: 'sleep', title: 'Sleep', frequency: 'Daily', unit: 'h', target: 8, icon: Icons.nightlight_round),
     Challenge(id: 'calories', title: 'Calories', frequency: 'Daily', unit: 'kcal', target: 2000, icon: Icons.local_fire_department_rounded),
-    Challenge(id: 'yoga', title: 'Yoga', frequency: 'Weekly', unit: 'sess', target: 3, icon: Icons.self_improvement_rounded),
-    Challenge(id: 'running', title: 'Running', frequency: 'Weekly', unit: 'km', target: 15, icon: Icons.speed_rounded),
   ];
 
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted) {
-        context.read<StepCounterProvider>().initPedometer();
-      }
-    });
+  String _getTranslatedTitle(String id, AppLocalizations loc) {
+    switch (id) {
+      case 'water': return loc.water;
+      case 'steps': return loc.steps;
+      case 'sleep': return loc.sleep;
+      case 'calories': return loc.calories;
+      default: return id;
+    }
+  }
+
+  String _getTranslatedUnit(String id, AppLocalizations loc) {
+    switch (id) {
+      case 'water': return loc.cups;
+      case 'steps': return loc.steps; // or loc.stepsUnit if available
+      case 'sleep': return loc.hours;
+      case 'calories': return "kcal";
+      default: return "";
+    }
+  }
+
+  void _showManualInputDialog(Challenge ch, SummaryProvider provider, AppLocalizations loc) {
+    final TextEditingController controller = TextEditingController();
+    final title = _getTranslatedTitle(ch.id, loc);
+    final unit = _getTranslatedUnit(ch.id, loc);
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text("${loc.save} $title"),
+        content: TextField(
+          controller: controller,
+          keyboardType: const TextInputType.numberWithOptions(decimal: true),
+          decoration: InputDecoration(
+            labelText: "${loc.email} ($unit)", // Using email as a proxy for 'Amount' if not available, but let's just use text
+            hintText: "...",
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(loc.cancel),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              final val = double.tryParse(controller.text) ?? 0;
+              if (val > 0) {
+                if (ch.id == 'water') provider.update(water: val.toInt(), add: true);
+                if (ch.id == 'steps') provider.update(steps: val.toInt(), add: true);
+                if (ch.id == 'sleep') provider.update(sleep: val, add: true);
+                if (ch.id == 'calories') provider.update(cal: val.toInt(), add: true);
+              }
+              Navigator.pop(context);
+            },
+            child: Text(loc.save),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -110,12 +159,12 @@ class _HomePageState extends State<HomePage> {
                       ),
                       const SizedBox(height: 40),
 
-                      _buildMotivationCard(isDark),
+                      _buildMotivationCard(isDark, loc),
                       const SizedBox(height: 35),
 
-                      const Text(
-                        "Your Progress",
-                        style: TextStyle(fontSize: 24, fontWeight: FontWeight.w800, letterSpacing: -0.5),
+                      Text(
+                        loc.yourProgress,
+                        style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w800, letterSpacing: -0.5),
                       ),
                       const SizedBox(height: 20),
 
@@ -134,7 +183,7 @@ class _HomePageState extends State<HomePage> {
                           itemCount: selectedChallenges.length,
                           itemBuilder: (context, index) {
                             final ch = selectedChallenges[index];
-                            return _buildMetricCard(ch, summary, summaryProv, isDark, theme);
+                            return _buildMetricCard(ch, summary, summaryProv, isDark, theme, loc);
                           },
                         ),
                     ],
@@ -148,7 +197,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _buildMotivationCard(bool isDark) {
+  Widget _buildMotivationCard(bool isDark, AppLocalizations loc) {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(20),
@@ -165,7 +214,7 @@ class _HomePageState extends State<HomePage> {
           const SizedBox(width: 15),
           Expanded(
             child: Text(
-              "\"Believe you can and you're halfway there.\"",
+              "\"${loc.motivationQuote}\"",
               style: TextStyle(fontSize: 15, fontStyle: FontStyle.italic, color: isDark ? Colors.white : Colors.black87),
             ),
           ),
@@ -174,7 +223,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _buildMetricCard(Challenge ch, dynamic summary, SummaryProvider provider, bool isDark, ThemeData theme) {
+  Widget _buildMetricCard(Challenge ch, dynamic summary, SummaryProvider provider, bool isDark, ThemeData theme, AppLocalizations loc) {
     Color accentColor;
     switch (ch.id) {
       case 'water': accentColor = Colors.lightBlueAccent; break;
@@ -193,13 +242,7 @@ class _HomePageState extends State<HomePage> {
     double progress = (currentVal / ch.target).clamp(0.0, 1.0);
 
     return GestureDetector(
-      onTap: () {
-        if (ch.id == 'water') {
-          provider.update(water: 1, add: true);
-        } else if (ch.id == 'steps') {
-          provider.update(steps: 500, add: true);
-        }
-      },
+      onTap: () => _showManualInputDialog(ch, provider, loc),
       child: Container(
         decoration: BoxDecoration(
           color: theme.cardTheme.color,
@@ -247,7 +290,7 @@ class _HomePageState extends State<HomePage> {
                     ),
                     const Spacer(),
                     Text(
-                      ch.title,
+                      _getTranslatedTitle(ch.id, loc),
                       style: TextStyle(color: isDark ? Colors.white54 : Colors.black54, fontSize: 13, fontWeight: FontWeight.w600),
                     ),
                     FittedBox(
@@ -257,7 +300,7 @@ class _HomePageState extends State<HomePage> {
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
                           Text(
-                            currentVal.toStringAsFixed(currentVal is double ? 1 : 0),
+                            currentVal.toStringAsFixed(currentVal is double && currentVal % 1 != 0 ? 1 : 0),
                             style: const TextStyle(fontSize: 28, fontWeight: FontWeight.w900),
                           ),
                           const SizedBox(width: 4),
@@ -272,7 +315,7 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ),
                     Text(
-                      ch.unit,
+                      _getTranslatedUnit(ch.id, loc),
                       style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: accentColor, letterSpacing: 1),
                     ),
                     const SizedBox(height: 8),

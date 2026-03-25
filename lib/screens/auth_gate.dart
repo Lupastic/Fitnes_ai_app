@@ -62,21 +62,19 @@ class _AuthGateState extends State<AuthGate> {
     final authProvider = context.watch<AppAuthProvider>();
 
     return StreamBuilder<User?>(
-      stream: FirebaseAuth.instance.authStateChanges(),
+      stream: FirebaseAuth.instance.userChanges(), // Используем userChanges для отслеживания emailVerified
       builder: (context, snapshot) {
         developer.log(
-          "🔄 Auth: ${snapshot.connectionState}, user: ${snapshot.data?.email}",
+          "🔄 Auth: ${snapshot.connectionState}, user: ${snapshot.data?.email}, verified: ${snapshot.data?.emailVerified}",
           name: "AuthGate",
         );
 
-        // ✅ Только waiting — показываем загрузку
         if (snapshot.connectionState == ConnectionState.waiting) {
           return _buildLoading();
         }
 
         final user = snapshot.data;
 
-        // ✅ Пользователь вышел — сбрасываем состояние
         if (user == null) {
           _resetState();
           return const StartPage();
@@ -96,7 +94,6 @@ class _AuthGateState extends State<AuthGate> {
           return const NavigationWrapper();
         }
 
-        // ✅ FutureBuilder с закэшированным future
         return FutureBuilder<bool>(
           future: _getPinFuture(authProvider, user.uid),
           builder: (context, pinSnapshot) {
@@ -142,13 +139,28 @@ class _AuthGateState extends State<AuthGate> {
             ),
             const SizedBox(height: 16),
             Text(
-              "Мы отправили письмо на ${user.email}. Пожалуйста, подтвердите его и перезайдите в приложение.",
+              "Мы отправили письмо на ${user.email}. Пожалуйста, подтвердите его, затем нажмите кнопку ниже.",
               textAlign: TextAlign.center,
               style: const TextStyle(color: Colors.black54),
             ),
             const SizedBox(height: 32),
             ElevatedButton(
-              style: ElevatedButton.styleFrom(backgroundColor: Colors.teal),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.teal,
+                minimumSize: const Size(double.infinity, 50),
+              ),
+              onPressed: () async {
+                await user.reload(); // Перезагружаем пользователя, чтобы обновить emailVerified
+                setState(() {}); // Обновляем UI
+              },
+              child: const Text("Я подтвердил почту", style: TextStyle(color: Colors.white, fontSize: 16)),
+            ),
+            const SizedBox(height: 16),
+            OutlinedButton(
+              style: OutlinedButton.styleFrom(
+                side: const BorderSide(color: Colors.teal),
+                minimumSize: const Size(double.infinity, 50),
+              ),
               onPressed: () async {
                 await user.sendEmailVerification();
                 if (mounted) {
@@ -157,10 +169,11 @@ class _AuthGateState extends State<AuthGate> {
                   );
                 }
               },
-              child: const Text("Отправить еще раз", style: TextStyle(color: Colors.white)),
+              child: const Text("Отправить письмо еще раз", style: TextStyle(color: Colors.teal)),
             ),
+            const SizedBox(height: 16),
             TextButton(
-              onPressed: () => context.read<AppAuthProvider>().signOut(),
+              onPressed: () => context.read<AppAuthProvider>().signOut(context),
               child: const Text("Выйти", style: TextStyle(color: Colors.teal)),
             ),
           ],

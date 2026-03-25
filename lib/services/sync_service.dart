@@ -1,6 +1,5 @@
-// lib/services/sync_service.dart
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart'; // Добавил для получения UID
+import 'package:firebase_auth/firebase_auth.dart';
 import '../services/local_repository.dart';
 import '../models/daily_summary.dart';
 
@@ -13,28 +12,33 @@ class SyncService {
 
   Future<void> sync() async {
     final user = _auth.currentUser;
-    if (user == null) {
-      print("SyncService: User not logged in, cannot sync to Firebase.");
-      return;
-    }
+    if (user == null) return;
 
     final items = _repo.unsynced();
+    if (items.isEmpty) return;
+
+    print("SyncService: Found ${items.length} items to sync.");
+
     for (final d in items) {
       try {
+        final docId = _formatDateKey(d.date);
         await _fire
             .collection('users')
-            .doc(user.uid) // Используем UID текущего пользователя
+            .doc(user.uid)
             .collection('summaries')
-            .doc(d.date.toIso8601String()) // Используем дату как ID документа
-            .set(d.toMap()); // Используем toMap() из DailySummary
+            .doc(docId)
+            .set(d.toMap(), SetOptions(merge: true));
 
         d.synced = true;
-        await d.save(); // Сохраняем изменение в Hive
-        print("DailySummary for ${d.date.toIso8601String()} synced successfully.");
+        await _repo.save(d); // Сохраняем обновленный статус локально
+        print("SyncService: Synced data for $docId");
       } catch (e) {
-        print("Error syncing DailySummary for ${d.date.toIso8601String()}: $e");
-        // Ошибка синхронизации, оставляем synced = false, чтобы попробовать позже
+        print("SyncService: Error syncing ${d.date}: $e");
       }
     }
+  }
+
+  String _formatDateKey(DateTime d) {
+    return "${d.year}-${d.month.toString().padLeft(2, '0')}-${d.day.toString().padLeft(2, '0')}";
   }
 }

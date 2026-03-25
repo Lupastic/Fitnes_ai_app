@@ -8,6 +8,7 @@ import '../providers/settings_provider.dart';
 import '../providers/summary_provider.dart';
 import 'settings_page.dart';
 import 'achievements_page.dart';
+import 'onboarding_page.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
@@ -39,9 +40,8 @@ class ProfilePage extends StatelessWidget {
               IconButton(
                 icon: const Icon(Icons.logout_rounded, color: Colors.redAccent),
                 onPressed: () async {
-                  // Вызываем метод signOut из вашего AppAuthProvider
-                  await context.read<AppAuthProvider>().signOut();
-                  // После выхода принудительно очищаем стек и возвращаемся к корню (к AuthGate)
+                  // Передаем context для корректной очистки данных
+                  await context.read<AppAuthProvider>().signOut(context);
                   if (context.mounted) {
                     Navigator.of(context).pushNamedAndRemoveUntil('/', (route) => false);
                   }
@@ -81,11 +81,29 @@ class ProfilePage extends StatelessWidget {
                     style: const TextStyle(fontSize: 26, fontWeight: FontWeight.w900),
                   ),
                   Text(user?.email ?? "", style: TextStyle(color: theme.textTheme.bodyMedium?.color)),
+                  const SizedBox(height: 25),
+
+                  // КНОПКА РЕДАКТИРОВАНИЯ ДАННЫХ ТЕЛА
+                  ElevatedButton.icon(
+                    onPressed: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (c) => const OnboardingPage()),
+                    ),
+                    icon: const Icon(Icons.edit_note_rounded, size: 20),
+                    label: const Text("Edit Body Metrics & Goals"),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.tealAccent.withOpacity(0.1),
+                      foregroundColor: Colors.tealAccent,
+                      elevation: 0,
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                    ),
+                  ),
                   const SizedBox(height: 35),
 
                   // --- SHOWCASE ---
-                  _buildSectionHeader("Achievement Showcase", () {
-                    Navigator.push(context, MaterialPageRoute(builder: (c) => const AchievementsPage()));
+                  _buildSectionHeader("Quests & Progress", () {
+                    Navigator.push(context, MaterialPageRoute(builder: (c) => const QuestsPage()));
                   }),
                   const SizedBox(height: 16),
                   Container(
@@ -98,9 +116,9 @@ class ProfilePage extends StatelessWidget {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
-                        _buildBadge(Icons.opacity_rounded, "Water", summary.waterCups >= 8),
-                        _buildBadge(Icons.bolt_rounded, "Active", true),
-                        _buildBadge(Icons.directions_walk_rounded, "Steps", summary.steps >= 10000),
+                        _buildBadge(Icons.emoji_events_rounded, "${settings.points} pts", true),
+                        _buildBadge(Icons.task_alt_rounded, "${settings.completedQuests.length} Quests", settings.completedQuests.isNotEmpty),
+                        _buildBadge(Icons.leaderboard_rounded, "Global Rank", true),
                       ],
                     ),
                   ),
@@ -109,6 +127,12 @@ class ProfilePage extends StatelessWidget {
                   // --- STAT CARDS ---
                   _buildSectionHeader("Quick Stats", null),
                   const SizedBox(height: 16),
+                  _buildInfoCard(theme, Icons.fitness_center_rounded, "Current Goal", settings.goalType ?? "Not set"),
+                  const SizedBox(height: 12),
+                  _buildInfoCard(theme, Icons.monitor_weight_rounded, "Weight", "${settings.weight ?? '--'} ${settings.weightUnit ?? 'kg'}"),
+                  const SizedBox(height: 12),
+                  _buildInfoCard(theme, Icons.height_rounded, "Height", "${settings.height ?? '--'} ${settings.heightUnit ?? 'cm'}"),
+                  const SizedBox(height: 12),
                   _buildInfoCard(theme, Icons.local_fire_department_rounded, "Total Burned", "${summary.calories} kcal"),
                   const SizedBox(height: 12),
                   _buildInfoCard(theme, Icons.nightlight_round, "Sleep Avg", "${summary.sleepHours.toStringAsFixed(1)} h"),
