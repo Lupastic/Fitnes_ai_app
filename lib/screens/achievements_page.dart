@@ -3,6 +3,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:provider/provider.dart';
 import '../providers/theme_provider.dart';
 import '../providers/summary_provider.dart';
+import '../providers/settings_provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class AchievementsPage extends StatefulWidget {
@@ -20,46 +21,60 @@ class _AchievementsPageState extends State<AchievementsPage> {
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context)!;
     final themeProvider = Provider.of<ThemeProvider>(context);
+    final settingsProvider = context.watch<SettingsProvider>();
     final isDarkMode = themeProvider.themeMode == ThemeMode.dark;
     
-    // Получаем текущие данные из провайдера
     final summary = context.watch<SummaryProvider>().today;
 
-    // Список достижений, зависящий от реальных данных
+    // Список достижений
     final List<Map<String, dynamic>> allAchievements = [
       {
         'id': 'early_bird',
         'title': loc.achievementEarlyBird, 
         'icon': Icons.wb_sunny, 
-        'done': true // Заглушка: всегда выполнено
       },
       {
         'id': 'hydrated',
         'title': loc.achievementHydrated, 
         'icon': Icons.opacity, 
         'value': '${summary.waterCups}/8',
-        'done': summary.waterCups >= 8 // ДИНАМИЧЕСКИ: выполнено, если выпито 8 стаканов
+        'condition': summary.waterCups >= 8
       },
       {
         'id': 'steps_master',
         'title': "10k Steps Master", 
         'icon': Icons.directions_walk, 
         'value': '${summary.steps}/10000',
-        'done': summary.steps >= 10000
+        'condition': summary.steps >= 10000
       },
       {
         'id': 'marathon',
         'title': loc.achievementMarathon, 
         'icon': Icons.stars,
-        'done': false
+        'condition': false
       },
     ];
 
+    // Проверяем выполнение условий и сохраняем новые достижения
+    for (var a in allAchievements) {
+      final id = a['id'] as String;
+      final condition = a['condition'] as bool? ?? false;
+      
+      // Если условие выполнено И достижение еще не было заработано
+      if (condition && !settingsProvider.earnedAchievements.contains(id)) {
+        // Используем Future.microtask, чтобы не вызывать notifyListeners во время билда
+        Future.microtask(() => settingsProvider.addAchievement(id));
+      }
+    }
+
     final filteredAchievements = allAchievements.where((a) {
+      final id = a['id'] as String;
+      final isDone = settingsProvider.earnedAchievements.contains(id);
+      
       final matchTitle = a['title'].toString().toLowerCase().contains(query.toLowerCase());
       final matchStatus = filterStatus == 'All'
-          || (filterStatus == 'Completed' && a['done'] == true)
-          || (filterStatus == 'Incomplete' && a['done'] != true);
+          || (filterStatus == 'Completed' && isDone)
+          || (filterStatus == 'Incomplete' && !isDone);
       return matchTitle && matchStatus;
     }).toList();
 
@@ -97,11 +112,12 @@ class _AchievementsPageState extends State<AchievementsPage> {
                 itemCount: filteredAchievements.length,
                 itemBuilder: (context, index) {
                   final a = filteredAchievements[index];
+                  final isDone = settingsProvider.earnedAchievements.contains(a['id']);
                   return AchievementCard(
                     title: a['title'] as String,
                     icon: a['icon'] as IconData,
                     value: a['value'] as String?,
-                    done: a['done'] == true,
+                    done: isDone,
                   );
                 },
               ),

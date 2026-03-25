@@ -7,15 +7,17 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'dart:developer' as developer;
 
 import 'models/daily_summary.dart';
 import 'models/history_entry.dart';
 import 'providers/theme_provider.dart';
 import 'providers/locale_provider.dart';
-import 'providers/google_sign_in_provider.dart';
+import 'providers/auth_provider.dart';
 import 'providers/settings_provider.dart';
 import 'providers/connectivity_provider.dart';
 import 'providers/summary_provider.dart';
+import 'providers/step_counter_provider.dart';
 import 'services/settings_repository.dart';
 import 'services/local_repository.dart';
 import 'services/sync_service.dart';
@@ -28,43 +30,70 @@ import 'screens/pin_code_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  FirebaseFirestore.instance.settings = const Settings(persistenceEnabled: true);
+  developer.log("🚀 Запуск приложения...", name: "Main");
+  
+  try {
+    developer.log("🔥 Инициализация Firebase...", name: "Main");
+    await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+    FirebaseFirestore.instance.settings = const Settings(persistenceEnabled: true);
+    developer.log("✅ Firebase готов", name: "Main");
 
-  await Hive.initFlutter();
-  if (!Hive.isAdapterRegistered(0)) Hive.registerAdapter(HistoryEntryAdapter());
-  if (!Hive.isAdapterRegistered(1)) Hive.registerAdapter(DailySummaryAdapter());
+    await Hive.initFlutter();
+    if (!Hive.isAdapterRegistered(0)) Hive.registerAdapter(HistoryEntryAdapter());
+    if (!Hive.isAdapterRegistered(1)) Hive.registerAdapter(DailySummaryAdapter());
 
-  await Hive.openBox<HistoryEntry>('history');
-  await Hive.openBox<DailySummary>('dailyBox');
+    await _openHiveBox<HistoryEntry>('history');
+    await _openHiveBox<DailySummary>('dailyBox');
 
-  final localRepo = LocalRepository();
-  await localRepo.init();
+    final localRepo = LocalRepository();
+    await localRepo.init();
 
-  final syncService = SyncService(localRepo);
-  final prefs = await SharedPreferences.getInstance();
-  final settingsRepo = SettingsRepository(prefs);
+    final syncService = SyncService(localRepo);
+    final prefs = await SharedPreferences.getInstance();
+    final settingsRepo = SettingsRepository(prefs);
 
-  runApp(
-    MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (_) => ThemeProvider()),
-        ChangeNotifierProvider(create: (_) => LocaleProvider()),
-        ChangeNotifierProvider(create: (_) => GoogleSignInProvider()),
-        Provider<SettingsRepository>.value(value: settingsRepo),
-        Provider<LocalRepository>.value(value: localRepo),
-        Provider<SyncService>.value(value: syncService),
-        Provider<UserDataService>(create: (_) => UserDataService()),
-        ChangeNotifierProvider(create: (context) => SettingsProvider(
-          context.read<SettingsRepository>(),
-          context.read<UserDataService>(),
-        )),
-        ChangeNotifierProvider(create: (context) => ConnectivityProvider(context.read<SyncService>())),
-        ChangeNotifierProvider(create: (context) => SummaryProvider(context.read<LocalRepository>())),
-      ],
-      child: const MyApp(),
-    ),
-  );
+    developer.log("🏁 Запуск runApp", name: "Main");
+    runApp(
+      MultiProvider(
+        providers: [
+          ChangeNotifierProvider(create: (_) => ThemeProvider()),
+          ChangeNotifierProvider(create: (_) => LocaleProvider()),
+          ChangeNotifierProvider(create: (_) => AppAuthProvider()),
+          Provider<SettingsRepository>.value(value: settingsRepo),
+          Provider<LocalRepository>.value(value: localRepo),
+          Provider<SyncService>.value(value: syncService),
+          Provider<UserDataService>(create: (_) => UserDataService()),
+          ChangeNotifierProvider(create: (context) => SettingsProvider(
+            context.read<SettingsRepository>(),
+            context.read<UserDataService>(),
+          )),
+          ChangeNotifierProvider(create: (context) => SummaryProvider(context.read<LocalRepository>())),
+          ChangeNotifierProvider(create: (context) => StepCounterProvider(context.read<SummaryProvider>())),
+          ChangeNotifierProvider(create: (context) => ConnectivityProvider(context.read<SyncService>())),
+        ],
+        child: const MyApp(),
+      ),
+    );
+  } catch (e, stack) {
+    developer.log("❌ КРИТИЧЕСКАЯ ОШИБКА: $e", name: "Main", error: e, stackTrace: stack);
+    runApp(MaterialApp(
+      home: Scaffold(
+        body: Center(child: Text("Ошибка запуска: $e")),
+      ),
+    ));
+  }
+}
+
+Future<void> _openHiveBox<T>(String name) async {
+  try {
+    if (!Hive.isBoxOpen(name)) {
+      await Hive.openBox<T>(name);
+    }
+  } catch (e) {
+    developer.log("⚠️ Ошибка открытия бокса $name: $e", name: "Hive");
+    await Hive.deleteBoxFromDisk(name);
+    await Hive.openBox<T>(name);
+  }
 }
 
 class MyApp extends StatelessWidget {
@@ -82,18 +111,23 @@ class MyApp extends StatelessWidget {
       
       theme: ThemeData(
         brightness: Brightness.light,
-        scaffoldBackgroundColor: const Color(0xFFF8F9FD),
+        scaffoldBackgroundColor: const Color(0xFFF7F8FA),
         primaryColor: Colors.teal,
-        colorScheme: ColorScheme.light(
+        colorScheme: const ColorScheme.light(
           primary: Colors.teal,
           secondary: Colors.blueAccent,
           surface: Colors.white,
-          onSurface: Colors.black.withOpacity(0.8),
+          onSurface: Color(0xFF333333),
         ),
         cardTheme: CardTheme(
           color: Colors.white,
-          elevation: 2,
+          elevation: 4,
+          shadowColor: Colors.black.withOpacity(0.1),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+        ),
+        textTheme: const TextTheme(
+          headlineLarge: TextStyle(color: Color(0xFF333333), fontWeight: FontWeight.bold),
+          bodyMedium: TextStyle(color: Color(0xFF424242)),
         ),
       ),
 
@@ -101,10 +135,10 @@ class MyApp extends StatelessWidget {
         brightness: Brightness.dark,
         scaffoldBackgroundColor: const Color(0xFF0A0C12),
         primaryColor: Colors.tealAccent,
-        colorScheme: ColorScheme.dark(
+        colorScheme: const ColorScheme.dark(
           primary: Colors.tealAccent,
           secondary: Colors.blueAccent,
-          surface: const Color(0xFF161A22),
+          surface: Color(0xFF161A22),
           onSurface: Colors.white,
         ),
         cardTheme: CardTheme(
@@ -127,7 +161,7 @@ class MyApp extends StatelessWidget {
         '/history': (context) => const HistoryPage(),
         '/auth_page': (context) => const AuthPage(),
         '/pin': (context) => const PinCodeScreen(),
-        '/home': (context) => const NavigationWrapper(), // ВОЗВРАЩАЕМ ЭТОТ МАРШРУТ
+        '/home': (context) => const NavigationWrapper(),
       },
       home: const AuthGate(),
     );

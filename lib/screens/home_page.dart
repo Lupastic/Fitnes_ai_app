@@ -4,15 +4,21 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../providers/settings_provider.dart';
 import '../providers/summary_provider.dart';
+import '../providers/step_counter_provider.dart';
 import '../models/challenge.dart';
 import 'profile_page.dart';
 import '../widgets/network_icon.dart';
 import '../widgets/offline_banner.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   final bool active;
   const HomePage({super.key, required this.active});
 
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
   static const List<Challenge> _allTypes = [
     Challenge(id: 'water', title: 'Water', frequency: 'Daily', unit: 'cups', target: 8, icon: Icons.local_drink_rounded),
     Challenge(id: 'steps', title: 'Steps', frequency: 'Daily', unit: 'steps', target: 10000, icon: Icons.directions_run_rounded),
@@ -21,6 +27,16 @@ class HomePage extends StatelessWidget {
     Challenge(id: 'yoga', title: 'Yoga', frequency: 'Weekly', unit: 'sess', target: 3, icon: Icons.self_improvement_rounded),
     Challenge(id: 'running', title: 'Running', frequency: 'Weekly', unit: 'km', target: 15, icon: Icons.speed_rounded),
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        context.read<StepCounterProvider>().initPedometer();
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +54,7 @@ class HomePage extends StatelessWidget {
       body: Container(
         decoration: BoxDecoration(
           gradient: RadialGradient(
-            center: Alignment.topRight, // ГРАДИЕНТ ТЕПЕРЬ СПРАВА
+            center: Alignment.topRight,
             radius: 1.2,
             colors: [
               isDark ? Colors.tealAccent.withOpacity(0.05) : Colors.blueAccent.withOpacity(0.1),
@@ -57,7 +73,6 @@ class HomePage extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // --- HEADER (Аватарка теперь СПРАВА) ---
                       Row(
                         children: [
                           Column(
@@ -76,7 +91,6 @@ class HomePage extends StatelessWidget {
                           const Spacer(),
                           const NetworkIcon(),
                           const SizedBox(width: 12),
-                          // ДИНАМИЧЕСКАЯ АВАТАРКА (Кнопка перехода в профиль)
                           GestureDetector(
                             onTap: () => Navigator.push(context, MaterialPageRoute(builder: (c) => const ProfilePage())),
                             child: Container(
@@ -105,7 +119,6 @@ class HomePage extends StatelessWidget {
                       ),
                       const SizedBox(height: 20),
 
-                      // --- GRID ---
                       if (selectedChallenges.isEmpty)
                         _buildEmptyState(isDark)
                       else
@@ -161,7 +174,7 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  Widget _buildMetricCard(Challenge ch, dynamic summary, dynamic provider, bool isDark, ThemeData theme) {
+  Widget _buildMetricCard(Challenge ch, dynamic summary, SummaryProvider provider, bool isDark, ThemeData theme) {
     Color accentColor;
     switch (ch.id) {
       case 'water': accentColor = Colors.lightBlueAccent; break;
@@ -181,7 +194,11 @@ class HomePage extends StatelessWidget {
 
     return GestureDetector(
       onTap: () {
-        if (ch.id == 'water') provider.update(water: 1, add: true);
+        if (ch.id == 'water') {
+          provider.update(water: 1, add: true);
+        } else if (ch.id == 'steps') {
+          provider.update(steps: 500, add: true);
+        }
       },
       child: Container(
         decoration: BoxDecoration(
@@ -233,22 +250,26 @@ class HomePage extends StatelessWidget {
                       ch.title,
                       style: TextStyle(color: isDark ? Colors.white54 : Colors.black54, fontSize: 13, fontWeight: FontWeight.w600),
                     ),
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        Text(
-                          currentVal.toStringAsFixed(currentVal is double ? 1 : 0),
-                          style: const TextStyle(fontSize: 28, fontWeight: FontWeight.w900),
-                        ),
-                        const SizedBox(width: 4),
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 4),
-                          child: Text(
-                            "/ ${ch.target}",
-                            style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: isDark ? Colors.white24 : Colors.black26),
+                    FittedBox(
+                      fit: BoxFit.scaleDown,
+                      alignment: Alignment.centerLeft,
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Text(
+                            currentVal.toStringAsFixed(currentVal is double ? 1 : 0),
+                            style: const TextStyle(fontSize: 28, fontWeight: FontWeight.w900),
                           ),
-                        ),
-                      ],
+                          const SizedBox(width: 4),
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 4),
+                            child: Text(
+                              "/ ${ch.target}",
+                              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: isDark ? Colors.white24 : Colors.black26),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                     Text(
                       ch.unit,

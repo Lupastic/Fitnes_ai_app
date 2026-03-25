@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import '../providers/auth_provider.dart';
 import '../providers/settings_provider.dart';
 import '../providers/summary_provider.dart';
 import 'settings_page.dart';
@@ -38,8 +39,12 @@ class ProfilePage extends StatelessWidget {
               IconButton(
                 icon: const Icon(Icons.logout_rounded, color: Colors.redAccent),
                 onPressed: () async {
-                  await FirebaseAuth.instance.signOut();
-                  Navigator.of(context).pushNamedAndRemoveUntil('/auth_page', (route) => false);
+                  // Вызываем метод signOut из вашего AppAuthProvider
+                  await context.read<AppAuthProvider>().signOut();
+                  // После выхода принудительно очищаем стек и возвращаемся к корню (к AuthGate)
+                  if (context.mounted) {
+                    Navigator.of(context).pushNamedAndRemoveUntil('/', (route) => false);
+                  }
                 },
               ),
             ],

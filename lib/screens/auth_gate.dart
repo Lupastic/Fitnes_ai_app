@@ -1,16 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:hive_flutter/hive_flutter.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'pin_code_screen.dart';
-
-import '../providers/google_sign_in_provider.dart';
+import 'dart:developer' as developer;
+import '../providers/auth_provider.dart';
 import '../providers/settings_provider.dart';
 import '../providers/summary_provider.dart';
 import 'start_page.dart';
 import 'navigation_wrapper.dart';
+import 'pin_code_screen.dart';
 
 class AuthGate extends StatefulWidget {
   const AuthGate({super.key});
@@ -22,67 +19,153 @@ class AuthGate extends StatefulWidget {
 class _AuthGateState extends State<AuthGate> {
   User? _lastUser;
 
-  Future<void> _logLogin(User user) async {
+  // ✅ Храним future чтобы не пересоздавать при каждом build()
+  Future<bool>? _pinFuture;
+  String? _pinFutureUid; // для какого uid был создан future
+
+  @override
+  void dispose() {
+    _lastUser = null;
+    super.dispose();
+  }
+
+  Future<void> _handleInitialLogic(User user) async {
     if (_lastUser?.uid == user.uid) return;
     _lastUser = user;
 
-    if (mounted) {
-      // 1. Загружаем настройки (имя, челленджи)
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      if (!mounted) return;
+      developer.log("📦 Загрузка данных: ${user.email}", name: "AuthGate");
       await context.read<SettingsProvider>().loadSettingsFromFirebase();
-      // 2. Синхронизируем стаканы воды и шаги за сегодня
       await context.read<SummaryProvider>().syncFromFirebase();
-    }
-
-    await FirebaseFirestore.instance
-        .collection('users')
-        .doc(user.uid)
-        .collection('history')
-        .add({
-      'title': 'User logged in',
-      'timestamp': Timestamp.now(),
-    });
-
-    final historyBox = await Hive.openBox('history');
-    await historyBox.add({
-      'title': 'User logged in',
-      'timestamp': DateTime.now().toIso8601String(),
     });
   }
 
-  Future<bool> _checkPinRequired() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.containsKey('pin_code');
+  // ✅ Получаем future только когда меняется uid
+  Future<bool> _getPinFuture(AppAuthProvider authProvider, String uid) {
+    if (_pinFuture == null || _pinFutureUid != uid) {
+      _pinFutureUid = uid;
+      _pinFuture = authProvider.shouldShowPin();
+    }
+    return _pinFuture!;
+  }
+
+  // ✅ Сброс при выходе
+  void _resetState() {
+    _lastUser = null;
+    _pinFuture = null;
+    _pinFutureUid = null;
   }
 
   @override
   Widget build(BuildContext context) {
-    final googleProvider = Provider.of<GoogleSignInProvider>(context);
+    final authProvider = context.watch<AppAuthProvider>();
 
     return StreamBuilder<User?>(
       stream: FirebaseAuth.instance.authStateChanges(),
       builder: (context, snapshot) {
-        if (googleProvider.isSigningIn || snapshot.connectionState == ConnectionState.waiting) {
-          return const Scaffold(body: Center(child: CircularProgressIndicator()));
+        developer.log(
+          "🔄 Auth: ${snapshot.connectionState}, user: ${snapshot.data?.email}",
+          name: "AuthGate",
+        );
+
+        // ✅ Только waiting — показываем загрузку
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return _buildLoading();
         }
 
         final user = snapshot.data;
 
-        if (user != null) {
-          _logLogin(user);
-          return FutureBuilder(
-            future: _checkPinRequired(),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState != ConnectionState.done) {
-                return const Scaffold(body: Center(child: CircularProgressIndicator()));
-              }
-              final bool hasPin = snapshot.data as bool;
-              return hasPin ? const PinCodeScreen() : const NavigationWrapper();
-            },
-          );
+        // ✅ Пользователь вышел — сбрасываем состояние
+        if (user == null) {
+          _resetState();
+          return const StartPage();
         }
 
-        return const StartPage();
+        // Проверка email
+        if (!user.emailVerified &&
+            user.providerData.any((p) => p.providerId == 'password')) {
+          return _buildEmailVerificationScreen(user);
+        }
+
+        // Загружаем данные пользователя
+        _handleInitialLogic(user);
+
+        // ✅ Если ПИН уже был введен в этой сессии, пропускаем его
+        if (authProvider.isPinVerified) {
+          return const NavigationWrapper();
+        }
+
+        // ✅ FutureBuilder с закэшированным future
+        return FutureBuilder<bool>(
+          future: _getPinFuture(authProvider, user.uid),
+          builder: (context, pinSnapshot) {
+            if (pinSnapshot.connectionState != ConnectionState.done) {
+              return _buildLoading();
+            }
+
+            if (pinSnapshot.hasError) {
+              developer.log("❌ Ошибка shouldShowPin: ${pinSnapshot.error}", name: "AuthGate");
+              return const NavigationWrapper(); 
+            }
+
+            final bool hasPin = pinSnapshot.data ?? false;
+            return hasPin ? const PinCodeScreen() : const NavigationWrapper();
+          },
+        );
       },
+    );
+  }
+
+  Widget _buildLoading() {
+    return const Scaffold(
+      backgroundColor: Color(0xFFF7F8FA),
+      body: Center(
+        child: CircularProgressIndicator(color: Colors.teal),
+      ),
+    );
+  }
+
+  Widget _buildEmailVerificationScreen(User user) {
+    return Scaffold(
+      backgroundColor: const Color(0xFFF7F8FA),
+      body: Padding(
+        padding: const EdgeInsets.all(24.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(Icons.email_outlined, size: 80, color: Colors.teal),
+            const SizedBox(height: 24),
+            const Text(
+              "Подтвердите Email",
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.black),
+            ),
+            const SizedBox(height: 16),
+            Text(
+              "Мы отправили письмо на ${user.email}. Пожалуйста, подтвердите его и перезайдите в приложение.",
+              textAlign: TextAlign.center,
+              style: const TextStyle(color: Colors.black54),
+            ),
+            const SizedBox(height: 32),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(backgroundColor: Colors.teal),
+              onPressed: () async {
+                await user.sendEmailVerification();
+                if (mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text("Письмо отправлено повторно")),
+                  );
+                }
+              },
+              child: const Text("Отправить еще раз", style: TextStyle(color: Colors.white)),
+            ),
+            TextButton(
+              onPressed: () => context.read<AppAuthProvider>().signOut(),
+              child: const Text("Выйти", style: TextStyle(color: Colors.teal)),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

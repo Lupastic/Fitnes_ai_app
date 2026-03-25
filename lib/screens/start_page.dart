@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../providers/google_sign_in_provider.dart';
+import '../providers/auth_provider.dart';
 import 'auth_page.dart';
 import 'navigation_wrapper.dart';
 
@@ -10,57 +10,83 @@ class StartPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final googleProvider = Provider.of<GoogleSignInProvider>(context, listen: false);
+    // Явно задаем цвета, чтобы не зависеть от контекста темы в момент инициализации
+    final bool isDark = Theme.of(context).brightness == Brightness.dark;
+    final Color bgColor = isDark ? const Color(0xFF0A0C12) : const Color(0xFFF7F8FA);
+    final Color textColor = isDark ? Colors.white : Colors.black;
 
     return Scaffold(
-      backgroundColor: Colors.black,
-      appBar: AppBar(
-        title: const Text('Welcome'),
-        backgroundColor: Colors.cyan.shade700,
-        centerTitle: true,
-      ),
-      body: Center(
-        child: Padding(
+      backgroundColor: bgColor,
+      body: SafeArea(
+        child: Container(
+          width: double.infinity,
+          height: double.infinity,
           padding: const EdgeInsets.symmetric(horizontal: 32.0),
           child: Column(
-            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              _LoginButton(
-                label: 'Login by Email',
-                icon: Icons.email,
-                onPressed: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(builder: (_) => const AuthPage()),
-                  );
-                },
+              const Icon(Icons.health_and_safety, size: 80, color: Colors.teal),
+              const SizedBox(height: 24),
+              Text(
+                'Health App',
+                style: TextStyle(
+                  color: textColor,
+                  fontSize: 32,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
+              const SizedBox(height: 12),
+              Text(
+                'Ваш персональный помощник здоровья',
+                textAlign: TextAlign.center,
+                style: TextStyle(color: textColor.withOpacity(0.7), fontSize: 16),
+              ),
+              const SizedBox(height: 60),
+              
+              // Кнопка Email
+              _buildButton(
+                context,
+                label: 'Войти через Email',
+                icon: Icons.email,
+                color: Colors.teal,
+                onPressed: () => Navigator.of(context).push(
+                  MaterialPageRoute(builder: (_) => const AuthPage()),
+                ),
+              ),
+              
               const SizedBox(height: 16),
-              _LoginButton(
-                label: 'Login with Google',
+              
+              // Кнопка Google
+              _buildButton(
+                context,
+                label: 'Войти через Google',
                 icon: Icons.g_mobiledata,
+                color: isDark ? Colors.white10 : Colors.white,
+                textColor: isDark ? Colors.white : Colors.black87,
+                hasBorder: true,
                 onPressed: () async {
                   try {
-                    debugPrint('🟢 Google Sign-In button clicked');
-                    await googleProvider.signInWithGoogle();
+                    await context.read<AppAuthProvider>().signInWithGoogle();
                   } catch (e) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Google Sign-In failed: $e')),
+                      SnackBar(content: Text('Ошибка Google: $e')),
                     );
                   }
                 },
               ),
+              
               const SizedBox(height: 16),
-              _LoginButton(
-                label: 'Continue as Guest',
-                icon: Icons.person_outline,
-                backgroundColor: Colors.orange,
-                onPressed: () {
-                  Navigator.of(context).pushReplacement(
-                    MaterialPageRoute(
-                      builder: (_) => const NavigationWrapper(isGuest: true),
-                    ),
-                  );
-                },
+              
+              // Кнопка Гость
+              TextButton(
+                onPressed: () => Navigator.of(context).pushReplacement(
+                  MaterialPageRoute(builder: (_) => const NavigationWrapper(isGuest: true)),
+                ),
+                child: Text(
+                  'Продолжить как гость',
+                  style: TextStyle(color: Colors.orange.shade800, fontWeight: FontWeight.bold),
+                ),
               ),
             ],
           ),
@@ -68,34 +94,28 @@ class StartPage extends StatelessWidget {
       ),
     );
   }
-}
 
-class _LoginButton extends StatelessWidget {
-  final String label;
-  final IconData icon;
-  final VoidCallback onPressed;
-  final Color backgroundColor;
-
-  const _LoginButton({
-    required this.label,
-    required this.icon,
-    required this.onPressed,
-    this.backgroundColor = Colors.cyan,
-  });
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _buildButton(BuildContext context, {
+    required String label,
+    required IconData icon,
+    required Color color,
+    required VoidCallback onPressed,
+    Color textColor = Colors.white,
+    bool hasBorder = false,
+  }) {
     return SizedBox(
       width: double.infinity,
+      height: 55,
       child: ElevatedButton.icon(
-        icon: Icon(icon, size: 24),
-        label: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 12.0),
-          child: Text(label, style: const TextStyle(fontSize: 16)),
-        ),
+        icon: Icon(icon, color: textColor),
+        label: Text(label, style: TextStyle(color: textColor, fontWeight: FontWeight.bold, fontSize: 16)),
         style: ElevatedButton.styleFrom(
-          backgroundColor: backgroundColor,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          backgroundColor: color,
+          elevation: 0,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),
+            side: hasBorder ? const BorderSide(color: Colors.black12) : BorderSide.none,
+          ),
         ),
         onPressed: onPressed,
       ),

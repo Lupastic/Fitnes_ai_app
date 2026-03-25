@@ -29,6 +29,9 @@ dependencies:
   internet_connection_checker: ^1.0.0  # надёжнее определяет “есть ли реальный интернет”
   hive: ^2.2.3
   hive_flutter: ^1.1.0
+  pedometer: ^4.0.1
+  permission_handler: ^11.3.1
+  crypto: ^3.0.3
 
 
 flutter:

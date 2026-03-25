@@ -41,29 +41,95 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   Future<void> _updateAccount() async {
-    setState(() => _isLoading = true);
     final user = FirebaseAuth.instance.currentUser;
+    if (user == null) return;
+
+    setState(() => _isLoading = true);
     final settings = context.read<SettingsProvider>();
     final userDataService = context.read<UserDataService>();
 
     try {
-      if (_nameController.text != settings.name) await settings.updateName(_nameController.text);
+      // 1. Обновляем имя
+      if (_nameController.text != settings.name) {
+        await settings.updateName(_nameController.text);
+      }
+
+      // 2. Обновляем ПИН-код
       if (_pinController.text.isNotEmpty) {
         final newPin = _pinController.text.trim();
         final prefs = await SharedPreferences.getInstance();
         await prefs.setString('pin_code', newPin);
         await userDataService.updateProfileData(pinCode: newPin);
       }
-      if (user != null) {
-        if (_emailController.text != user.email) await user.updateEmail(_emailController.text);
-        if (_passwordController.text.isNotEmpty) await user.updatePassword(_passwordController.text);
+
+      // 3. Обновляем Email или Пароль (требует недавнего входа)
+      bool sensitiveDataChanged = (_emailController.text != user.email) || (_passwordController.text.isNotEmpty);
+
+      if (sensitiveDataChanged) {
+        try {
+          if (_emailController.text != user.email) {
+            await user.updateEmail(_emailController.text);
+          }
+          if (_passwordController.text.isNotEmpty) {
+            await user.updatePassword(_passwordController.text);
+          }
+        } on FirebaseAuthException catch (e) {
+          if (e.code == 'requires-recent-login') {
+            _showReauthDialog();
+            return;
+          }
+          rethrow;
+        }
       }
-      if (mounted) ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Account & PIN updated")));
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Account updated successfully")),
+        );
+      }
     } catch (e) {
-      if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Error: $e"), backgroundColor: Colors.red));
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Error: $e"), backgroundColor: Colors.red),
+        );
+      }
     } finally {
       if (mounted) setState(() => _isLoading = false);
     }
+  }
+
+  void _showReauthDialog() {
+    final TextEditingController passwordCheck = TextEditingController();
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text("Recent Login Required"),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Text("To change email or password, please enter your CURRENT password first:"),
+            TextField(controller: passwordCheck, obscureText: true, decoration: const InputDecoration(labelText: "Current Password")),
+          ],
+        ),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(context), child: const Text("Cancel")),
+          ElevatedButton(
+            onPressed: () async {
+              final user = FirebaseAuth.instance.currentUser;
+              final cred = EmailAuthProvider.credential(email: user!.email!, password: passwordCheck.text);
+              try {
+                await user.reauthenticateWithCredential(cred);
+                Navigator.pop(context);
+                _updateAccount(); // Пробуем обновить еще раз после подтверждения
+              } catch (e) {
+                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Wrong password"), backgroundColor: Colors.red));
+              }
+            },
+            child: const Text("Confirm"),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -80,7 +146,6 @@ class _SettingsPageState extends State<SettingsPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // ИСТОРИЯ (НОВОЕ МЕСТО)
                 Card(
                   color: Colors.tealAccent.withOpacity(0.1),
                   child: ListTile(
@@ -102,10 +167,14 @@ class _SettingsPageState extends State<SettingsPage> {
                       children: [
                         TextField(controller: _nameController, decoration: const InputDecoration(labelText: "Display Name", prefixIcon: Icon(Icons.person))),
                         TextField(controller: _emailController, decoration: const InputDecoration(labelText: "Email", prefixIcon: Icon(Icons.email))),
-                        TextField(controller: _passwordController, decoration: const InputDecoration(labelText: "New Password", prefixIcon: Icon(Icons.lock)), obscureText: true),
+                        TextField(controller: _passwordController, decoration: const InputDecoration(labelText: "New Password (optional)", prefixIcon: Icon(Icons.lock)), obscureText: true),
                         TextField(controller: _pinController, decoration: const InputDecoration(labelText: "New PIN Code", prefixIcon: Icon(Icons.pin_outlined)), keyboardType: TextInputType.number, obscureText: true),
                         const SizedBox(height: 16),
-                        ElevatedButton(onPressed: _updateAccount, child: const Text("Update Account")),
+                        ElevatedButton(
+                          onPressed: _updateAccount, 
+                          style: ElevatedButton.styleFrom(backgroundColor: Colors.tealAccent.shade700, foregroundColor: Colors.white),
+                          child: const Text("Update Account"),
+                        ),
                       ],
                     ),
                   ),
