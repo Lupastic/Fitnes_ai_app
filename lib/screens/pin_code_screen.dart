@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert'; 
 import 'package:crypto/crypto.dart';
+import '../providers/auth_provider.dart';
 
 class PinCodeScreen extends StatefulWidget {
   const PinCodeScreen({super.key});
@@ -19,18 +21,14 @@ class _PinCodeScreenState extends State<PinCodeScreen> {
     final savedPin = (prefs.getString('pin_code') ?? '').trim();
     final enteredPin = _pinController.text.trim();
 
-    // Хешируем введенный ПИН для сравнения с тем, что в базе
     final bytes = utf8.encode(enteredPin);
     final hashedEnteredPin = sha256.convert(bytes).toString();
 
-    print('✅ Saved PIN (hash): "$savedPin"');
-    print('🧪 Entered PIN (plain): "$enteredPin"');
-    print('🧪 Entered PIN (hashed): "$hashedEnteredPin"');
-
-    // Проверяем совпадение либо с хешем, либо (на всякий случай) с обычным текстом
     if (hashedEnteredPin == savedPin || enteredPin == savedPin) {
       if (mounted) {
-        Navigator.pushReplacementNamed(context, '/home');
+        // Устанавливаем флаг верификации в провайдере
+        context.read<AppAuthProvider>().verifyPin();
+        // Навигация произойдет автоматически через AuthGate
       }
     } else {
       setState(() => _error = 'Incorrect PIN');

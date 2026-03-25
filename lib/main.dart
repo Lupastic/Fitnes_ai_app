@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
@@ -27,12 +28,16 @@ import 'screens/auth_page.dart';
 import 'screens/history_page.dart';
 import 'screens/navigation_wrapper.dart';
 import 'screens/pin_code_screen.dart';
+import 'screens/leaderboard_page.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   developer.log("🚀 Запуск приложения...", name: "Main");
   
   try {
+    // Load environment variables
+    await dotenv.load(fileName: ".env");
+
     developer.log("🔥 Инициализация Firebase...", name: "Main");
     await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
     FirebaseFirestore.instance.settings = const Settings(persistenceEnabled: true);
@@ -162,6 +167,7 @@ class MyApp extends StatelessWidget {
         '/auth_page': (context) => const AuthPage(),
         '/pin': (context) => const PinCodeScreen(),
         '/home': (context) => const NavigationWrapper(),
+        '/leaderboard': (context) => const LeaderboardPage(),
       },
       home: const AuthGate(),
     );

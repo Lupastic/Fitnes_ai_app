@@ -56,13 +56,15 @@ class _RegisterPageState extends State<RegisterPage> {
           pinCode: pin,
         );
 
-        // 5. Отправка письма для подтверждения
+        // 5. Отправка письма для подтверждения (опционально, но полезно)
         await currentUser.sendEmailVerification();
         
         if (mounted) {
-          // После регистрации AuthGate увидит, что email не подтвержден, 
-          // и покажет экран с просьбой подтвердить почту.
-          Navigator.of(context).popUntil((route) => route.isFirst);
+          // ПЕРЕНАПРАВЛЯЕМ НА ОНБОРДИНГ (Анкету)
+          Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(builder: (c) => const OnboardingPage()),
+            (route) => false,
+          );
         }
       }
     } on FirebaseAuthException catch (e) {

@@ -23,10 +23,34 @@ class _StatisticsPageState extends State<StatisticsPage> {
     final summary = context.watch<SummaryProvider>().today;
 
     final List<Map<String, dynamic>> stats = [
-      {'id': 'water', 'title': loc.water, 'value': '${summary.waterCups} cups', 'icon': Icons.local_drink_rounded, 'color': Colors.lightBlueAccent},
-      {'id': 'sleep', 'title': loc.sleep, 'value': '${summary.sleepHours.toStringAsFixed(1)} h', 'icon': Icons.nightlight_round, 'color': Colors.purpleAccent},
-      {'id': 'calories', 'title': loc.calories, 'value': '${summary.calories} kcal', 'icon': Icons.bolt_rounded, 'color': Colors.orangeAccent},
-      {'id': 'steps', 'title': loc.stepsUnit ?? 'Steps', 'value': '${summary.steps}', 'icon': Icons.directions_walk_rounded, 'color': Colors.greenAccent},
+      {
+        'id': 'water', 
+        'title': loc.water, 
+        'value': '${summary.waterCups} ${loc.cups}', 
+        'icon': Icons.local_drink_rounded, 
+        'color': Colors.lightBlueAccent
+      },
+      {
+        'id': 'sleep', 
+        'title': loc.sleep, 
+        'value': '${summary.sleepHours.toStringAsFixed(1)} ${loc.hours}', 
+        'icon': Icons.nightlight_round, 
+        'color': Colors.purpleAccent
+      },
+      {
+        'id': 'calories', 
+        'title': loc.calories, 
+        'value': '${summary.calories} kcal', 
+        'icon': Icons.bolt_rounded, 
+        'color': Colors.orangeAccent
+      },
+      {
+        'id': 'steps', 
+        'title': loc.steps, 
+        'value': '${summary.steps}', 
+        'icon': Icons.directions_walk_rounded, 
+        'color': Colors.greenAccent
+      },
     ];
 
     final filteredStats = stats.where((s) => s['title'].toString().toLowerCase().contains(query.toLowerCase())).toList();
@@ -41,6 +65,14 @@ class _StatisticsPageState extends State<StatisticsPage> {
             pinned: true,
             backgroundColor: theme.scaffoldBackgroundColor,
             elevation: 0,
+            actions: [
+              IconButton(
+                icon: const Icon(Icons.leaderboard_rounded, color: Colors.tealAccent),
+                onPressed: () => Navigator.pushNamed(context, '/leaderboard'),
+                tooltip: 'Leaderboard',
+              ),
+              const SizedBox(width: 8),
+            ],
             flexibleSpace: FlexibleSpaceBar(
               titlePadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
               title: Text(
@@ -76,7 +108,7 @@ class _StatisticsPageState extends State<StatisticsPage> {
                         child: Icon(s['icon'], color: color, size: 26),
                       ),
                       title: Text(s['title'], style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 17)),
-                      subtitle: Text("Weekly analytics", style: TextStyle(color: theme.textTheme.bodyMedium?.color)),
+                      subtitle: Text(loc.lastWeekData, style: TextStyle(color: theme.textTheme.bodyMedium?.color)),
                       trailing: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.end,
@@ -100,7 +132,7 @@ class _StatisticsPageState extends State<StatisticsPage> {
                     ),
                   );
                 },
-                childCount: filteredStats.length, // ИСПРАВЛЕНО
+                childCount: filteredStats.length,
               ),
             ),
           ),
