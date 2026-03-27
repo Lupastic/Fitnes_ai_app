@@ -23,7 +23,18 @@ class SummaryProvider with ChangeNotifier {
         );
   }
 
-  DailySummary get today => _today;
+  DailySummary get today {
+    // Проверка на смену дня: если дата в _today не совпадает с текущей, загружаем новый день
+    final now = DateTime.now();
+    if (_today.date.year != now.year || 
+        _today.date.month != now.month || 
+        _today.date.day != now.day) {
+      _loadToday();
+      // Уведомляем слушателей о сбросе данных в интерфейсе
+      Future.microtask(() => notifyListeners());
+    }
+    return _today;
+  }
 
   void reset() {
     _loadToday();
@@ -53,14 +64,17 @@ class SummaryProvider with ChangeNotifier {
     double? running,
     bool add = false,
   }) async {
+    // Используем геттер today для актуализации даты перед обновлением
+    final currentToday = today;
+
     _today = DailySummary(
-      date: _today.date,
-      waterCups: add ? (_today.waterCups + (water ?? 0)) : (water ?? _today.waterCups),
-      sleepHours: add ? (_today.sleepHours + (sleep ?? 0.0)) : (sleep ?? _today.sleepHours),
-      calories: add ? (_today.calories + (cal ?? 0)) : (cal ?? _today.calories),
-      steps: add ? (_today.steps + (steps ?? 0)) : (steps ?? _today.steps),
-      yogaSessions: add ? (_today.yogaSessions + (yoga ?? 0)) : (yoga ?? _today.yogaSessions),
-      runningKm: add ? (_today.runningKm + (running ?? 0.0)) : (running ?? _today.runningKm),
+      date: currentToday.date,
+      waterCups: add ? (currentToday.waterCups + (water ?? 0)) : (water ?? currentToday.waterCups),
+      sleepHours: add ? (currentToday.sleepHours + (sleep ?? 0.0)) : (sleep ?? currentToday.sleepHours),
+      calories: add ? (currentToday.calories + (cal ?? 0)) : (cal ?? currentToday.calories),
+      steps: add ? (currentToday.steps + (steps ?? 0)) : (steps ?? currentToday.steps),
+      yogaSessions: add ? (currentToday.yogaSessions + (yoga ?? 0)) : (yoga ?? currentToday.yogaSessions),
+      runningKm: add ? (currentToday.runningKm + (running ?? 0.0)) : (running ?? currentToday.runningKm),
       synced: false,
     );
     
