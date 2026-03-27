@@ -40,6 +40,7 @@ class UserDataService {
     List<String>? selectedChallenges,
     List<String>? completedQuests,
     int? points,
+    String? lastQuestResetDate, // Добавлено поле
   }) async {
     final userDocRef = getUserDocRef();
     if (userDocRef == null) return;
@@ -47,7 +48,6 @@ class UserDataService {
     final Map<String, dynamic> dataToUpdate = {};
     if (name != null) dataToUpdate['name'] = name;
     if (goals != null) dataToUpdate['goals'] = goals;
-    // Используем 'languageCode' для консистентности с провайдером
     if (languageCode != null) dataToUpdate['languageCode'] = languageCode;
     if (weight != null) dataToUpdate['weight'] = weight;
     if (weightUnit != null) dataToUpdate['weightUnit'] = weightUnit;
@@ -55,18 +55,15 @@ class UserDataService {
     if (heightUnit != null) dataToUpdate['heightUnit'] = heightUnit;
     if (age != null) dataToUpdate['age'] = age;
     if (goalType != null) dataToUpdate['goalType'] = goalType;
-    
-    if (pinCode != null) {
-      dataToUpdate['pinCode'] = _hashPin(pinCode);
-    }
-    
+    if (pinCode != null) dataToUpdate['pinCode'] = _hashPin(pinCode);
     if (selectedChallenges != null) dataToUpdate['selectedChallenges'] = selectedChallenges;
     if (completedQuests != null) dataToUpdate['completedQuests'] = completedQuests;
     if (points != null) dataToUpdate['points'] = points;
+    if (lastQuestResetDate != null) dataToUpdate['lastQuestResetDate'] = lastQuestResetDate; // Добавлено поле
 
     try {
       await userDocRef.set(dataToUpdate, SetOptions(merge: true));
-      developer.log("Profile updated successfully with languageCode: $languageCode", name: "UserDataService");
+      developer.log("Profile updated successfully", name: "UserDataService");
     } catch (e, stackTrace) {
       developer.log("Error updating profile", error: e, stackTrace: stackTrace, name: "UserDataService");
     }

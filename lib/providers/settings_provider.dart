@@ -33,7 +33,20 @@ class SettingsProvider extends ChangeNotifier {
     _name = repo.name;
     _goals = Map.from(repo.goals.isNotEmpty ? repo.goals : {'water': 8, 'steps': 10000, 'sleep': 8, 'calories': 2000});
     _selectedChallengeIds = repo.prefs.getStringList('selectedChallenges') ?? ['water', 'steps', 'sleep', 'calories'];
-    _completedQuests = repo.prefs.getStringList('completedQuests') ?? [];
+    
+    // --- Логика ежедневного сброса квестов (локально) ---
+    final String todayStr = DateTime.now().toIso8601String().split('T')[0];
+    final String lastResetDate = repo.prefs.getString('lastQuestResetDate') ?? '';
+    
+    if (lastResetDate != todayStr) {
+      _completedQuests = [];
+      repo.prefs.setStringList('completedQuests', []);
+      repo.prefs.setString('lastQuestResetDate', todayStr);
+      debugPrint("📅 New day detected locally. Quests reset for $todayStr");
+    } else {
+      _completedQuests = repo.prefs.getStringList('completedQuests') ?? [];
+    }
+    
     _points = repo.prefs.getInt('points') ?? 0;
     _locale = Locale(repo.prefs.getString('languageCode') ?? 'en');
     
@@ -64,15 +77,10 @@ class SettingsProvider extends ChangeNotifier {
 
   bool get isProfileComplete => _goalType != null && _goalType!.isNotEmpty;
 
-  // Метод для смены языка с сохранением в Firebase
   Future<void> setLocale(String languageCode) async {
     _locale = Locale(languageCode);
     notifyListeners();
-    
-    // Сохраняем локально
     await repo.prefs.setString('languageCode', languageCode);
-    
-    // Сохраняем в облако
     try {
       await _userDataService.updateProfileData(languageCode: languageCode);
     } catch (e) {
@@ -103,12 +111,18 @@ class SettingsProvider extends ChangeNotifier {
       _completedQuests.add(id);
       _points += pointsToAdd;
       notifyListeners();
+      
+      final String todayStr = DateTime.now().toIso8601String().split('T')[0];
+      
       await repo.prefs.setStringList('completedQuests', _completedQuests);
       await repo.prefs.setInt('points', _points);
+      await repo.prefs.setString('lastQuestResetDate', todayStr);
+
       try {
         await _userDataService.updateProfileData(
           completedQuests: _completedQuests,
           points: _points,
+          lastQuestResetDate: todayStr, // Отправляем дату в облако
         );
       } catch (e) {
         print("❌ Error syncing quest $id: $e");
@@ -127,10 +141,10 @@ class SettingsProvider extends ChangeNotifier {
       final doc = await _userDataService.getUserDocRef()?.get();
       if (doc != null && doc.exists) {
         final data = doc.data() as Map<String, dynamic>;
+        final String todayStr = DateTime.now().toIso8601String().split('T')[0];
         
         _name = data['name'] ?? _name;
         
-        // Загружаем язык из Firebase
         if (data['languageCode'] != null) {
           final lang = data['languageCode'] as String;
           _locale = Locale(lang);
@@ -149,9 +163,21 @@ class SettingsProvider extends ChangeNotifier {
           await repo.prefs.setStringList('selectedChallenges', _selectedChallengeIds);
         }
 
-        if (data['completedQuests'] != null) {
-          _completedQuests = List<String>.from(data['completedQuests']);
+        // --- Исправленная логика загрузки квестов из облака ---
+        final String remoteResetDate = data['lastQuestResetDate'] ?? '';
+        
+        if (remoteResetDate == todayStr) {
+          // Если в облаке сегодняшняя дата — берем квесты
+          _completedQuests = List<String>.from(data['completedQuests'] ?? []);
           await repo.prefs.setStringList('completedQuests', _completedQuests);
+          await repo.prefs.setString('lastQuestResetDate', todayStr);
+        } else {
+          // Если в облаке старая дата (среда и т.д.) — НЕ загружаем их, оставляем пустыми
+          _completedQuests = [];
+          await repo.prefs.setStringList('completedQuests', []);
+          await repo.prefs.setString('lastQuestResetDate', todayStr);
+          // Можно также обновить облако, чтобы там тоже сбросилось
+          await _userDataService.updateProfileData(completedQuests: [], lastQuestResetDate: todayStr);
         }
         
         if (data['points'] != null) {

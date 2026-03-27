@@ -26,10 +26,11 @@ class StartPage extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              const Icon(Icons.health_and_safety, size: 80, color: Colors.teal),
+              // Обновили иконку на фитнес-тематику
+              const Icon(Icons.fitness_center, size: 80, color: Colors.teal),
               const SizedBox(height: 24),
               Text(
-                'Health App',
+                'Fitness App', // Изменено название
                 style: TextStyle(
                   color: textColor,
                   fontSize: 32,
