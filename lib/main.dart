@@ -19,6 +19,7 @@ import 'providers/settings_provider.dart';
 import 'providers/connectivity_provider.dart';
 import 'providers/summary_provider.dart';
 import 'providers/step_counter_provider.dart';
+import 'providers/notification_provider.dart';
 import 'services/settings_repository.dart';
 import 'services/local_repository.dart';
 import 'services/sync_service.dart';
@@ -75,6 +76,7 @@ Future<void> main() async {
           ChangeNotifierProvider(create: (context) => SummaryProvider(context.read<LocalRepository>())),
           ChangeNotifierProvider(create: (context) => StepCounterProvider(context.read<SummaryProvider>())),
           ChangeNotifierProvider(create: (context) => ConnectivityProvider(context.read<SyncService>())),
+          ChangeNotifierProvider(create: (_) => NotificationProvider()),
         ],
         child: const MyApp(),
       ),
