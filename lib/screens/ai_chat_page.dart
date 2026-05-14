@@ -5,7 +5,7 @@ import '../providers/summary_provider.dart';
 import '../providers/settings_provider.dart';
 import '../providers/connectivity_provider.dart';
 import '../services/local_repository.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:finallapp/generated/l10n/app_localizations.dart';
 
 class AiChatPage extends StatefulWidget {
   const AiChatPage({super.key});
