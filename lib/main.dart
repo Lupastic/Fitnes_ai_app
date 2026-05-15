@@ -1,3 +1,4 @@
+import 'services/background_step_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -58,6 +59,7 @@ Future<void> main() async {
     final settingsRepo = SettingsRepository(prefs);
 
     developer.log("🏁 Запуск runApp", name: "Main");
+    await initializeService();
     runApp(
       MultiProvider(
         providers: [
