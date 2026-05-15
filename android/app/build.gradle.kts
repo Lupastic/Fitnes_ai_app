@@ -21,7 +21,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.finallapp"
-        minSdk = 23 // Рекомендую 23 для поддержки современных API здоровья
+        minSdk = flutter.minSdkVersion // Рекомендую 23 для поддержки современных API здоровья
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName

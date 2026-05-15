@@ -94,6 +94,8 @@ class _HomePageState extends State<HomePage> {
     final isDark = theme.brightness == Brightness.dark;
     final settings = context.watch<SettingsProvider>();
     final summaryProv = context.watch<SummaryProvider>();
+    // Подключаем StepCounterProvider, чтобы он инициализировался и работал
+    final stepCounter = context.watch<StepCounterProvider>();
     final summary = summaryProv.today;
 
     final selectedChallenges = _allTypes.where((c) => settings.selectedChallengeIds.contains(c.id)).toList();

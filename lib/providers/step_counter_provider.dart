@@ -35,7 +35,8 @@ class StepCounterProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void _startListening() {
+  Future<void> _startListening() async {
+    print("🚶 StepCounter: Начинаем прослушивание стрима...");
     _subscription = Pedometer.stepCountStream.listen(
       _onStepCount,
       onError: _onStepCountError,
@@ -43,6 +44,7 @@ class StepCounterProvider with ChangeNotifier {
   }
 
   void _onStepCount(StepCount event) async {
+    print("🚶 StepCounter: Получены данные от датчика: ${event.steps} шагов");
     final prefs = await SharedPreferences.getInstance();
     final now = DateTime.now();
     final todayStr = "${now.year}-${now.month}-${now.day}";
@@ -70,6 +72,7 @@ class StepCounterProvider with ChangeNotifier {
   }
 
   void _onStepCountError(error) {
+    print("❌ StepCounter Error: $error");
     _status = 'Step Count not available';
     notifyListeners();
   }
