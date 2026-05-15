@@ -1,7 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
-    <!-- Разрешения для шагомера -->
     <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION"/>
-
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
     <application
         android:label="finallapp"
         android:name="${applicationName}"
@@ -11,7 +10,10 @@
         <meta-data
             android:name="io.flutter.embedding.android.EnableImpeller"
             android:value="false" />
-
+        <service
+            android:name="id.flutter.flutter_background_service.BackgroundService"
+            android:foregroundServiceType="health"
+            android:exported="false"/>
         <activity
             android:name=".MainActivity"
             android:exported="true"

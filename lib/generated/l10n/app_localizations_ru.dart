@@ -114,8 +114,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get nameUpdated => 'Имя успешно обновлено!';
 
   @override
-  String get confirmResetSettings =>
-      'Вы уверены, что хотите сбросить все настройки до значений по умолчанию?';
+  String get confirmResetSettings => 'Вы уверены, что хотите сбросить все настройки до значений по умолчанию?';
 
   @override
   String get reset => 'Сбросить';
@@ -286,12 +285,10 @@ class AppLocalizationsRu extends AppLocalizations {
   String get confirmReset => 'Подтвердите сброс';
 
   @override
-  String get resetSettingsWarning =>
-      'Вы уверены, что хотите сбросить все настройки к значениям по умолчанию? Это действие нельзя отменить.';
+  String get resetSettingsWarning => 'Вы уверены, что хотите сбросить все настройки к значениям по умолчанию? Это действие нельзя отменить.';
 
   @override
-  String get allSettingsReset =>
-      'Все настройки сброшены к значениям по умолчанию!';
+  String get allSettingsReset => 'Все настройки сброшены к значениям по умолчанию!';
 
   @override
   String get yourProgress => 'Твой прогресс';
