@@ -20,20 +20,18 @@ class StepCounterProvider with ChangeNotifier {
   String get status => _status;
 
   Future<void> initPedometer() async {
-    // Automatic step counting disabled as per user request for manual input
-    /*
     if (_isInitialized) return;
-    
-    // 1. Запрос разрешений
-    if (await Permission.activityRecognition.request().isGranted) {
+
+    final status = await Permission.activityRecognition.request();
+
+    if (status.isGranted) {
       _startListening();
+      _status = 'Initialized';
     } else {
       _status = 'Permission Denied';
-      notifyListeners();
     }
+
     _isInitialized = true;
-    */
-    _status = 'Manual Mode';
     notifyListeners();
   }
 
