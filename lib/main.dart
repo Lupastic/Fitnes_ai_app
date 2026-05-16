@@ -37,7 +37,20 @@ Future<void> main() async {
   
   try {
     // Load environment variables
-    await dotenv.load(fileName: ".env");
+    try {
+      await dotenv.load(fileName: ".env");
+      // Проверяем именно тот ключ, который нужен сервису
+      final apiKey = dotenv.env['GEMINI_API_KEY'];
+      developer.log('=== .env Load Check ===', name: "Main");
+      if (apiKey != null && apiKey.isNotEmpty) {
+        developer.log('✅ GEMINI_API_KEY найден', name: "Main");
+        developer.log('API Key preview: ${apiKey.substring(0, 8)}...', name: "Main");
+      } else {
+        developer.log('❌ ОШИБКА: GEMINI_API_KEY не найден в .env!', name: "Main");
+      }
+    } catch (e) {
+      developer.log('❌ Error loading .env: $e', name: "Main");
+    }
 
     developer.log("🔥 Инициализация Firebase...", name: "Main");
     await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);

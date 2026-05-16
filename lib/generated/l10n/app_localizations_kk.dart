@@ -114,7 +114,8 @@ class AppLocalizationsKk extends AppLocalizations {
   String get nameUpdated => 'Аты сәтті жаңартылды!';
 
   @override
-  String get confirmResetSettings => 'Барлық параметрлерді әдепкі мәндеріне қалпына келтіргіңіз келетініне сенімдісіз бе?';
+  String get confirmResetSettings =>
+      'Барлық параметрлерді әдепкі мәндеріне қалпына келтіргіңіз келетініне сенімдісіз бе?';
 
   @override
   String get reset => 'Қалпына келтіру';
@@ -174,7 +175,8 @@ class AppLocalizationsKk extends AppLocalizations {
   String get noInternet => 'Интернет жоқ';
 
   @override
-  String get offlineSyncNotice => 'Сіз оффлайндасыз. Деректер кейінірек синхрондалады.';
+  String get offlineSyncNotice =>
+      'Сіз оффлайндасыз. Деректер кейінірек синхрондалады.';
 
   @override
   String get challengeStreakText => '7 күн қатарынан жүріңіз — медаль алыңыз!';
@@ -285,16 +287,19 @@ class AppLocalizationsKk extends AppLocalizations {
   String get confirmReset => 'Қалпына келтіруді растау';
 
   @override
-  String get resetSettingsWarning => 'Барлық параметрлерді әдепкіге қалпына келтіргіңіз келетініне сенімдісіз бе? Бұл әрекетті болдырмау мүмкін емес.';
+  String get resetSettingsWarning =>
+      'Барлық параметрлерді әдепкіге қалпына келтіргіңіз келетініне сенімдісіз бе? Бұл әрекетті болдырмау мүмкін емес.';
 
   @override
-  String get allSettingsReset => 'Барлық параметрлер әдепкіге қалпына келтірілді!';
+  String get allSettingsReset =>
+      'Барлық параметрлер әдепкіге қалпына келтірілді!';
 
   @override
   String get yourProgress => 'Сіздің үлгеріміңіз';
 
   @override
-  String get motivationQuote => 'Өзіңізге сеніңіз, сонда сіз мақсатқа жартылай жеттіңіз.';
+  String get motivationQuote =>
+      'Өзіңізге сеніңіз, сонда сіз мақсатқа жартылай жеттіңіз.';
 
   @override
   String get aiChat => 'AI Чат';
