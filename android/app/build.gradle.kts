@@ -8,11 +8,12 @@ plugins {
 android {
     namespace = "com.example.finallapp"
     compileSdk = flutter.compileSdkVersion
-    ndkVersion = "27.0.12077973"
+    ndkVersion = "28.2.13676358"
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
+        isCoreLibraryDesugaringEnabled = true
     }
 
     kotlinOptions {
@@ -21,7 +22,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.finallapp"
-        minSdk = 23 // Рекомендую 23 для поддержки современных API здоровья
+        minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
@@ -30,11 +31,15 @@ android {
     buildTypes {
         release {
             signingConfig = signingConfigs.getByName("debug")
-            isMinifyEnabled = true // Включаем оптимизацию кода для релиза
+            isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
     }
+}
+
+dependencies {
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.4")
 }
 
 flutter {

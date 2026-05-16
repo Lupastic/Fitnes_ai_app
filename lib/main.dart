@@ -19,6 +19,7 @@ import 'providers/settings_provider.dart';
 import 'providers/connectivity_provider.dart';
 import 'providers/summary_provider.dart';
 import 'providers/step_counter_provider.dart';
+import 'providers/notification_provider.dart';
 import 'services/settings_repository.dart';
 import 'services/local_repository.dart';
 import 'services/sync_service.dart';
@@ -33,9 +34,8 @@ import 'screens/leaderboard_page.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   developer.log("🚀 Запуск приложения...", name: "Main");
-  
+
   try {
-    // Load environment variables
     await dotenv.load(fileName: ".env");
 
     developer.log("🔥 Инициализация Firebase...", name: "Main");
@@ -73,8 +73,11 @@ Future<void> main() async {
             context.read<UserDataService>(),
           )),
           ChangeNotifierProvider(create: (context) => SummaryProvider(context.read<LocalRepository>())),
-          ChangeNotifierProvider(create: (context) => StepCounterProvider(context.read<SummaryProvider>())),
+          ChangeNotifierProvider(
+            create: (context) => StepCounterProvider(context.read<SummaryProvider>())..initPedometer(),
+          ),
           ChangeNotifierProvider(create: (context) => ConnectivityProvider(context.read<SyncService>())),
+          ChangeNotifierProvider(create: (_) => NotificationProvider()),
         ],
         child: const MyApp(),
       ),
@@ -113,7 +116,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Health App',
       themeMode: themeProvider.themeMode,
-      
+
       theme: ThemeData(
         brightness: Brightness.light,
         scaffoldBackgroundColor: const Color(0xFFF7F8FA),

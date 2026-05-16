@@ -8,6 +8,7 @@ import '../providers/settings_provider.dart';
 import '../providers/locale_provider.dart';
 import '../providers/theme_provider.dart';
 import '../services/user_data_service.dart';
+import '../widgets/notification_settings_card.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -124,7 +125,7 @@ class _SettingsPageState extends State<SettingsPage> {
   void _showLanguageDialog() {
     final localeProvider = context.read<LocaleProvider>();
     final settingsProvider = context.read<SettingsProvider>();
-    
+
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -146,9 +147,7 @@ class _SettingsPageState extends State<SettingsPage> {
       title: Text(label),
       trailing: localeProvider.locale == locale ? const Icon(Icons.check, color: Colors.tealAccent) : null,
       onTap: () async {
-        // Обновляем язык в интерфейсе
         await localeProvider.setLocale(locale);
-        // Сохраняем язык в Firebase через SettingsProvider
         await settingsProvider.setLocale(locale.languageCode);
         if (mounted) Navigator.pop(context);
       },
@@ -167,76 +166,81 @@ class _SettingsPageState extends State<SettingsPage> {
 
     return Scaffold(
       appBar: AppBar(title: Text(loc.settings)),
-      body: _isLoading 
-        ? const Center(child: CircularProgressIndicator())
-        : SingleChildScrollView(
-            padding: const EdgeInsets.all(20),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Card(
-                  color: Colors.tealAccent.withOpacity(0.1),
-                  child: ListTile(
-                    leading: const Icon(Icons.history, color: Colors.tealAccent),
-                    title: Text(loc.history, style: const TextStyle(fontWeight: FontWeight.bold)),
-                    subtitle: const Text("Check your past activity logs"),
-                    trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-                    onTap: () => Navigator.pushNamed(context, '/history'),
-                  ),
-                ),
-                const SizedBox(height: 24),
+      body: _isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : SingleChildScrollView(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Card(
+              color: Colors.tealAccent.withOpacity(0.1),
+              child: ListTile(
+                leading: const Icon(Icons.history, color: Colors.tealAccent),
+                title: Text(loc.history, style: const TextStyle(fontWeight: FontWeight.bold)),
+                subtitle: const Text("Check your past activity logs"),
+                trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+                onTap: () => Navigator.pushNamed(context, '/history'),
+              ),
+            ),
+            const SizedBox(height: 24),
 
-                Text("Account Settings", style: Theme.of(context).textTheme.titleLarge),
-                const SizedBox(height: 12),
-                Card(
-                  child: Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Column(
-                      children: [
-                        TextField(controller: _nameController, decoration: const InputDecoration(labelText: "Display Name", prefixIcon: Icon(Icons.person))),
-                        TextField(controller: _emailController, decoration: const InputDecoration(labelText: "Email", prefixIcon: Icon(Icons.email))),
-                        TextField(controller: _passwordController, decoration: const InputDecoration(labelText: "New Password (optional)", prefixIcon: Icon(Icons.lock)), obscureText: true),
-                        TextField(controller: _pinController, decoration: const InputDecoration(labelText: "New PIN Code", prefixIcon: Icon(Icons.pin_outlined)), keyboardType: TextInputType.number, obscureText: true),
-                        const SizedBox(height: 16),
-                        ElevatedButton(
-                          onPressed: _updateAccount, 
-                          style: ElevatedButton.styleFrom(backgroundColor: Colors.tealAccent.shade700, foregroundColor: Colors.white),
-                          child: const Text("Update Account"),
-                        ),
-                      ],
+            Text("Account Settings", style: Theme.of(context).textTheme.titleLarge),
+            const SizedBox(height: 12),
+            Card(
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  children: [
+                    TextField(controller: _nameController, decoration: const InputDecoration(labelText: "Display Name", prefixIcon: Icon(Icons.person))),
+                    TextField(controller: _emailController, decoration: const InputDecoration(labelText: "Email", prefixIcon: Icon(Icons.email))),
+                    TextField(controller: _passwordController, decoration: const InputDecoration(labelText: "New Password (optional)", prefixIcon: Icon(Icons.lock)), obscureText: true),
+                    TextField(controller: _pinController, decoration: const InputDecoration(labelText: "New PIN Code", prefixIcon: Icon(Icons.pin_outlined)), keyboardType: TextInputType.number, obscureText: true),
+                    const SizedBox(height: 16),
+                    ElevatedButton(
+                      onPressed: _updateAccount,
+                      style: ElevatedButton.styleFrom(backgroundColor: Colors.tealAccent.shade700, foregroundColor: Colors.white),
+                      child: const Text("Update Account"),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 24),
+
+            Text("Notifications", style: Theme.of(context).textTheme.titleLarge),
+            const SizedBox(height: 12),
+            const NotificationSettingsCard(),
+            const SizedBox(height: 24),
+
+            Text("Preferences", style: Theme.of(context).textTheme.titleLarge),
+            const SizedBox(height: 12),
+            Card(
+              child: Column(
+                children: [
+                  ListTile(
+                    leading: const Icon(Icons.brightness_6),
+                    title: Text(loc.theme),
+                    subtitle: Text(themeProvider.themeMode == ThemeMode.dark ? "Dark Mode" : "Light Mode"),
+                    trailing: Switch(
+                      value: themeProvider.themeMode == ThemeMode.dark,
+                      onChanged: (v) => themeProvider.toggleTheme(),
                     ),
                   ),
-                ),
-                const SizedBox(height: 24),
-
-                Text("Preferences", style: Theme.of(context).textTheme.titleLarge),
-                const SizedBox(height: 12),
-                Card(
-                  child: Column(
-                    children: [
-                      ListTile(
-                        leading: const Icon(Icons.brightness_6),
-                        title: Text(loc.theme),
-                        subtitle: Text(themeProvider.themeMode == ThemeMode.dark ? "Dark Mode" : "Light Mode"),
-                        trailing: Switch(
-                          value: themeProvider.themeMode == ThemeMode.dark,
-                          onChanged: (v) => themeProvider.toggleTheme(),
-                        ),
-                      ),
-                      const Divider(height: 1),
-                      ListTile(
-                        leading: const Icon(Icons.language),
-                        title: Text(loc.language),
-                        subtitle: Text(currentLangName),
-                        trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-                        onTap: _showLanguageDialog,
-                      ),
-                    ],
+                  const Divider(height: 1),
+                  ListTile(
+                    leading: const Icon(Icons.language),
+                    title: Text(loc.language),
+                    subtitle: Text(currentLangName),
+                    trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+                    onTap: _showLanguageDialog,
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
+          ],
+        ),
+      ),
     );
   }
 }
