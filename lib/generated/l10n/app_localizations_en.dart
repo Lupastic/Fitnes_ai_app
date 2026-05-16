@@ -114,7 +114,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get nameUpdated => 'Name updated successfully!';
 
   @override
-  String get confirmResetSettings => 'Are you sure you want to reset all settings to their defaults?';
+  String get confirmResetSettings =>
+      'Are you sure you want to reset all settings to their defaults?';
 
   @override
   String get reset => 'Reset';
@@ -285,7 +286,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get confirmReset => 'Confirm Reset';
 
   @override
-  String get resetSettingsWarning => 'Are you sure you want to reset all settings to default? This action cannot be undone.';
+  String get resetSettingsWarning =>
+      'Are you sure you want to reset all settings to default? This action cannot be undone.';
 
   @override
   String get allSettingsReset => 'All settings have been reset to default!';
