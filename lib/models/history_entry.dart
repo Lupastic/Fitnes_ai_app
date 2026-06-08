@@ -14,20 +14,19 @@ class HistoryEntry extends HiveObject {
 
   HistoryEntry({required this.title, required this.timestamp});
 
-  // Методы для преобразования в Map и обратно для Firestore
   Map<String, dynamic> toMap() {
     return {
       'title': title,
-      'timestamp': Timestamp.fromDate(timestamp), // Используем Timestamp для Firestore
+      'timestamp': Timestamp.fromDate(timestamp), 
     };
   }
 
   factory HistoryEntry.fromMap(Map<String, dynamic> map) {
     return HistoryEntry(
-      title: map['title'] as String? ?? 'No Title', // Добавил безопасное приведение
+      title: map['title'] as String? ?? 'No Title', 
       timestamp: (map['timestamp'] is Timestamp)
           ? (map['timestamp'] as Timestamp).toDate()
-          : DateTime.now(), // Fallback, если Timestamp некорректен
+          : DateTime.now(),
     );
   }
 }
