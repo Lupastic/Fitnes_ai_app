@@ -1,3 +1,4 @@
+import 'services/background_step_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -36,7 +37,21 @@ Future<void> main() async {
   developer.log("Запуск приложения...", name: "Main");
 
   try {
-    await dotenv.load(fileName: ".env");
+    // Load environment variables
+    try {
+      await dotenv.load(fileName: ".env");
+      // Проверяем именно тот ключ, который нужен сервису
+      final apiKey = dotenv.env['GEMINI_API_KEY'];
+      developer.log('=== .env Load Check ===', name: "Main");
+      if (apiKey != null && apiKey.isNotEmpty) {
+        developer.log('✅ GEMINI_API_KEY найден', name: "Main");
+        developer.log('API Key preview: ${apiKey.substring(0, 8)}...', name: "Main");
+      } else {
+        developer.log('❌ ОШИБКА: GEMINI_API_KEY не найден в .env!', name: "Main");
+      }
+    } catch (e) {
+      developer.log('❌ Error loading .env: $e', name: "Main");
+    }
 
     developer.log("Инициализация Firebase...", name: "Main");
     await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
@@ -57,7 +72,8 @@ Future<void> main() async {
     final prefs = await SharedPreferences.getInstance();
     final settingsRepo = SettingsRepository(prefs);
 
-    developer.log("Запуск runApp", name: "Main");
+    developer.log("🏁 Запуск runApp", name: "Main");
+    await initializeService();
     runApp(
       MultiProvider(
         providers: [
@@ -73,9 +89,8 @@ Future<void> main() async {
             context.read<UserDataService>(),
           )),
           ChangeNotifierProvider(create: (context) => SummaryProvider(context.read<LocalRepository>())),
-          ChangeNotifierProvider(
-            create: (context) => StepCounterProvider(context.read<SummaryProvider>())..initPedometer(),
-          ),
+  ChangeNotifierProvider(create: (context) => StepCounterProvider(context.read<SummaryProvider>(),)..initPedometer(),
+  ),
           ChangeNotifierProvider(create: (context) => ConnectivityProvider(context.read<SyncService>())),
           ChangeNotifierProvider(create: (_) => NotificationProvider()),
         ],
