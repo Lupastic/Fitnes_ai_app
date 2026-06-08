@@ -64,13 +64,14 @@ class _AiChatPageState extends State<AiChatPage> {
     final localRepo = context.read<LocalRepository>();
 
     final history = localRepo.getLastDays(7);
-    String historyText = history.map((s) => 
-      "Date: ${s.date.toIso8601String().split('T')[0]}, Steps: ${s.steps}, Water: ${s.waterCups}, Sleep: ${s.sleepHours}, Calories: ${s.calories}"
+    String historyText = history.map((s) =>
+    "Date: ${s.date.toIso8601String().split('T')[0]}, Steps: ${s.steps}, Water: ${s.waterCups}, Sleep: ${s.sleepHours}, Calories: ${s.calories}"
     ).join("\n");
 
     final goals = settings.goals;
     String goalsText = goals.entries.map((e) => "${e.key}: ${e.value}").join(", ");
-    
+
+    // Формируем расширенный контекст с данными онбординга
     final bodyContext = """
     User Profile:
     - Name: ${settings.name}
@@ -148,8 +149,8 @@ class _AiChatPageState extends State<AiChatPage> {
                     margin: const EdgeInsets.symmetric(vertical: 4),
                     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                     decoration: BoxDecoration(
-                      color: isUser 
-                          ? Colors.tealAccent.withOpacity(0.8) 
+                      color: isUser
+                          ? Colors.tealAccent.withOpacity(0.8)
                           : (isDark ? Colors.white10 : Colors.grey.shade200),
                       borderRadius: BorderRadius.only(
                         topLeft: const Radius.circular(20),
