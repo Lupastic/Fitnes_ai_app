@@ -80,11 +80,9 @@ class AppAuthProvider extends ChangeNotifier {
     }
   }
 
-  // МАКСИМАЛЬНО НАДЕЖНЫЙ ВЫХОД
   Future<void> signOut(BuildContext context) async {
     _setLoading(true);
     try {
-      // 1. Сначала выходим из Firebase и Google, чтобы гарантировать разлогин
       await _auth.signOut();
       final GoogleSignIn googleSignIn = GoogleSignIn();
       if (await googleSignIn.isSignedIn()) {
@@ -93,7 +91,6 @@ class AppAuthProvider extends ChangeNotifier {
       
       _isPinVerified = false;
 
-      // 2. Пытаемся очистить локальные данные, но не прерываемся при ошибках
       try {
         final localRepo = Provider.of<LocalRepository>(context, listen: false);
         await localRepo.clearAll();
@@ -108,7 +105,6 @@ class AppAuthProvider extends ChangeNotifier {
         debugPrint('Non-critical: Settings repo clear failed: $e');
       }
 
-      // 3. Сбрасываем состояния провайдеров
       try {
         Provider.of<SettingsProvider>(context, listen: false).reset();
         Provider.of<SummaryProvider>(context, listen: false).reset();

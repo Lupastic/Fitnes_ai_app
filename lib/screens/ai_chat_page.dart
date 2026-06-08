@@ -63,17 +63,14 @@ class _AiChatPageState extends State<AiChatPage> {
     final settings = context.read<SettingsProvider>();
     final localRepo = context.read<LocalRepository>();
 
-    // 1. Получаем историю за последние 7 дней
     final history = localRepo.getLastDays(7);
     String historyText = history.map((s) => 
       "Date: ${s.date.toIso8601String().split('T')[0]}, Steps: ${s.steps}, Water: ${s.waterCups}, Sleep: ${s.sleepHours}, Calories: ${s.calories}"
     ).join("\n");
 
-    // 2. Получаем цели и метрики тела пользователя
     final goals = settings.goals;
     String goalsText = goals.entries.map((e) => "${e.key}: ${e.value}").join(", ");
     
-    // Формируем расширенный контекст с данными онбординга
     final bodyContext = """
     User Profile:
     - Name: ${settings.name}
@@ -84,7 +81,6 @@ class _AiChatPageState extends State<AiChatPage> {
     - Daily Targets: $goalsText
     """;
 
-    // 3. Формируем итоговый промпт
     final contextPrompt = """
     $bodyContext
     

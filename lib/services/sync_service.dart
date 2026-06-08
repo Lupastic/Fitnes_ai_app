@@ -30,7 +30,7 @@ class SyncService {
             .set(d.toMap(), SetOptions(merge: true));
 
         d.synced = true;
-        await _repo.save(d); // Сохраняем обновленный статус локально
+        await _repo.save(d);
         print("SyncService: Synced data for $docId");
       } catch (e) {
         print("SyncService: Error syncing ${d.date}: $e");

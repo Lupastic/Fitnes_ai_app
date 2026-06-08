@@ -19,7 +19,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  // We keep the IDs but will translate titles and units in the UI
   static const List<Challenge> _allTypes = [
     Challenge(id: 'water', title: 'Water', frequency: 'Daily', unit: 'cups', target: 8, icon: Icons.local_drink_rounded),
     Challenge(id: 'steps', title: 'Steps', frequency: 'Daily', unit: 'steps', target: 10000, icon: Icons.directions_run_rounded),
@@ -40,7 +39,7 @@ class _HomePageState extends State<HomePage> {
   String _getTranslatedUnit(String id, AppLocalizations loc) {
     switch (id) {
       case 'water': return loc.cups;
-      case 'steps': return loc.steps; // or loc.stepsUnit if available
+      case 'steps': return loc.steps; 
       case 'sleep': return loc.hours;
       case 'calories': return "kcal";
       default: return "";
@@ -60,7 +59,7 @@ class _HomePageState extends State<HomePage> {
           controller: controller,
           keyboardType: const TextInputType.numberWithOptions(decimal: true),
           decoration: InputDecoration(
-            labelText: "${loc.email} ($unit)", // Using email as a proxy for 'Amount' if not available, but let's just use text
+            labelText: "${loc.email} ($unit)",
             hintText: "...",
           ),
         ),

@@ -1,10 +1,10 @@
 // lib/models/daily_summary.dart
 import 'package:hive/hive.dart';
-import 'package:cloud_firestore/cloud_firestore.dart'; // Добавил для toMap
+import 'package:cloud_firestore/cloud_firestore.dart'; 
 
 part 'daily_summary.g.dart';
 
-@HiveType(typeId: 1) // Убедитесь, что typeId уникален (у вас был 1, у HistoryEntry 0)
+@HiveType(typeId: 1) 
 class DailySummary extends HiveObject {
   @HiveField(0) DateTime date;
   @HiveField(1) int waterCups;
@@ -33,11 +33,9 @@ class DailySummary extends HiveObject {
     this.sugarFreeDays = 0,
   });
 
-  // Методы для преобразования в Map и обратно для Firestore
-  // Эти методы нужны, если вы планируете сохранять DailySummary в Firestore
   Map<String, dynamic> toMap() {
     return {
-      'date': Timestamp.fromDate(date), // Использование Timestamp для Firestore
+      'date': Timestamp.fromDate(date), 
       'waterCups': waterCups,
       'sleepHours': sleepHours,
       'calories': calories,
@@ -47,7 +45,7 @@ class DailySummary extends HiveObject {
       'runningKm': runningKm,
       'meditationMinutes': meditationMinutes,
       'sugarFreeDays': sugarFreeDays,
-      'synced': synced, // Добавьте synced, если хотите отслеживать в Firestore
+      'synced': synced,
     };
   }
 

@@ -33,15 +33,15 @@ import 'screens/leaderboard_page.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  developer.log("🚀 Запуск приложения...", name: "Main");
+  developer.log("Запуск приложения...", name: "Main");
 
   try {
     await dotenv.load(fileName: ".env");
 
-    developer.log("🔥 Инициализация Firebase...", name: "Main");
+    developer.log("Инициализация Firebase...", name: "Main");
     await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
     FirebaseFirestore.instance.settings = const Settings(persistenceEnabled: true);
-    developer.log("✅ Firebase готов", name: "Main");
+    developer.log("Firebase готов", name: "Main");
 
     await Hive.initFlutter();
     if (!Hive.isAdapterRegistered(0)) Hive.registerAdapter(HistoryEntryAdapter());
@@ -57,7 +57,7 @@ Future<void> main() async {
     final prefs = await SharedPreferences.getInstance();
     final settingsRepo = SettingsRepository(prefs);
 
-    developer.log("🏁 Запуск runApp", name: "Main");
+    developer.log("Запуск runApp", name: "Main");
     runApp(
       MultiProvider(
         providers: [
@@ -83,7 +83,7 @@ Future<void> main() async {
       ),
     );
   } catch (e, stack) {
-    developer.log("❌ КРИТИЧЕСКАЯ ОШИБКА: $e", name: "Main", error: e, stackTrace: stack);
+    developer.log("ОШИБКА: $e", name: "Main", error: e, stackTrace: stack);
     runApp(MaterialApp(
       home: Scaffold(
         body: Center(child: Text("Ошибка запуска: $e")),
@@ -98,7 +98,7 @@ Future<void> _openHiveBox<T>(String name) async {
       await Hive.openBox<T>(name);
     }
   } catch (e) {
-    developer.log("⚠️ Ошибка открытия бокса $name: $e", name: "Hive");
+    developer.log(" Ошибка открытия бокса $name: $e", name: "Hive");
     await Hive.deleteBoxFromDisk(name);
     await Hive.openBox<T>(name);
   }

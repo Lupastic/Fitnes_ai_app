@@ -24,13 +24,11 @@ class SummaryProvider with ChangeNotifier {
   }
 
   DailySummary get today {
-    // Проверка на смену дня: если дата в _today не совпадает с текущей, загружаем новый день
     final now = DateTime.now();
     if (_today.date.year != now.year || 
         _today.date.month != now.month || 
         _today.date.day != now.day) {
       _loadToday();
-      // Уведомляем слушателей о сбросе данных в интерфейсе
       Future.microtask(() => notifyListeners());
     }
     return _today;
@@ -64,7 +62,6 @@ class SummaryProvider with ChangeNotifier {
     double? running,
     bool add = false,
   }) async {
-    // Используем геттер today для актуализации даты перед обновлением
     final currentToday = today;
 
     _today = DailySummary(
