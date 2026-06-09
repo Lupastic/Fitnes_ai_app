@@ -27,7 +27,6 @@ import 'services/sync_service.dart';
 import 'services/user_data_service.dart';
 import 'screens/auth_gate.dart';
 import 'screens/auth_page.dart';
-import 'screens/history_page.dart';
 import 'screens/navigation_wrapper.dart';
 import 'screens/pin_code_screen.dart';
 import 'screens/leaderboard_page.dart';
@@ -181,7 +180,6 @@ class MyApp extends StatelessWidget {
       ],
 
       routes: {
-        '/history': (context) => const HistoryPage(),
         '/auth_page': (context) => const AuthPage(),
         '/pin': (context) => const PinCodeScreen(),
         '/home': (context) => const NavigationWrapper(),

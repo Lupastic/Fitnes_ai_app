@@ -59,7 +59,7 @@ class _HomePageState extends State<HomePage> {
           controller: controller,
           keyboardType: const TextInputType.numberWithOptions(decimal: true),
           decoration: InputDecoration(
-            labelText: "${loc.email} ($unit)",
+            labelText: "$title ($unit)",
             hintText: "...",
           ),
         ),

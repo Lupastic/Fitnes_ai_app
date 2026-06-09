@@ -9,6 +9,30 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
+  String get accountSettings => 'Account Settings';
+
+  @override
+  String get displayName => 'Display Name';
+
+  @override
+  String get editBodyMetricsGoals => 'Edit Body Metrics & Goals';
+
+  @override
+  String get waterReminder => 'Water reminder';
+
+  @override
+  String get stepsReminder => 'Steps reminder';
+
+  @override
+  String get sleepReminder => 'Sleep reminder';
+
+  @override
+  String get caloriesReminder => 'Calories reminder';
+
+  @override
+  String get notSet => 'Not set';
+
+  @override
   String get water => 'Water';
 
   @override
@@ -31,6 +55,45 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get lightMode => 'Light Mode';
+
+  @override
+  String get checkPastActivityLogs => 'Check your past activity logs';
+
+  @override
+  String get newPasswordOptional => 'New Password (optional)';
+
+  @override
+  String get newPinCode => 'New PIN Code';
+
+  @override
+  String get updateAccount => 'Update Account';
+
+  @override
+  String get notifications => 'Notifications';
+
+  @override
+  String get preferences => 'Preferences';
+
+  @override
+  String get recentLoginRequired => 'Recent Login Required';
+
+  @override
+  String get enterCurrentPassword => 'To change email or password, please enter your current password first:';
+
+  @override
+  String get currentPassword => 'Current Password';
+
+  @override
+  String get cancel => 'Cancel';
+
+  @override
+  String get confirm => 'Confirm';
+
+  @override
+  String get wrongPassword => 'Wrong password';
+
+  @override
+  String get accountUpdatedSuccessfully => 'Account updated successfully';
 
   @override
   String get dark => 'Dark';
@@ -60,9 +123,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get profile => 'Profile';
 
   @override
-  String get notifications => 'Notifications';
-
-  @override
   String get resetSettings => 'Reset Settings';
 
   @override
@@ -85,9 +145,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get enterName => 'Enter name';
-
-  @override
-  String get cancel => 'Cancel';
 
   @override
   String get save => 'Save';
@@ -114,8 +171,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get nameUpdated => 'Name updated successfully!';
 
   @override
-  String get confirmResetSettings =>
-      'Are you sure you want to reset all settings to their defaults?';
+  String get confirmResetSettings => 'Are you sure you want to reset all settings to their defaults?';
 
   @override
   String get reset => 'Reset';
@@ -286,8 +342,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get confirmReset => 'Confirm Reset';
 
   @override
-  String get resetSettingsWarning =>
-      'Are you sure you want to reset all settings to default? This action cannot be undone.';
+  String get resetSettingsWarning => 'Are you sure you want to reset all settings to default? This action cannot be undone.';
 
   @override
   String get allSettingsReset => 'All settings have been reset to default!';
@@ -341,12 +396,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get viewActivityHistory => 'View Activity History';
-
-  @override
-  String get accountSettings => 'Account Settings';
-
-  @override
-  String get preferences => 'Preferences';
 
   @override
   String get bodyMetrics => 'Body Metrics';

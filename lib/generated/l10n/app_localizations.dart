@@ -63,8 +63,7 @@ import 'app_localizations_ru.dart';
 /// be consistent with the languages listed in the AppLocalizations.supportedLocales
 /// property.
 abstract class AppLocalizations {
-  AppLocalizations(String locale)
-    : localeName = intl.Intl.canonicalizedLocale(locale.toString());
+  AppLocalizations(String locale) : localeName = intl.Intl.canonicalizedLocale(locale.toString());
 
   final String localeName;
 
@@ -72,8 +71,7 @@ abstract class AppLocalizations {
     return Localizations.of<AppLocalizations>(context, AppLocalizations);
   }
 
-  static const LocalizationsDelegate<AppLocalizations> delegate =
-      _AppLocalizationsDelegate();
+  static const LocalizationsDelegate<AppLocalizations> delegate = _AppLocalizationsDelegate();
 
   /// A list of this localizations delegate along with the default localizations
   /// delegates.
@@ -85,20 +83,67 @@ abstract class AppLocalizations {
   /// Additional delegates can be added by appending to this list in
   /// MaterialApp. This list does not have to be used at all if a custom list
   /// of delegates is preferred or required.
-  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates =
-      <LocalizationsDelegate<dynamic>>[
-        delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-      ];
+  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates = <LocalizationsDelegate<dynamic>>[
+    delegate,
+    GlobalMaterialLocalizations.delegate,
+    GlobalCupertinoLocalizations.delegate,
+    GlobalWidgetsLocalizations.delegate,
+  ];
 
   /// A list of this localizations delegate's supported locales.
   static const List<Locale> supportedLocales = <Locale>[
     Locale('en'),
     Locale('kk'),
-    Locale('ru'),
+    Locale('ru')
   ];
+
+  /// No description provided for @accountSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Account Settings'**
+  String get accountSettings;
+
+  /// No description provided for @displayName.
+  ///
+  /// In en, this message translates to:
+  /// **'Display Name'**
+  String get displayName;
+
+  /// No description provided for @editBodyMetricsGoals.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Body Metrics & Goals'**
+  String get editBodyMetricsGoals;
+
+  /// No description provided for @waterReminder.
+  ///
+  /// In en, this message translates to:
+  /// **'Water reminder'**
+  String get waterReminder;
+
+  /// No description provided for @stepsReminder.
+  ///
+  /// In en, this message translates to:
+  /// **'Steps reminder'**
+  String get stepsReminder;
+
+  /// No description provided for @sleepReminder.
+  ///
+  /// In en, this message translates to:
+  /// **'Sleep reminder'**
+  String get sleepReminder;
+
+  /// No description provided for @caloriesReminder.
+  ///
+  /// In en, this message translates to:
+  /// **'Calories reminder'**
+  String get caloriesReminder;
+
+  /// No description provided for @notSet.
+  ///
+  /// In en, this message translates to:
+  /// **'Not set'**
+  String get notSet;
 
   /// No description provided for @water.
   ///
@@ -147,6 +192,84 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Light Mode'**
   String get lightMode;
+
+  /// No description provided for @checkPastActivityLogs.
+  ///
+  /// In en, this message translates to:
+  /// **'Check your past activity logs'**
+  String get checkPastActivityLogs;
+
+  /// No description provided for @newPasswordOptional.
+  ///
+  /// In en, this message translates to:
+  /// **'New Password (optional)'**
+  String get newPasswordOptional;
+
+  /// No description provided for @newPinCode.
+  ///
+  /// In en, this message translates to:
+  /// **'New PIN Code'**
+  String get newPinCode;
+
+  /// No description provided for @updateAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Update Account'**
+  String get updateAccount;
+
+  /// No description provided for @notifications.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications'**
+  String get notifications;
+
+  /// No description provided for @preferences.
+  ///
+  /// In en, this message translates to:
+  /// **'Preferences'**
+  String get preferences;
+
+  /// No description provided for @recentLoginRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Recent Login Required'**
+  String get recentLoginRequired;
+
+  /// No description provided for @enterCurrentPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'To change email or password, please enter your current password first:'**
+  String get enterCurrentPassword;
+
+  /// No description provided for @currentPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Current Password'**
+  String get currentPassword;
+
+  /// No description provided for @cancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get cancel;
+
+  /// No description provided for @confirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm'**
+  String get confirm;
+
+  /// No description provided for @wrongPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Wrong password'**
+  String get wrongPassword;
+
+  /// No description provided for @accountUpdatedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Account updated successfully'**
+  String get accountUpdatedSuccessfully;
 
   /// No description provided for @dark.
   ///
@@ -202,12 +325,6 @@ abstract class AppLocalizations {
   /// **'Profile'**
   String get profile;
 
-  /// No description provided for @notifications.
-  ///
-  /// In en, this message translates to:
-  /// **'Notifications'**
-  String get notifications;
-
   /// No description provided for @resetSettings.
   ///
   /// In en, this message translates to:
@@ -255,12 +372,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Enter name'**
   String get enterName;
-
-  /// No description provided for @cancel.
-  ///
-  /// In en, this message translates to:
-  /// **'Cancel'**
-  String get cancel;
 
   /// No description provided for @save.
   ///
@@ -748,18 +859,6 @@ abstract class AppLocalizations {
   /// **'View Activity History'**
   String get viewActivityHistory;
 
-  /// No description provided for @accountSettings.
-  ///
-  /// In en, this message translates to:
-  /// **'Account Settings'**
-  String get accountSettings;
-
-  /// No description provided for @preferences.
-  ///
-  /// In en, this message translates to:
-  /// **'Preferences'**
-  String get preferences;
-
   /// No description provided for @bodyMetrics.
   ///
   /// In en, this message translates to:
@@ -779,8 +878,7 @@ abstract class AppLocalizations {
   String get height;
 }
 
-class _AppLocalizationsDelegate
-    extends LocalizationsDelegate<AppLocalizations> {
+class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
   const _AppLocalizationsDelegate();
 
   @override
@@ -789,28 +887,26 @@ class _AppLocalizationsDelegate
   }
 
   @override
-  bool isSupported(Locale locale) =>
-      <String>['en', 'kk', 'ru'].contains(locale.languageCode);
+  bool isSupported(Locale locale) => <String>['en', 'kk', 'ru'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_AppLocalizationsDelegate old) => false;
 }
 
 AppLocalizations lookupAppLocalizations(Locale locale) {
+
+
   // Lookup logic when only language code is specified.
   switch (locale.languageCode) {
-    case 'en':
-      return AppLocalizationsEn();
-    case 'kk':
-      return AppLocalizationsKk();
-    case 'ru':
-      return AppLocalizationsRu();
+    case 'en': return AppLocalizationsEn();
+    case 'kk': return AppLocalizationsKk();
+    case 'ru': return AppLocalizationsRu();
   }
 
   throw FlutterError(
     'AppLocalizations.delegate failed to load unsupported locale "$locale". This is likely '
     'an issue with the localizations generation tool. Please file an issue '
     'on GitHub with a reproducible sample app and the gen-l10n configuration '
-    'that was used.',
+    'that was used.'
   );
 }
