@@ -2,6 +2,8 @@ import 'package:flutter/foundation.dart';
 import '../services/local_repository.dart';
 import '../services/user_data_service.dart';
 import '../models/daily_summary.dart';
+import '../models/history_entry.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
 class SummaryProvider with ChangeNotifier {
   final LocalRepository _repo;
@@ -63,6 +65,7 @@ class SummaryProvider with ChangeNotifier {
     int? yoga,
     double? running,
     bool add = false,
+    String? historyTitle,
   }) async {
     // Используем геттер today для актуализации даты перед обновлением
     final currentToday = today;
@@ -80,6 +83,17 @@ class SummaryProvider with ChangeNotifier {
     
     await _repo.save(_today);
     notifyListeners();
+
+    if (historyTitle != null) {
+      final entry = HistoryEntry(title: historyTitle, timestamp: DateTime.now());
+      try {
+        final box = Hive.box<HistoryEntry>('history');
+        await box.add(entry);
+        await _userDataService.addHistoryEntry(entry);
+      } catch (e) {
+        debugPrint("Error saving history: $e");
+      }
+    }
 
     try {
       await _userDataService.saveDailySummary(_today);

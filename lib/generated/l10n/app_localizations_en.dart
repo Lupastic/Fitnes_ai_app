@@ -356,4 +356,183 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get height => 'Height';
+
+  @override
+  String get tellUsAboutYourself => 'Tell us about yourself';
+
+  @override
+  String get tellUsAboutYourselfSub =>
+      'This helps us personalize your experience';
+
+  @override
+  String get age => 'Age';
+
+  @override
+  String get yourGoal => 'Your Goal';
+
+  @override
+  String get loseWeight => 'Lose Weight';
+
+  @override
+  String get gainWeight => 'Gain Weight';
+
+  @override
+  String get getFit => 'Get Fit';
+
+  @override
+  String get finish => 'Finish';
+
+  @override
+  String get pleaseFillAllFields => 'Please fill all fields';
+
+  @override
+  String get welcomeBack => 'Welcome back!';
+
+  @override
+  String get loginToContinue => 'Log in to continue your progress';
+
+  @override
+  String get forgotPassword => 'Forgot password?';
+
+  @override
+  String get login => 'Login';
+
+  @override
+  String get loginWithGoogle => 'Login with Google';
+
+  @override
+  String get noAccount => 'Don\'t have an account?';
+
+  @override
+  String get createAccount => 'Create account';
+
+  @override
+  String get enterDataToStart => 'Enter data to start';
+
+  @override
+  String get yourName => 'Your Name';
+
+  @override
+  String get createPin => 'Create PIN-code (for app entry)';
+
+  @override
+  String get password => 'Password';
+
+  @override
+  String get confirmPassword => 'Confirm password';
+
+  @override
+  String get register => 'Register';
+
+  @override
+  String get passwordsDoNotMatch => 'Passwords do not match';
+
+  @override
+  String get enterValidEmail => 'Enter a valid email';
+
+  @override
+  String get minPasswordLength => 'Minimum 6 characters';
+
+  @override
+  String get pinLength => 'PIN-code must be at least 4 digits';
+
+  @override
+  String get globalLeaderboard => 'Global Leaderboard';
+
+  @override
+  String get noUsersFound => 'No users found yet.';
+
+  @override
+  String get pts => 'pts';
+
+  @override
+  String get dailyQuests => 'Daily Quests';
+
+  @override
+  String get editBodyMetrics => 'Edit Body Metrics & Goals';
+
+  @override
+  String get viewAll => 'View All';
+
+  @override
+  String get quests => 'Quests';
+
+  @override
+  String get globalRank => 'Global Rank';
+
+  @override
+  String get notSet => 'Not set';
+
+  @override
+  String get kcal => 'kcal';
+
+  @override
+  String get easy => 'Easy';
+
+  @override
+  String get medium => 'Medium';
+
+  @override
+  String get hard => 'Hard';
+
+  @override
+  String get noDataLast7Days => 'No data for the last 7 days';
+
+  @override
+  String get weeklyProgress => 'Weekly Progress';
+
+  @override
+  String get averageValue => 'Average Value';
+
+  @override
+  String get questHydrationStarterTitle => 'Hydration Starter';
+
+  @override
+  String get questHydrationStarterDesc => 'Drink 5 cups of water today';
+
+  @override
+  String get questActiveMoverTitle => 'Active Mover';
+
+  @override
+  String get questActiveMoverDesc => 'Walk 5,000 steps';
+
+  @override
+  String get questAquaMasterTitle => 'Aqua Master';
+
+  @override
+  String get questAquaMasterDesc => 'Drink 10 cups of water today';
+
+  @override
+  String get questStepLegendTitle => 'Step Legend';
+
+  @override
+  String get questStepLegendDesc => 'Walk 10,000 steps';
+
+  @override
+  String get questWellRestedTitle => 'Well Rested';
+
+  @override
+  String get questWellRestedDesc => 'Sleep for 8 hours';
+
+  @override
+  String get questUltimateChampionTitle => 'Ultimate Champion';
+
+  @override
+  String get questUltimateChampionDesc => 'Complete all your daily goals';
+
+  @override
+  String get profileUpdated => 'Profile updated';
+
+  @override
+  String get questCompleted => 'Quest completed';
+
+  @override
+  String get aiAssistantTitle => 'AI Health Assistant';
+
+  @override
+  String get aiIntroMessage =>
+      'Hello! I am your AI Health Assistant. I have access to your goals, history, and body metrics. How can I help you?';
+
+  @override
+  String get errorPrefix => 'Error: ';
 }

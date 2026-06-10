@@ -17,8 +17,8 @@ class QuestsPage extends StatelessWidget {
     final List<Quest> allQuests = [
       Quest(
         id: 'water_5',
-        title: 'Hydration Starter',
-        description: 'Drink 5 cups of water today',
+        title: loc.questHydrationStarterTitle,
+        description: loc.questHydrationStarterDesc,
         icon: Icons.local_drink,
         difficulty: QuestDifficulty.easy,
         points: 10,
@@ -26,8 +26,8 @@ class QuestsPage extends StatelessWidget {
       ),
       Quest(
         id: 'steps_5k',
-        title: 'Active Mover',
-        description: 'Walk 5,000 steps',
+        title: loc.questActiveMoverTitle,
+        description: loc.questActiveMoverDesc,
         icon: Icons.directions_walk,
         difficulty: QuestDifficulty.easy,
         points: 15,
@@ -35,8 +35,8 @@ class QuestsPage extends StatelessWidget {
       ),
       Quest(
         id: 'water_10',
-        title: 'Aqua Master',
-        description: 'Drink 10 cups of water today',
+        title: loc.questAquaMasterTitle,
+        description: loc.questAquaMasterDesc,
         icon: Icons.water_drop,
         difficulty: QuestDifficulty.medium,
         points: 30,
@@ -44,8 +44,8 @@ class QuestsPage extends StatelessWidget {
       ),
       Quest(
         id: 'steps_10k',
-        title: 'Step Legend',
-        description: 'Walk 10,000 steps',
+        title: loc.questStepLegendTitle,
+        description: loc.questStepLegendDesc,
         icon: Icons.directions_run,
         difficulty: QuestDifficulty.medium,
         points: 50,
@@ -53,8 +53,8 @@ class QuestsPage extends StatelessWidget {
       ),
       Quest(
         id: 'sleep_8',
-        title: 'Well Rested',
-        description: 'Sleep for 8 hours',
+        title: loc.questWellRestedTitle,
+        description: loc.questWellRestedDesc,
         icon: Icons.bedtime,
         difficulty: QuestDifficulty.medium,
         points: 25,
@@ -62,8 +62,8 @@ class QuestsPage extends StatelessWidget {
       ),
       Quest(
         id: 'perfect_day',
-        title: 'Ultimate Champion',
-        description: 'Complete all your daily goals',
+        title: loc.questUltimateChampionTitle,
+        description: loc.questUltimateChampionDesc,
         icon: Icons.emoji_events,
         difficulty: QuestDifficulty.hard,
         points: 100,
@@ -84,20 +84,21 @@ class QuestsPage extends StatelessWidget {
         else if (q.id == 'perfect_day') data = summary;
 
         if (data != null && q.isCompleted(data)) {
-          Future.microtask(() => settings.completeQuest(q.id, q.points));
+          final historyMsg = "QST:${q.title}:${q.points}";
+          Future.microtask(() => settings.completeQuest(q.id, q.points, historyTitle: historyMsg));
         }
       }
     }
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Daily Quests'),
+        title: Text(loc.dailyQuests),
         actions: [
           Center(
             child: Padding(
               padding: const EdgeInsets.only(right: 16),
               child: Text(
-                '${settings.points} pts',
+                '${settings.points} ${loc.pts}',
                 style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: Colors.tealAccent),
               ),
             ),
@@ -133,7 +134,7 @@ class QuestsPage extends StatelessWidget {
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Text(
-                      '${quest.difficulty.name.toUpperCase()} • ${quest.points} pts',
+                      '${_getTranslatedDifficulty(quest.difficulty, loc)} • ${quest.points} ${loc.pts}',
                       style: TextStyle(fontSize: 10, color: _getDifficultyColor(quest.difficulty), fontWeight: FontWeight.bold),
                     ),
                   ),
@@ -147,6 +148,14 @@ class QuestsPage extends StatelessWidget {
         },
       ),
     );
+  }
+
+  String _getTranslatedDifficulty(QuestDifficulty d, AppLocalizations loc) {
+    switch (d) {
+      case QuestDifficulty.easy: return loc.easy.toUpperCase();
+      case QuestDifficulty.medium: return loc.medium.toUpperCase();
+      case QuestDifficulty.hard: return loc.hard.toUpperCase();
+    }
   }
 
   Color _getDifficultyColor(QuestDifficulty d) {

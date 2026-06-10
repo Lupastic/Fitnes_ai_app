@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:finallapp/generated/l10n/app_localizations.dart';
 import '../services/user_data_service.dart';
 
 class LeaderboardPage extends StatelessWidget {
@@ -7,11 +8,12 @@ class LeaderboardPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
     final userDataService = context.read<UserDataService>();
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Global Leaderboard'),
+        title: Text(loc.globalLeaderboard),
         centerTitle: true,
       ),
       body: FutureBuilder<List<Map<String, dynamic>>>(
@@ -25,7 +27,7 @@ class LeaderboardPage extends StatelessWidget {
           }
           final leaderboard = snapshot.data ?? [];
           if (leaderboard.isEmpty) {
-            return const Center(child: Text('No users found yet.'));
+            return Center(child: Text(loc.noUsersFound));
           }
 
           return ListView.builder(
@@ -54,7 +56,7 @@ class LeaderboardPage extends StatelessWidget {
                     style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                   trailing: Text(
-                    '${user['points']} pts',
+                    '${user['points']} ${loc.pts}',
                     style: const TextStyle(
                       fontWeight: FontWeight.w900,
                       color: Colors.tealAccent,

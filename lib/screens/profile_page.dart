@@ -13,6 +13,20 @@ import 'onboarding_page.dart';
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
 
+  String _translateGoal(String? goal, AppLocalizations loc) {
+    if (goal == null) return loc.notSet;
+    switch (goal) {
+      case 'Lose Weight':
+        return loc.loseWeight;
+      case 'Gain Weight':
+        return loc.gainWeight;
+      case 'Get Fit':
+        return loc.getFit;
+      default:
+        return goal;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context)!;
@@ -90,7 +104,7 @@ class ProfilePage extends StatelessWidget {
                       MaterialPageRoute(builder: (c) => const OnboardingPage()),
                     ),
                     icon: const Icon(Icons.edit_note_rounded, size: 20),
-                    label: const Text("Edit Body Metrics & Goals"),
+                    label: Text(loc.editBodyMetrics),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.tealAccent.withOpacity(0.1),
                       foregroundColor: Colors.tealAccent,
@@ -102,9 +116,9 @@ class ProfilePage extends StatelessWidget {
                   const SizedBox(height: 35),
 
                   // --- SHOWCASE ---
-                  _buildSectionHeader("Quests & Progress", () {
+                  _buildSectionHeader(loc.questsAndProgress, () {
                     Navigator.push(context, MaterialPageRoute(builder: (c) => const QuestsPage()));
-                  }),
+                  }, loc),
                   const SizedBox(height: 16),
                   Container(
                     padding: const EdgeInsets.all(20),
@@ -116,26 +130,26 @@ class ProfilePage extends StatelessWidget {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
-                        _buildBadge(Icons.emoji_events_rounded, "${settings.points} pts", true),
-                        _buildBadge(Icons.task_alt_rounded, "${settings.completedQuests.length} Quests", settings.completedQuests.isNotEmpty),
-                        _buildBadge(Icons.leaderboard_rounded, "Global Rank", true),
+                        _buildBadge(Icons.emoji_events_rounded, "${settings.points} ${loc.pts}", true),
+                        _buildBadge(Icons.task_alt_rounded, "${settings.completedQuests.length} ${loc.quests}", settings.completedQuests.isNotEmpty),
+                        _buildBadge(Icons.leaderboard_rounded, loc.globalRank, true),
                       ],
                     ),
                   ),
                   const SizedBox(height: 35),
 
                   // --- STAT CARDS ---
-                  _buildSectionHeader("Quick Stats", null),
+                  _buildSectionHeader(loc.quickStats, null, loc),
                   const SizedBox(height: 16),
-                  _buildInfoCard(theme, Icons.fitness_center_rounded, "Current Goal", settings.goalType ?? "Not set"),
+                  _buildInfoCard(theme, Icons.fitness_center_rounded, loc.currentGoal, _translateGoal(settings.goalType, loc), loc),
                   const SizedBox(height: 12),
-                  _buildInfoCard(theme, Icons.monitor_weight_rounded, "Weight", "${settings.weight ?? '--'} ${settings.weightUnit ?? 'kg'}"),
+                  _buildInfoCard(theme, Icons.monitor_weight_rounded, loc.weight, "${settings.weight ?? '--'} ${settings.weightUnit ?? 'kg'}", loc),
                   const SizedBox(height: 12),
-                  _buildInfoCard(theme, Icons.height_rounded, "Height", "${settings.height ?? '--'} ${settings.heightUnit ?? 'cm'}"),
+                  _buildInfoCard(theme, Icons.height_rounded, loc.height, "${settings.height ?? '--'} ${settings.heightUnit ?? 'cm'}", loc),
                   const SizedBox(height: 12),
-                  _buildInfoCard(theme, Icons.local_fire_department_rounded, "Total Burned", "${summary.calories} kcal"),
+                  _buildInfoCard(theme, Icons.local_fire_department_rounded, loc.totalBurned, "${summary.calories} ${loc.kcal}", loc),
                   const SizedBox(height: 12),
-                  _buildInfoCard(theme, Icons.nightlight_round, "Sleep Avg", "${summary.sleepHours.toStringAsFixed(1)} h"),
+                  _buildInfoCard(theme, Icons.nightlight_round, loc.sleepAvg, "${summary.sleepHours.toStringAsFixed(1)} ${loc.hours}", loc),
                 ],
               ),
             ),
@@ -145,13 +159,26 @@ class ProfilePage extends StatelessWidget {
     );
   }
 
-  Widget _buildSectionHeader(String title, VoidCallback? onTap) {
+  Widget _buildSectionHeader(String title, VoidCallback? onTap, AppLocalizations loc) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(title, style: const TextStyle(fontSize: 19, fontWeight: FontWeight.w800)),
+        Expanded(
+          child: Text(
+            title, 
+            style: const TextStyle(fontSize: 19, fontWeight: FontWeight.w800),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
         if (onTap != null)
-          TextButton(onPressed: onTap, child: const Text("View All", style: TextStyle(fontWeight: FontWeight.bold))),
+          TextButton(
+            onPressed: onTap, 
+            child: Text(
+              loc.viewAll, 
+              style: const TextStyle(fontWeight: FontWeight.bold),
+              maxLines: 1,
+            ),
+          ),
       ],
     );
   }
@@ -174,7 +201,7 @@ class ProfilePage extends StatelessWidget {
     );
   }
 
-  Widget _buildInfoCard(ThemeData theme, IconData icon, String label, String value) {
+  Widget _buildInfoCard(ThemeData theme, IconData icon, String label, String value, AppLocalizations loc) {
     return Container(
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(

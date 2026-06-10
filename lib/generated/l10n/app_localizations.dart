@@ -777,6 +777,360 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Height'**
   String get height;
+
+  /// No description provided for @tellUsAboutYourself.
+  ///
+  /// In en, this message translates to:
+  /// **'Tell us about yourself'**
+  String get tellUsAboutYourself;
+
+  /// No description provided for @tellUsAboutYourselfSub.
+  ///
+  /// In en, this message translates to:
+  /// **'This helps us personalize your experience'**
+  String get tellUsAboutYourselfSub;
+
+  /// No description provided for @age.
+  ///
+  /// In en, this message translates to:
+  /// **'Age'**
+  String get age;
+
+  /// No description provided for @yourGoal.
+  ///
+  /// In en, this message translates to:
+  /// **'Your Goal'**
+  String get yourGoal;
+
+  /// No description provided for @loseWeight.
+  ///
+  /// In en, this message translates to:
+  /// **'Lose Weight'**
+  String get loseWeight;
+
+  /// No description provided for @gainWeight.
+  ///
+  /// In en, this message translates to:
+  /// **'Gain Weight'**
+  String get gainWeight;
+
+  /// No description provided for @getFit.
+  ///
+  /// In en, this message translates to:
+  /// **'Get Fit'**
+  String get getFit;
+
+  /// No description provided for @finish.
+  ///
+  /// In en, this message translates to:
+  /// **'Finish'**
+  String get finish;
+
+  /// No description provided for @pleaseFillAllFields.
+  ///
+  /// In en, this message translates to:
+  /// **'Please fill all fields'**
+  String get pleaseFillAllFields;
+
+  /// No description provided for @welcomeBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome back!'**
+  String get welcomeBack;
+
+  /// No description provided for @loginToContinue.
+  ///
+  /// In en, this message translates to:
+  /// **'Log in to continue your progress'**
+  String get loginToContinue;
+
+  /// No description provided for @forgotPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Forgot password?'**
+  String get forgotPassword;
+
+  /// No description provided for @login.
+  ///
+  /// In en, this message translates to:
+  /// **'Login'**
+  String get login;
+
+  /// No description provided for @loginWithGoogle.
+  ///
+  /// In en, this message translates to:
+  /// **'Login with Google'**
+  String get loginWithGoogle;
+
+  /// No description provided for @noAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Don\'t have an account?'**
+  String get noAccount;
+
+  /// No description provided for @createAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Create account'**
+  String get createAccount;
+
+  /// No description provided for @enterDataToStart.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter data to start'**
+  String get enterDataToStart;
+
+  /// No description provided for @yourName.
+  ///
+  /// In en, this message translates to:
+  /// **'Your Name'**
+  String get yourName;
+
+  /// No description provided for @createPin.
+  ///
+  /// In en, this message translates to:
+  /// **'Create PIN-code (for app entry)'**
+  String get createPin;
+
+  /// No description provided for @password.
+  ///
+  /// In en, this message translates to:
+  /// **'Password'**
+  String get password;
+
+  /// No description provided for @confirmPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm password'**
+  String get confirmPassword;
+
+  /// No description provided for @register.
+  ///
+  /// In en, this message translates to:
+  /// **'Register'**
+  String get register;
+
+  /// No description provided for @passwordsDoNotMatch.
+  ///
+  /// In en, this message translates to:
+  /// **'Passwords do not match'**
+  String get passwordsDoNotMatch;
+
+  /// No description provided for @enterValidEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a valid email'**
+  String get enterValidEmail;
+
+  /// No description provided for @minPasswordLength.
+  ///
+  /// In en, this message translates to:
+  /// **'Minimum 6 characters'**
+  String get minPasswordLength;
+
+  /// No description provided for @pinLength.
+  ///
+  /// In en, this message translates to:
+  /// **'PIN-code must be at least 4 digits'**
+  String get pinLength;
+
+  /// No description provided for @globalLeaderboard.
+  ///
+  /// In en, this message translates to:
+  /// **'Global Leaderboard'**
+  String get globalLeaderboard;
+
+  /// No description provided for @noUsersFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No users found yet.'**
+  String get noUsersFound;
+
+  /// No description provided for @pts.
+  ///
+  /// In en, this message translates to:
+  /// **'pts'**
+  String get pts;
+
+  /// No description provided for @dailyQuests.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily Quests'**
+  String get dailyQuests;
+
+  /// No description provided for @editBodyMetrics.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Body Metrics & Goals'**
+  String get editBodyMetrics;
+
+  /// No description provided for @viewAll.
+  ///
+  /// In en, this message translates to:
+  /// **'View All'**
+  String get viewAll;
+
+  /// No description provided for @quests.
+  ///
+  /// In en, this message translates to:
+  /// **'Quests'**
+  String get quests;
+
+  /// No description provided for @globalRank.
+  ///
+  /// In en, this message translates to:
+  /// **'Global Rank'**
+  String get globalRank;
+
+  /// No description provided for @notSet.
+  ///
+  /// In en, this message translates to:
+  /// **'Not set'**
+  String get notSet;
+
+  /// No description provided for @kcal.
+  ///
+  /// In en, this message translates to:
+  /// **'kcal'**
+  String get kcal;
+
+  /// No description provided for @easy.
+  ///
+  /// In en, this message translates to:
+  /// **'Easy'**
+  String get easy;
+
+  /// No description provided for @medium.
+  ///
+  /// In en, this message translates to:
+  /// **'Medium'**
+  String get medium;
+
+  /// No description provided for @hard.
+  ///
+  /// In en, this message translates to:
+  /// **'Hard'**
+  String get hard;
+
+  /// No description provided for @noDataLast7Days.
+  ///
+  /// In en, this message translates to:
+  /// **'No data for the last 7 days'**
+  String get noDataLast7Days;
+
+  /// No description provided for @weeklyProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'Weekly Progress'**
+  String get weeklyProgress;
+
+  /// No description provided for @averageValue.
+  ///
+  /// In en, this message translates to:
+  /// **'Average Value'**
+  String get averageValue;
+
+  /// No description provided for @questHydrationStarterTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Hydration Starter'**
+  String get questHydrationStarterTitle;
+
+  /// No description provided for @questHydrationStarterDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Drink 5 cups of water today'**
+  String get questHydrationStarterDesc;
+
+  /// No description provided for @questActiveMoverTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Active Mover'**
+  String get questActiveMoverTitle;
+
+  /// No description provided for @questActiveMoverDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Walk 5,000 steps'**
+  String get questActiveMoverDesc;
+
+  /// No description provided for @questAquaMasterTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Aqua Master'**
+  String get questAquaMasterTitle;
+
+  /// No description provided for @questAquaMasterDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Drink 10 cups of water today'**
+  String get questAquaMasterDesc;
+
+  /// No description provided for @questStepLegendTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Step Legend'**
+  String get questStepLegendTitle;
+
+  /// No description provided for @questStepLegendDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Walk 10,000 steps'**
+  String get questStepLegendDesc;
+
+  /// No description provided for @questWellRestedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Well Rested'**
+  String get questWellRestedTitle;
+
+  /// No description provided for @questWellRestedDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Sleep for 8 hours'**
+  String get questWellRestedDesc;
+
+  /// No description provided for @questUltimateChampionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Ultimate Champion'**
+  String get questUltimateChampionTitle;
+
+  /// No description provided for @questUltimateChampionDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Complete all your daily goals'**
+  String get questUltimateChampionDesc;
+
+  /// No description provided for @profileUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile updated'**
+  String get profileUpdated;
+
+  /// No description provided for @questCompleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Quest completed'**
+  String get questCompleted;
+
+  /// No description provided for @aiAssistantTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'AI Health Assistant'**
+  String get aiAssistantTitle;
+
+  /// No description provided for @aiIntroMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Hello! I am your AI Health Assistant. I have access to your goals, history, and body metrics. How can I help you?'**
+  String get aiIntroMessage;
+
+  /// No description provided for @errorPrefix.
+  ///
+  /// In en, this message translates to:
+  /// **'Error: '**
+  String get errorPrefix;
 }
 
 class _AppLocalizationsDelegate

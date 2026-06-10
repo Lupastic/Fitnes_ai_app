@@ -357,4 +357,183 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get height => 'Рост';
+
+  @override
+  String get tellUsAboutYourself => 'Расскажите о себе';
+
+  @override
+  String get tellUsAboutYourselfSub =>
+      'Это поможет нам персонализировать ваш опыт';
+
+  @override
+  String get age => 'Возраст';
+
+  @override
+  String get yourGoal => 'Ваша цель';
+
+  @override
+  String get loseWeight => 'Сбросить вес';
+
+  @override
+  String get gainWeight => 'Набрать вес';
+
+  @override
+  String get getFit => 'Быть в форме';
+
+  @override
+  String get finish => 'Готово';
+
+  @override
+  String get pleaseFillAllFields => 'Пожалуйста, заполните все поля';
+
+  @override
+  String get welcomeBack => 'С возвращением!';
+
+  @override
+  String get loginToContinue => 'Войдите, чтобы продолжить прогресс';
+
+  @override
+  String get forgotPassword => 'Забыли пароль?';
+
+  @override
+  String get login => 'Войти';
+
+  @override
+  String get loginWithGoogle => 'Войти через Google';
+
+  @override
+  String get noAccount => 'Нет аккаунта?';
+
+  @override
+  String get createAccount => 'Создать аккаунт';
+
+  @override
+  String get enterDataToStart => 'Введите данные, чтобы начать';
+
+  @override
+  String get yourName => 'Ваше имя';
+
+  @override
+  String get createPin => 'Придумайте ПИН-код (для входа в приложение)';
+
+  @override
+  String get password => 'Пароль';
+
+  @override
+  String get confirmPassword => 'Подтвердите пароль';
+
+  @override
+  String get register => 'Зарегистрироваться';
+
+  @override
+  String get passwordsDoNotMatch => 'Пароли не совпадают';
+
+  @override
+  String get enterValidEmail => 'Введите корректный email';
+
+  @override
+  String get minPasswordLength => 'Минимум 6 символов';
+
+  @override
+  String get pinLength => 'ПИН-код должен быть от 4 цифр';
+
+  @override
+  String get globalLeaderboard => 'Глобальный рейтинг';
+
+  @override
+  String get noUsersFound => 'Пользователи пока не найдены.';
+
+  @override
+  String get pts => 'очков';
+
+  @override
+  String get dailyQuests => 'Ежедневные квесты';
+
+  @override
+  String get editBodyMetrics => 'Изменить параметры тела и цели';
+
+  @override
+  String get viewAll => 'Смотреть все';
+
+  @override
+  String get quests => 'Квесты';
+
+  @override
+  String get globalRank => 'Мировой ранг';
+
+  @override
+  String get notSet => 'Не установлено';
+
+  @override
+  String get kcal => 'ккал';
+
+  @override
+  String get easy => 'Легко';
+
+  @override
+  String get medium => 'Средне';
+
+  @override
+  String get hard => 'Сложно';
+
+  @override
+  String get noDataLast7Days => 'Нет данных за последние 7 дней';
+
+  @override
+  String get weeklyProgress => 'Прогресс за неделю';
+
+  @override
+  String get averageValue => 'Среднее значение';
+
+  @override
+  String get questHydrationStarterTitle => 'Начало гидратации';
+
+  @override
+  String get questHydrationStarterDesc => 'Выпейте 5 стаканов воды сегодня';
+
+  @override
+  String get questActiveMoverTitle => 'Активный двигатель';
+
+  @override
+  String get questActiveMoverDesc => 'Пройдите 5 000 шагов';
+
+  @override
+  String get questAquaMasterTitle => 'Мастер воды';
+
+  @override
+  String get questAquaMasterDesc => 'Выпейте 10 стаканов воды сегодня';
+
+  @override
+  String get questStepLegendTitle => 'Легенда шагов';
+
+  @override
+  String get questStepLegendDesc => 'Пройдите 10 000 шагов';
+
+  @override
+  String get questWellRestedTitle => 'Хороший отдых';
+
+  @override
+  String get questWellRestedDesc => 'Поспите 8 часов';
+
+  @override
+  String get questUltimateChampionTitle => 'Абсолютный чемпион';
+
+  @override
+  String get questUltimateChampionDesc => 'Выполните все дневные цели';
+
+  @override
+  String get profileUpdated => 'Профиль обновлен';
+
+  @override
+  String get questCompleted => 'Квест выполнен';
+
+  @override
+  String get aiAssistantTitle => 'AI Помощник по здоровью';
+
+  @override
+  String get aiIntroMessage =>
+      'Привет! Я твой AI-помощник по здоровью. У меня есть доступ к твоим целям, истории и показателям тела. Чем я могу тебе помочь?';
+
+  @override
+  String get errorPrefix => 'Ошибка: ';
 }

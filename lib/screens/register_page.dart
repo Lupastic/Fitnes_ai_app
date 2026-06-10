@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:finallapp/generated/l10n/app_localizations.dart';
 import '../providers/auth_provider.dart';
 import '../providers/settings_provider.dart';
 import '../services/user_data_service.dart';
@@ -83,6 +84,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
     final isLoading = context.watch<AppAuthProvider>().isLoading;
 
     return Scaffold(
@@ -95,31 +97,31 @@ class _RegisterPageState extends State<RegisterPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text("Создать аккаунт", style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold)),
-                const Text("Введите данные, чтобы начать", style: TextStyle(color: Colors.grey)),
+                Text(loc.createAccount, style: const TextStyle(fontSize: 32, fontWeight: FontWeight.bold)),
+                Text(loc.enterDataToStart, style: const TextStyle(color: Colors.grey)),
                 const SizedBox(height: 30),
                 
                 TextFormField(
                   controller: _nameController,
                   decoration: InputDecoration(
-                    labelText: "Ваше имя",
+                    labelText: loc.yourName,
                     prefixIcon: const Icon(Icons.person_outline),
                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
                   ),
-                  validator: (v) => (v == null || v.isEmpty) ? "Введите имя" : null,
+                  validator: (v) => (v == null || v.isEmpty) ? loc.enterName : null,
                 ),
                 const SizedBox(height: 20),
                 
                 TextFormField(
                   controller: _emailController,
                   decoration: InputDecoration(
-                    labelText: "Email",
+                    labelText: loc.email,
                     prefixIcon: const Icon(Icons.email_outlined),
                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
                   ),
                   keyboardType: TextInputType.emailAddress,
                   validator: (v) {
-                    if (v == null || !v.contains('@')) return "Введите корректный email";
+                    if (v == null || !v.contains('@')) return loc.enterValidEmail;
                     return null;
                   },
                 ),
@@ -128,13 +130,13 @@ class _RegisterPageState extends State<RegisterPage> {
                 TextFormField(
                   controller: _pinController,
                   decoration: InputDecoration(
-                    labelText: "Придумайте ПИН-код (для входа в приложение)",
+                    labelText: loc.createPin,
                     prefixIcon: const Icon(Icons.pin),
                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
                   ),
                   keyboardType: TextInputType.number,
                   obscureText: true,
-                  validator: (v) => (v == null || v.length < 4) ? "ПИН-код должен быть от 4 цифр" : null,
+                  validator: (v) => (v == null || v.length < 4) ? loc.pinLength : null,
                 ),
                 const SizedBox(height: 20),
                 
@@ -142,7 +144,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   controller: _passwordController,
                   obscureText: _obscurePassword,
                   decoration: InputDecoration(
-                    labelText: "Пароль",
+                    labelText: loc.password,
                     prefixIcon: const Icon(Icons.lock_outline),
                     suffixIcon: IconButton(
                       icon: Icon(_obscurePassword ? Icons.visibility_off : Icons.visibility),
@@ -150,7 +152,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     ),
                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
                   ),
-                  validator: (v) => (v == null || v.length < 6) ? "Минимум 6 символов" : null,
+                  validator: (v) => (v == null || v.length < 6) ? loc.minPasswordLength : null,
                 ),
                 const SizedBox(height: 20),
 
@@ -158,12 +160,12 @@ class _RegisterPageState extends State<RegisterPage> {
                   controller: _confirmPasswordController,
                   obscureText: _obscurePassword,
                   decoration: InputDecoration(
-                    labelText: "Подтвердите пароль",
+                    labelText: loc.confirmPassword,
                     prefixIcon: const Icon(Icons.lock_reset),
                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
                   ),
                   validator: (v) {
-                    if (v != _passwordController.text) return "Пароли не совпадают";
+                    if (v != _passwordController.text) return loc.passwordsDoNotMatch;
                     return null;
                   },
                 ),
@@ -180,7 +182,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     ),
                     child: isLoading 
                       ? const CircularProgressIndicator(color: Colors.white)
-                      : const Text("Зарегистрироваться", style: TextStyle(fontSize: 18, color: Colors.white, fontWeight: FontWeight.bold)),
+                      : Text(loc.register, style: const TextStyle(fontSize: 18, color: Colors.white, fontWeight: FontWeight.bold)),
                   ),
                 ),
                 const SizedBox(height: 20),

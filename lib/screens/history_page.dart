@@ -87,6 +87,54 @@ class _HistoryPageState extends State<HistoryPage> {
     });
   }
 
+  String _translateHistoryTitle(String? title, AppLocalizations loc) {
+    if (title == null) return loc.noTitle;
+    
+    // Check for encoded format: TYPE:ID:VALUE:UNIT
+    if (title.startsWith("LOG:")) {
+      final parts = title.split(":");
+      if (parts.length >= 4) {
+        final id = parts[1];
+        final val = parts[2];
+        final unitKey = parts[3];
+        
+        String label = id;
+        if (id == 'water') label = loc.water;
+        else if (id == 'steps') label = loc.steps;
+        else if (id == 'sleep') label = loc.sleep;
+        else if (id == 'calories') label = loc.calories;
+        
+        String unit = unitKey;
+        if (unitKey == 'cups') unit = loc.cups;
+        else if (unitKey == 'steps') unit = loc.steps;
+        else if (unitKey == 'h') unit = loc.hours;
+        else if (unitKey == 'kcal') unit = loc.kcal;
+        
+        return "$label: +$val $unit";
+      }
+    }
+    
+    if (title.startsWith("ONB:")) {
+      final goal = title.replaceFirst("ONB:", "");
+      String translatedGoal = goal;
+      if (goal == 'Lose Weight') translatedGoal = loc.loseWeight;
+      else if (goal == 'Gain Weight') translatedGoal = loc.gainWeight;
+      else if (goal == 'Get Fit') translatedGoal = loc.getFit;
+      return "${loc.profileUpdated}: $translatedGoal";
+    }
+    
+    if (title.startsWith("QST:")) {
+      final parts = title.split(":");
+      if (parts.length >= 3) {
+        final questTitle = parts[1]; // We should have saved the key really
+        final pts = parts[2];
+        return "${loc.questCompleted}: $questTitle (+$pts ${loc.pts})";
+      }
+    }
+
+    return title;
+  }
+
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context)!;
@@ -141,7 +189,7 @@ class _HistoryPageState extends State<HistoryPage> {
                         ),
                       ),
                       title: Text(
-                        entry['title'] ?? loc.noTitle,
+                        _translateHistoryTitle(entry['title'], loc),
                         style: const TextStyle(fontWeight: FontWeight.bold),
                       ),
                       subtitle: Text(

@@ -359,4 +359,184 @@ class AppLocalizationsKk extends AppLocalizations {
 
   @override
   String get height => 'Бойы';
+
+  @override
+  String get tellUsAboutYourself => 'Өзіңіз туралы айтып беріңіз';
+
+  @override
+  String get tellUsAboutYourselfSub =>
+      'Бұл бізге сіздің тәжірибеңізді жекелендіруге көмектеседі';
+
+  @override
+  String get age => 'Жас';
+
+  @override
+  String get yourGoal => 'Сіздің мақсатыңыз';
+
+  @override
+  String get loseWeight => 'Салмақ тастау';
+
+  @override
+  String get gainWeight => 'Салмақ қосу';
+
+  @override
+  String get getFit => 'Формада болу';
+
+  @override
+  String get finish => 'Аяқтау';
+
+  @override
+  String get pleaseFillAllFields => 'Барлық өрістерді толтырыңыз';
+
+  @override
+  String get welcomeBack => 'Қайта қош келдіңіз!';
+
+  @override
+  String get loginToContinue => 'Прогресті жалғастыру үшін жүйеге кіріңіз';
+
+  @override
+  String get forgotPassword => 'Құпия сөзді ұмыттыңыз ба?';
+
+  @override
+  String get login => 'Кіру';
+
+  @override
+  String get loginWithGoogle => 'Google арқылы кіру';
+
+  @override
+  String get noAccount => 'Аккаунт жоқ па?';
+
+  @override
+  String get createAccount => 'Аккаунт ашу';
+
+  @override
+  String get enterDataToStart => 'Бастау үшін деректерді енгізіңіз';
+
+  @override
+  String get yourName => 'Сіздің атыңыз';
+
+  @override
+  String get createPin => 'ПИН-код ойлап табыңыз (қосымшаға кіру үшін)';
+
+  @override
+  String get password => 'Құпия сөз';
+
+  @override
+  String get confirmPassword => 'Құпия сөзді растаңыз';
+
+  @override
+  String get register => 'Тіркелу';
+
+  @override
+  String get passwordsDoNotMatch => 'Құпия сөздер сәйкес келмейді';
+
+  @override
+  String get enterValidEmail => 'Дұрыс email енгізіңіз';
+
+  @override
+  String get minPasswordLength => 'Кемінде 6 таңба';
+
+  @override
+  String get pinLength => 'ПИН-код кемінде 4 саннан тұруы керек';
+
+  @override
+  String get globalLeaderboard => 'Жаһандық рейтинг';
+
+  @override
+  String get noUsersFound => 'Әзірге пайдаланушылар табылмады.';
+
+  @override
+  String get pts => 'ұпай';
+
+  @override
+  String get dailyQuests => 'Күнделікті тапсырмалар';
+
+  @override
+  String get editBodyMetrics => 'Дене өлшемдері мен мақсаттарды өзгерту';
+
+  @override
+  String get viewAll => 'Барлығын көру';
+
+  @override
+  String get quests => 'Квесттер';
+
+  @override
+  String get globalRank => 'Әлемдік рейтинг';
+
+  @override
+  String get notSet => 'Орнатылмаған';
+
+  @override
+  String get kcal => 'ккал';
+
+  @override
+  String get easy => 'Оңай';
+
+  @override
+  String get medium => 'Орташа';
+
+  @override
+  String get hard => 'Қиын';
+
+  @override
+  String get noDataLast7Days => 'Соңғы 7 күнде деректер жоқ';
+
+  @override
+  String get weeklyProgress => 'Апталық прогресс';
+
+  @override
+  String get averageValue => 'Орташа мән';
+
+  @override
+  String get questHydrationStarterTitle => 'Гидратация бастамасы';
+
+  @override
+  String get questHydrationStarterDesc => 'Бүгін 5 стақан су ішіңіз';
+
+  @override
+  String get questActiveMoverTitle => 'Белсенді қозғалыс';
+
+  @override
+  String get questActiveMoverDesc => '5 000 қадам жүріңіз';
+
+  @override
+  String get questAquaMasterTitle => 'Су шебері';
+
+  @override
+  String get questAquaMasterDesc => 'Бүгін 10 стақан су ішіңіз';
+
+  @override
+  String get questStepLegendTitle => 'Қадам аңызы';
+
+  @override
+  String get questStepLegendDesc => '10 000 қадам жүріңіз';
+
+  @override
+  String get questWellRestedTitle => 'Жақсы демалыс';
+
+  @override
+  String get questWellRestedDesc => '8 сағат ұйықтаңыз';
+
+  @override
+  String get questUltimateChampionTitle => 'Абсолютті чемпион';
+
+  @override
+  String get questUltimateChampionDesc =>
+      'Барлық күнделікті мақсаттарды орындаңыз';
+
+  @override
+  String get profileUpdated => 'Профиль жаңартылды';
+
+  @override
+  String get questCompleted => 'Тапсырма орындалды';
+
+  @override
+  String get aiAssistantTitle => 'AI денсаулық көмекшісі';
+
+  @override
+  String get aiIntroMessage =>
+      'Сәлем! Мен сіздің AI денсаулық көмекшіңізбін. Менде сіздің мақсаттарыңызға, тарихыңызға және дене өлшемдеріңізге қол жетімділік бар. Сізге қалай көмектесе аламын?';
+
+  @override
+  String get errorPrefix => 'Қате: ';
 }

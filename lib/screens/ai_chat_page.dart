@@ -24,10 +24,18 @@ class _AiChatPageState extends State<AiChatPage> {
   @override
   void initState() {
     super.initState();
-    _messages.add({
-      'role': 'ai',
-      'text': 'Hello! I am your AI Health Assistant. I have access to your goals, history, and body metrics. How can I help you?'
-    });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_messages.isEmpty) {
+      final loc = AppLocalizations.of(context)!;
+      _messages.add({
+        'role': 'ai',
+        'text': loc.aiIntroMessage
+      });
+    }
   }
 
   void _scrollToBottom() {
@@ -117,7 +125,7 @@ class _AiChatPageState extends State<AiChatPage> {
       });
     } catch (e) {
       setState(() {
-        _messages.add({'role': 'ai', 'text': 'Error: $e'});
+        _messages.add({'role': 'ai', 'text': '${loc.errorPrefix}$e'});
         _isLoading = false;
       });
     }
@@ -126,12 +134,13 @@ class _AiChatPageState extends State<AiChatPage> {
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("AI Health Assistant", style: TextStyle(fontWeight: FontWeight.bold)),
+        title: Text(loc.aiAssistantTitle, style: const TextStyle(fontWeight: FontWeight.bold)),
         centerTitle: true,
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -191,7 +200,7 @@ class _AiChatPageState extends State<AiChatPage> {
                   child: TextField(
                     controller: _controller,
                     decoration: InputDecoration(
-                      hintText: "Ask about your progress...",
+                      hintText: loc.askAboutProgress,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(30),
                         borderSide: BorderSide.none,
