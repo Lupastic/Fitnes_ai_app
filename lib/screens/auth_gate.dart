@@ -19,9 +19,8 @@ class AuthGate extends StatefulWidget {
 class _AuthGateState extends State<AuthGate> {
   User? _lastUser;
 
-  // ✅ Храним future чтобы не пересоздавать при каждом build()
   Future<bool>? _pinFuture;
-  String? _pinFutureUid; // для какого uid был создан future
+  String? _pinFutureUid; 
 
   @override
   void dispose() {
@@ -41,7 +40,6 @@ class _AuthGateState extends State<AuthGate> {
     });
   }
 
-  // ✅ Получаем future только когда меняется uid
   Future<bool> _getPinFuture(AppAuthProvider authProvider, String uid) {
     if (_pinFuture == null || _pinFutureUid != uid) {
       _pinFutureUid = uid;
@@ -50,7 +48,6 @@ class _AuthGateState extends State<AuthGate> {
     return _pinFuture!;
   }
 
-  // ✅ Сброс при выходе
   void _resetState() {
     _lastUser = null;
     _pinFuture = null;
@@ -62,7 +59,7 @@ class _AuthGateState extends State<AuthGate> {
     final authProvider = context.watch<AppAuthProvider>();
 
     return StreamBuilder<User?>(
-      stream: FirebaseAuth.instance.userChanges(), // Используем userChanges для отслеживания emailVerified
+      stream: FirebaseAuth.instance.userChanges(), 
       builder: (context, snapshot) {
         developer.log(
           "🔄 Auth: ${snapshot.connectionState}, user: ${snapshot.data?.email}, verified: ${snapshot.data?.emailVerified}",
@@ -80,16 +77,13 @@ class _AuthGateState extends State<AuthGate> {
           return const StartPage();
         }
 
-        // Проверка email
         if (!user.emailVerified &&
             user.providerData.any((p) => p.providerId == 'password')) {
           return _buildEmailVerificationScreen(user);
         }
 
-        // Загружаем данные пользователя
         _handleInitialLogic(user);
 
-        // ✅ Если ПИН уже был введен в этой сессии, пропускаем его
         if (authProvider.isPinVerified) {
           return const NavigationWrapper();
         }
@@ -150,8 +144,8 @@ class _AuthGateState extends State<AuthGate> {
                 minimumSize: const Size(double.infinity, 50),
               ),
               onPressed: () async {
-                await user.reload(); // Перезагружаем пользователя, чтобы обновить emailVerified
-                setState(() {}); // Обновляем UI
+                await user.reload(); 
+                setState(() {});
               },
               child: const Text("Я подтвердил почту", style: TextStyle(color: Colors.white, fontSize: 16)),
             ),

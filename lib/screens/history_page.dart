@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -69,7 +70,7 @@ class _HistoryPageState extends State<HistoryPage> {
     // Удаление дубликатов по заголовку и времени (с точностью до минуты)
     final seen = <String>{};
     final uniqueHistory = <Map<String, dynamic>>[];
-    
+
     allHistory.sort((a, b) => b['timestamp'].compareTo(a['timestamp']));
 
     for (var entry in allHistory) {
@@ -89,7 +90,7 @@ class _HistoryPageState extends State<HistoryPage> {
 
   String _translateHistoryTitle(String? title, AppLocalizations loc) {
     if (title == null) return loc.noTitle;
-    
+
     // Check for encoded format: TYPE:ID:VALUE:UNIT
     if (title.startsWith("LOG:")) {
       final parts = title.split(":");
@@ -97,23 +98,23 @@ class _HistoryPageState extends State<HistoryPage> {
         final id = parts[1];
         final val = parts[2];
         final unitKey = parts[3];
-        
+
         String label = id;
         if (id == 'water') label = loc.water;
         else if (id == 'steps') label = loc.steps;
         else if (id == 'sleep') label = loc.sleep;
         else if (id == 'calories') label = loc.calories;
-        
+
         String unit = unitKey;
         if (unitKey == 'cups') unit = loc.cups;
         else if (unitKey == 'steps') unit = loc.steps;
         else if (unitKey == 'h') unit = loc.hours;
         else if (unitKey == 'kcal') unit = loc.kcal;
-        
+
         return "$label: +$val $unit";
       }
     }
-    
+
     if (title.startsWith("ONB:")) {
       final goal = title.replaceFirst("ONB:", "");
       String translatedGoal = goal;
@@ -122,7 +123,7 @@ class _HistoryPageState extends State<HistoryPage> {
       else if (goal == 'Get Fit') translatedGoal = loc.getFit;
       return "${loc.profileUpdated}: $translatedGoal";
     }
-    
+
     if (title.startsWith("QST:")) {
       final parts = title.split(":");
       if (parts.length >= 3) {
@@ -205,7 +206,7 @@ class _HistoryPageState extends State<HistoryPage> {
                         child: Text(
                           isSynced ? loc.synced : loc.local,
                           style: TextStyle(
-                            fontSize: 10, 
+                            fontSize: 10,
                             fontWeight: FontWeight.bold,
                             color: isSynced ? Colors.tealAccent : Colors.grey,
                           ),

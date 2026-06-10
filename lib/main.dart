@@ -21,21 +21,21 @@ import 'providers/settings_provider.dart';
 import 'providers/connectivity_provider.dart';
 import 'providers/summary_provider.dart';
 import 'providers/step_counter_provider.dart';
+import 'providers/notification_provider.dart';
 import 'services/settings_repository.dart';
 import 'services/local_repository.dart';
 import 'services/sync_service.dart';
 import 'services/user_data_service.dart';
 import 'screens/auth_gate.dart';
 import 'screens/auth_page.dart';
-import 'screens/history_page.dart';
 import 'screens/navigation_wrapper.dart';
 import 'screens/pin_code_screen.dart';
 import 'screens/leaderboard_page.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  developer.log("🚀 Запуск приложения...", name: "Main");
-  
+  developer.log("Запуск приложения...", name: "Main");
+
   try {
     // Load environment variables
     try {
@@ -53,10 +53,10 @@ Future<void> main() async {
       developer.log('❌ Error loading .env: $e', name: "Main");
     }
 
-    developer.log("🔥 Инициализация Firebase...", name: "Main");
+    developer.log("Инициализация Firebase...", name: "Main");
     await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
     FirebaseFirestore.instance.settings = const Settings(persistenceEnabled: true);
-    developer.log("✅ Firebase готов", name: "Main");
+    developer.log("Firebase готов", name: "Main");
 
     await Hive.initFlutter();
     if (!Hive.isAdapterRegistered(0)) Hive.registerAdapter(HistoryEntryAdapter());
@@ -94,12 +94,13 @@ Future<void> main() async {
   ChangeNotifierProvider(create: (context) => StepCounterProvider(context.read<SummaryProvider>(),)..initPedometer(),
   ),
           ChangeNotifierProvider(create: (context) => ConnectivityProvider(context.read<SyncService>())),
+          ChangeNotifierProvider(create: (_) => NotificationProvider()),
         ],
         child: const MyApp(),
       ),
     );
   } catch (e, stack) {
-    developer.log("❌ КРИТИЧЕСКАЯ ОШИБКА: $e", name: "Main", error: e, stackTrace: stack);
+    developer.log("ОШИБКА: $e", name: "Main", error: e, stackTrace: stack);
     runApp(MaterialApp(
       home: Scaffold(
         body: Center(child: Text("Ошибка запуска: $e")),
@@ -114,7 +115,7 @@ Future<void> _openHiveBox<T>(String name) async {
       await Hive.openBox<T>(name);
     }
   } catch (e) {
-    developer.log("⚠️ Ошибка открытия бокса $name: $e", name: "Hive");
+    developer.log(" Ошибка открытия бокса $name: $e", name: "Hive");
     await Hive.deleteBoxFromDisk(name);
     await Hive.openBox<T>(name);
   }
@@ -132,7 +133,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Health App',
       themeMode: themeProvider.themeMode,
-      
+
       theme: ThemeData(
         brightness: Brightness.light,
         scaffoldBackgroundColor: const Color(0xFFF7F8FA),
@@ -182,7 +183,6 @@ class MyApp extends StatelessWidget {
       ],
 
       routes: {
-        '/history': (context) => const HistoryPage(),
         '/auth_page': (context) => const AuthPage(),
         '/pin': (context) => const PinCodeScreen(),
         '/home': (context) => const NavigationWrapper(),

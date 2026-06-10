@@ -16,7 +16,6 @@ class SettingsProvider extends ChangeNotifier {
   int _points = 0;
   Locale? _locale;
 
-  // Поля онбординга
   double? _weight;
   String? _weightUnit;
   double? _height;
@@ -36,7 +35,6 @@ class SettingsProvider extends ChangeNotifier {
     _goals = Map.from(repo.goals.isNotEmpty ? repo.goals : {'water': 8, 'steps': 10000, 'sleep': 8, 'calories': 2000});
     _selectedChallengeIds = repo.prefs.getStringList('selectedChallenges') ?? ['water', 'steps', 'sleep', 'calories'];
     
-    // --- Логика ежедневного сброса квестов (локально) ---
     final String todayStr = DateTime.now().toIso8601String().split('T')[0];
     final String lastResetDate = repo.prefs.getString('lastQuestResetDate') ?? '';
     
@@ -139,7 +137,7 @@ class SettingsProvider extends ChangeNotifier {
         await _userDataService.updateProfileData(
           completedQuests: _completedQuests,
           points: _points,
-          lastQuestResetDate: todayStr, // Отправляем дату в облако
+          lastQuestResetDate: todayStr, 
         );
       } catch (e) {
         print("❌ Error syncing quest $id: $e");
@@ -180,20 +178,16 @@ class SettingsProvider extends ChangeNotifier {
           await repo.prefs.setStringList('selectedChallenges', _selectedChallengeIds);
         }
 
-        // --- Исправленная логика загрузки квестов из облака ---
         final String remoteResetDate = data['lastQuestResetDate'] ?? '';
         
         if (remoteResetDate == todayStr) {
-          // Если в облаке сегодняшняя дата — берем квесты
           _completedQuests = List<String>.from(data['completedQuests'] ?? []);
           await repo.prefs.setStringList('completedQuests', _completedQuests);
           await repo.prefs.setString('lastQuestResetDate', todayStr);
         } else {
-          // Если в облаке старая дата (среда и т.д.) — НЕ загружаем их, оставляем пустыми
           _completedQuests = [];
           await repo.prefs.setStringList('completedQuests', []);
           await repo.prefs.setString('lastQuestResetDate', todayStr);
-          // Можно также обновить облако, чтобы там тоже сбросилось
           await _userDataService.updateProfileData(completedQuests: [], lastQuestResetDate: todayStr);
         }
         

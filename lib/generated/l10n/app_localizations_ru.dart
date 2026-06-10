@@ -9,6 +9,30 @@ class AppLocalizationsRu extends AppLocalizations {
   AppLocalizationsRu([String locale = 'ru']) : super(locale);
 
   @override
+  String get accountSettings => 'Настройки аккаунта';
+
+  @override
+  String get displayName => 'Отображаемое имя';
+
+  @override
+  String get editBodyMetricsGoals => 'Изменить параметры тела и цели';
+
+  @override
+  String get waterReminder => 'Напоминание о воде';
+
+  @override
+  String get stepsReminder => 'Напоминание о шагах';
+
+  @override
+  String get sleepReminder => 'Напоминание о сне';
+
+  @override
+  String get caloriesReminder => 'Напоминание о калориях';
+
+  @override
+  String get notSet => 'Не указано';
+
+  @override
   String get water => 'Вода';
 
   @override
@@ -31,6 +55,45 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get lightMode => 'Светлая тема';
+
+  @override
+  String get checkPastActivityLogs => 'Просмотр истории активности';
+
+  @override
+  String get newPasswordOptional => 'Новый пароль (необязательно)';
+
+  @override
+  String get newPinCode => 'Новый PIN-код';
+
+  @override
+  String get updateAccount => 'Обновить аккаунт';
+
+  @override
+  String get notifications => 'Уведомления';
+
+  @override
+  String get preferences => 'Настройки';
+
+  @override
+  String get recentLoginRequired => 'Требуется повторный вход';
+
+  @override
+  String get enterCurrentPassword => 'Для изменения электронной почты или пароля введите текущий пароль:';
+
+  @override
+  String get currentPassword => 'Текущий пароль';
+
+  @override
+  String get cancel => 'Отмена';
+
+  @override
+  String get confirm => 'Подтвердить';
+
+  @override
+  String get wrongPassword => 'Неверный пароль';
+
+  @override
+  String get accountUpdatedSuccessfully => 'Аккаунт успешно обновлён';
 
   @override
   String get dark => 'Темная';
@@ -60,9 +123,6 @@ class AppLocalizationsRu extends AppLocalizations {
   String get profile => 'Профиль';
 
   @override
-  String get notifications => 'Уведомления';
-
-  @override
   String get resetSettings => 'Сбросить настройки';
 
   @override
@@ -85,9 +145,6 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get enterName => 'Введите имя';
-
-  @override
-  String get cancel => 'Отмена';
 
   @override
   String get save => 'Сохранить';
@@ -114,8 +171,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get nameUpdated => 'Имя успешно обновлено!';
 
   @override
-  String get confirmResetSettings =>
-      'Вы уверены, что хотите сбросить все настройки до значений по умолчанию?';
+  String get confirmResetSettings => 'Вы уверены, что хотите сбросить все настройки до значений по умолчанию?';
 
   @override
   String get reset => 'Сбросить';
@@ -166,7 +222,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get showAnalytics => 'Показать аналитику';
 
   @override
-  String get sync => 'Sync';
+  String get sync => 'Синхронизация';
 
   @override
   String get offline => 'Оффлайн';
@@ -199,31 +255,31 @@ class AppLocalizationsRu extends AppLocalizations {
   String get noTitle => 'Без названия';
 
   @override
-  String get changesSaved => 'Changes saved successfully';
+  String get changesSaved => 'Изменения сохранены';
 
   @override
-  String get achievementEarlyBird => 'Early Bird';
+  String get achievementEarlyBird => 'Ранняя пташка';
 
   @override
-  String get achievementHydrated => 'Hydrated';
+  String get achievementHydrated => 'Поддержание водного баланса';
 
   @override
-  String get achievementWeekStreak => 'Week Streak';
+  String get achievementWeekStreak => 'Серия 7 дней';
 
   @override
-  String get achievementMarathon => 'Marathon';
+  String get achievementMarathon => 'Марафонец';
 
   @override
-  String get achievementMealMaster => 'Meal Master';
+  String get achievementMealMaster => 'Мастер питания';
 
   @override
-  String get achievementIntermediate => 'Intermediate';
+  String get achievementIntermediate => 'Средний уровень';
 
   @override
-  String get achievementChampion => 'Champion';
+  String get achievementChampion => 'Чемпион';
 
   @override
-  String get achievementBriskWalk => 'Brisk Walk';
+  String get achievementBriskWalk => 'Быстрая прогулка';
 
   @override
   String get searchAchievements => 'Поиск достижений...';
@@ -286,12 +342,10 @@ class AppLocalizationsRu extends AppLocalizations {
   String get confirmReset => 'Подтвердите сброс';
 
   @override
-  String get resetSettingsWarning =>
-      'Вы уверены, что хотите сбросить все настройки к значениям по умолчанию? Это действие нельзя отменить.';
+  String get resetSettingsWarning => 'Вы уверены, что хотите сбросить все настройки к значениям по умолчанию? Это действие нельзя отменить.';
 
   @override
-  String get allSettingsReset =>
-      'Все настройки сброшены к значениям по умолчанию!';
+  String get allSettingsReset => 'Все настройки сброшены к значениям по умолчанию!';
 
   @override
   String get yourProgress => 'Твой прогресс';
@@ -342,12 +396,6 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get viewActivityHistory => 'История активности';
-
-  @override
-  String get accountSettings => 'Настройки аккаунта';
-
-  @override
-  String get preferences => 'Предпочтения';
 
   @override
   String get bodyMetrics => 'Параметры тела';

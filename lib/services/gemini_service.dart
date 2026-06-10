@@ -25,10 +25,11 @@ class GeminiService {
           'X-Title': 'Health App',
         },
         body: jsonEncode({
-          'model': 'google/gemini-2.0-flash-001', // Обновленный ID модели для OpenRouter
+          'model': 'openai/gpt-4-turbo',
           'messages': _messages,
-        }),
-      );
+          'max_tokens': 512,
+      }),
+    );
 
       if (response.statusCode == 200) {
         final data = jsonDecode(utf8.decode(response.bodyBytes));
@@ -47,7 +48,6 @@ class GeminiService {
     }
   }
 
-  // Заглушки для совместимости
   dynamic startChat() => this;
 
   Future<dynamic> sendMessage(dynamic content) async {

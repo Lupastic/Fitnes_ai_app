@@ -33,7 +33,6 @@ class _RegisterPageState extends State<RegisterPage> {
     final userDataService = context.read<UserDataService>();
 
     try {
-      // 1. Регистрация через AuthProvider
       await auth.registerWithEmail(
         _emailController.text.trim(),
         _passwordController.text.trim(),
@@ -44,24 +43,19 @@ class _RegisterPageState extends State<RegisterPage> {
       if (currentUser != null) {
         final pin = _pinController.text.trim();
 
-        // 2. Обновление локальных настроек
         await settings.updateName(_nameController.text.trim());
 
-        // 3. Сохранение ПИН-кода ЛОКАЛЬНО
         final prefs = await SharedPreferences.getInstance();
         await prefs.setString('pin_code', pin);
 
-        // 4. Сохранение ПИН-кода и имени в FIREBASE
         await userDataService.updateProfileData(
           name: _nameController.text.trim(),
           pinCode: pin,
         );
 
-        // 5. Отправка письма для подтверждения (опционально, но полезно)
         await currentUser.sendEmailVerification();
         
         if (mounted) {
-          // ПЕРЕНАПРАВЛЯЕМ НА ОНБОРДИНГ (Анкету)
           Navigator.of(context).pushAndRemoveUntil(
             MaterialPageRoute(builder: (c) => const OnboardingPage()),
             (route) => false,

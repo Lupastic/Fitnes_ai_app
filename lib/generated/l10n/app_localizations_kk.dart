@@ -9,6 +9,30 @@ class AppLocalizationsKk extends AppLocalizations {
   AppLocalizationsKk([String locale = 'kk']) : super(locale);
 
   @override
+  String get accountSettings => 'Аккаунт параметрлері';
+
+  @override
+  String get displayName => 'Көрсетілетін атау';
+
+  @override
+  String get editBodyMetricsGoals => 'Дене параметрлері мен мақсаттарды өзгерту';
+
+  @override
+  String get waterReminder => 'Су ішу туралы еске салу';
+
+  @override
+  String get stepsReminder => 'Қадамдар туралы еске салу';
+
+  @override
+  String get sleepReminder => 'Ұйқы туралы еске салу';
+
+  @override
+  String get caloriesReminder => 'Калориялар туралы еске салу';
+
+  @override
+  String get notSet => 'Көрсетілмеген';
+
+  @override
   String get water => 'Су';
 
   @override
@@ -30,7 +54,46 @@ class AppLocalizationsKk extends AppLocalizations {
   String get darkMode => 'Қараңғы режим';
 
   @override
-  String get lightMode => 'Жарық режимі';
+  String get lightMode => 'Жарық режим';
+
+  @override
+  String get checkPastActivityLogs => 'Белсенділік тарихын көру';
+
+  @override
+  String get newPasswordOptional => 'Жаңа құпиясөз (міндетті емес)';
+
+  @override
+  String get newPinCode => 'Жаңа PIN-код';
+
+  @override
+  String get updateAccount => 'Аккаунтты жаңарту';
+
+  @override
+  String get notifications => 'Хабарландырулар';
+
+  @override
+  String get preferences => 'Баптаулар';
+
+  @override
+  String get recentLoginRequired => 'Қайта кіру қажет';
+
+  @override
+  String get enterCurrentPassword => 'Электрондық пошта немесе құпиясөзді өзгерту үшін ағымдағы құпиясөзді енгізіңіз:';
+
+  @override
+  String get currentPassword => 'Ағымдағы құпиясөз';
+
+  @override
+  String get cancel => 'Бас тарту';
+
+  @override
+  String get confirm => 'Растау';
+
+  @override
+  String get wrongPassword => 'Қате құпиясөз';
+
+  @override
+  String get accountUpdatedSuccessfully => 'Аккаунт сәтті жаңартылды';
 
   @override
   String get dark => 'Қараңғы';
@@ -60,9 +123,6 @@ class AppLocalizationsKk extends AppLocalizations {
   String get profile => 'Профиль';
 
   @override
-  String get notifications => 'Хабарламалар';
-
-  @override
   String get resetSettings => 'Параметрлерді қалпына келтіру';
 
   @override
@@ -85,9 +145,6 @@ class AppLocalizationsKk extends AppLocalizations {
 
   @override
   String get enterName => 'Атыңызды енгізіңіз';
-
-  @override
-  String get cancel => 'Болдырмау';
 
   @override
   String get save => 'Сақтау';
@@ -114,8 +171,7 @@ class AppLocalizationsKk extends AppLocalizations {
   String get nameUpdated => 'Аты сәтті жаңартылды!';
 
   @override
-  String get confirmResetSettings =>
-      'Барлық параметрлерді әдепкі мәндеріне қалпына келтіргіңіз келетініне сенімдісіз бе?';
+  String get confirmResetSettings => 'Барлық параметрлерді әдепкі мәндеріне қалпына келтіргіңіз келетініне сенімдісіз бе?';
 
   @override
   String get reset => 'Қалпына келтіру';
@@ -166,7 +222,7 @@ class AppLocalizationsKk extends AppLocalizations {
   String get showAnalytics => 'Аналитиканы көрсету';
 
   @override
-  String get sync => 'Sync';
+  String get sync => 'Синхрондау';
 
   @override
   String get offline => 'Оффлайн';
@@ -175,8 +231,7 @@ class AppLocalizationsKk extends AppLocalizations {
   String get noInternet => 'Интернет жоқ';
 
   @override
-  String get offlineSyncNotice =>
-      'Сіз оффлайндасыз. Деректер кейінірек синхрондалады.';
+  String get offlineSyncNotice => 'Сіз оффлайндасыз. Деректер кейінірек синхрондалады.';
 
   @override
   String get challengeStreakText => '7 күн қатарынан жүріңіз — медаль алыңыз!';
@@ -200,31 +255,31 @@ class AppLocalizationsKk extends AppLocalizations {
   String get noTitle => 'Атауы жоқ';
 
   @override
-  String get changesSaved => 'Changes saved successfully';
+  String get changesSaved => 'Өзгерістер сақталды';
 
   @override
-  String get achievementEarlyBird => 'Early Bird';
+  String get achievementEarlyBird => 'Ерте тұратын адам';
 
   @override
-  String get achievementHydrated => 'Hydrated';
+  String get achievementHydrated => 'Су балансын сақтау';
 
   @override
-  String get achievementWeekStreak => 'Week Streak';
+  String get achievementWeekStreak => '7 күндік серия';
 
   @override
-  String get achievementMarathon => 'Marathon';
+  String get achievementMarathon => 'Марафоншы';
 
   @override
-  String get achievementMealMaster => 'Meal Master';
+  String get achievementMealMaster => 'Тамақтану шебері';
 
   @override
-  String get achievementIntermediate => 'Intermediate';
+  String get achievementIntermediate => 'Орта деңгей';
 
   @override
-  String get achievementChampion => 'Champion';
+  String get achievementChampion => 'Чемпион';
 
   @override
-  String get achievementBriskWalk => 'Brisk Walk';
+  String get achievementBriskWalk => 'Жылдам серуен';
 
   @override
   String get searchAchievements => 'Жетістіктерді іздеу...';
@@ -287,19 +342,16 @@ class AppLocalizationsKk extends AppLocalizations {
   String get confirmReset => 'Қалпына келтіруді растау';
 
   @override
-  String get resetSettingsWarning =>
-      'Барлық параметрлерді әдепкіге қалпына келтіргіңіз келетініне сенімдісіз бе? Бұл әрекетті болдырмау мүмкін емес.';
+  String get resetSettingsWarning => 'Барлық параметрлерді әдепкіге қалпына келтіргіңіз келетініне сенімдісіз бе? Бұл әрекетті болдырмау мүмкін емес.';
 
   @override
-  String get allSettingsReset =>
-      'Барлық параметрлер әдепкіге қалпына келтірілді!';
+  String get allSettingsReset => 'Барлық параметрлер әдепкіге қалпына келтірілді!';
 
   @override
   String get yourProgress => 'Сіздің үлгеріміңіз';
 
   @override
-  String get motivationQuote =>
-      'Өзіңізге сеніңіз, сонда сіз мақсатқа жартылай жеттіңіз.';
+  String get motivationQuote => 'Өзіңізге сеніңіз, сонда сіз мақсатқа жартылай жеттіңіз.';
 
   @override
   String get aiChat => 'AI Чат';
@@ -344,12 +396,6 @@ class AppLocalizationsKk extends AppLocalizations {
 
   @override
   String get viewActivityHistory => 'Белсенділік тарихы';
-
-  @override
-  String get accountSettings => 'Аккаунт параметрлері';
-
-  @override
-  String get preferences => 'Теңшелімдер';
 
   @override
   String get bodyMetrics => 'Дене өлшемдері';
