@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:finallapp/generated/l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:permission_handler/permission_handler.dart';
 import '../providers/settings_provider.dart';
 
 import 'home_page.dart';
@@ -22,9 +23,17 @@ class NavigationWrapper extends StatefulWidget {
 class _NavigationWrapperState extends State<NavigationWrapper> {
   int _currentIndex = 0;
 
+  Future<void> _requestPermissions() async {
+    final status = await Permission.activityRecognition.status;
+    if (!status.isGranted) {
+      await Permission.activityRecognition.request();
+    }
+  }
+
   @override
   void initState() {
     super.initState();
+    _requestPermissions();
     if (!widget.isGuest) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         final user = FirebaseAuth.instance.currentUser;

@@ -26,9 +26,10 @@ class NotificationProvider extends ChangeNotifier {
 
   Future<void> updateSettings(ns.NotificationSettings newSettings) async {
     _settings = newSettings;
+    notifyListeners(); // Немедленно обновляем UI
+    
     await _settings.save();
     await _rescheduleAll();
-    notifyListeners();
   }
 
   Future<void> _rescheduleAll() async {
