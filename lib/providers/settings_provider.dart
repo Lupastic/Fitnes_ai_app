@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import '../models/history_entry.dart';
 import '../services/settings_repository.dart';
 import '../services/user_data_service.dart';
 
@@ -104,7 +106,7 @@ class SettingsProvider extends ChangeNotifier {
     await _userDataService.updateProfileData(goals: _goals);
   }
 
-  Future<void> completeQuest(String id, int pointsToAdd) async {
+  Future<void> completeQuest(String id, int pointsToAdd, {String? historyTitle}) async {
     if (!_completedQuests.contains(id)) {
       _completedQuests.add(id);
       _points += pointsToAdd;
@@ -115,6 +117,21 @@ class SettingsProvider extends ChangeNotifier {
       await repo.prefs.setStringList('completedQuests', _completedQuests);
       await repo.prefs.setInt('points', _points);
       await repo.prefs.setString('lastQuestResetDate', todayStr);
+
+      // Добавляем запись в историю
+      if (historyTitle != null) {
+        try {
+          final box = Hive.box<HistoryEntry>('history');
+          final entry = HistoryEntry(
+            title: historyTitle,
+            timestamp: DateTime.now(),
+          );
+          await box.add(entry);
+          await _userDataService.addHistoryEntry(entry);
+        } catch (e) {
+          debugPrint("❌ Error logging quest to history: $e");
+        }
+      }
 
       try {
         await _userDataService.updateProfileData(

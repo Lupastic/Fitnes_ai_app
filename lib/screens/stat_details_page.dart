@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../models/daily_summary.dart';
 import '../services/user_data_service.dart';
 import 'package:intl/intl.dart';
+import 'package:finallapp/generated/l10n/app_localizations.dart';
 
 class StatDetailsPage extends StatelessWidget {
   final String title;
@@ -28,7 +29,9 @@ class StatDetailsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
     final userDataService = context.read<UserDataService>();
+    final currentLocale = Localizations.localeOf(context).languageCode;
 
     return Scaffold(
       appBar: AppBar(title: Text(title)),
@@ -39,7 +42,7 @@ class StatDetailsPage extends StatelessWidget {
             return const Center(child: CircularProgressIndicator());
           }
           if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return const Center(child: Text("No data for the last 7 days"));
+            return Center(child: Text(loc.noDataLast7Days));
           }
 
           final data = snapshot.data!;
@@ -54,7 +57,7 @@ class StatDetailsPage extends StatelessWidget {
                   children: [
                     Icon(icon, size: 40, color: Colors.tealAccent),
                     const SizedBox(width: 12),
-                    Text("Weekly Progress", style: Theme.of(context).textTheme.headlineSmall),
+                    Text(loc.weeklyProgress, style: Theme.of(context).textTheme.headlineSmall),
                   ],
                 ),
                 const SizedBox(height: 30),
@@ -80,7 +83,7 @@ class StatDetailsPage extends StatelessWidget {
                             ),
                           ),
                           const SizedBox(height: 8),
-                          Text(DateFormat('E').format(s.date), 
+                          Text(DateFormat('E', currentLocale).format(s.date), 
                                style: const TextStyle(fontWeight: FontWeight.bold)),
                         ],
                       );
@@ -91,7 +94,7 @@ class StatDetailsPage extends StatelessWidget {
                 Card(
                   child: ListTile(
                     leading: const Icon(Icons.info_outline),
-                    title: const Text("Average Value"),
+                    title: Text(loc.averageValue),
                     trailing: Text((data.map(_getValue).reduce((a, b) => a + b) / data.length).toStringAsFixed(1)),
                   ),
                 )

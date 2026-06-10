@@ -19,6 +19,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  // We keep the IDs but will translate titles and units in the UI
   static const List<Challenge> _allTypes = [
     Challenge(id: 'water', title: 'Water', frequency: 'Daily', unit: 'cups', target: 8, icon: Icons.local_drink_rounded),
     Challenge(id: 'steps', title: 'Steps', frequency: 'Daily', unit: 'steps', target: 10000, icon: Icons.directions_run_rounded),
@@ -39,9 +40,9 @@ class _HomePageState extends State<HomePage> {
   String _getTranslatedUnit(String id, AppLocalizations loc) {
     switch (id) {
       case 'water': return loc.cups;
-      case 'steps': return loc.steps; 
+      case 'steps': return loc.steps;
       case 'sleep': return loc.hours;
-      case 'calories': return "kcal";
+      case 'calories': return loc.kcal;
       default: return "";
     }
   }
@@ -49,7 +50,7 @@ class _HomePageState extends State<HomePage> {
   void _showManualInputDialog(Challenge ch, SummaryProvider provider, AppLocalizations loc) {
     final TextEditingController controller = TextEditingController();
     final title = _getTranslatedTitle(ch.id, loc);
-    final unit = _getTranslatedUnit(ch.id, loc);
+    final unitLabel = _getTranslatedUnit(ch.id, loc);
 
     showDialog(
       context: context,
@@ -59,7 +60,7 @@ class _HomePageState extends State<HomePage> {
           controller: controller,
           keyboardType: const TextInputType.numberWithOptions(decimal: true),
           decoration: InputDecoration(
-            labelText: "$title ($unit)",
+            labelText: "$title ($unitLabel)",
             hintText: "...",
           ),
         ),
@@ -72,10 +73,14 @@ class _HomePageState extends State<HomePage> {
             onPressed: () {
               final val = double.tryParse(controller.text) ?? 0;
               if (val > 0) {
-                if (ch.id == 'water') provider.update(water: val.toInt(), add: true);
-                if (ch.id == 'steps') provider.update(steps: val.toInt(), add: true);
-                if (ch.id == 'sleep') provider.update(sleep: val, add: true);
-                if (ch.id == 'calories') provider.update(cal: val.toInt(), add: true);
+                final displayVal = val.toStringAsFixed(val % 1 != 0 ? 1 : 0);
+                // Encoded format for history: LOG:ID:VALUE:UNIT_KEY
+                final historyMsg = "LOG:${ch.id}:$displayVal:${ch.unit}";
+                
+                if (ch.id == 'water') provider.update(water: val.toInt(), add: true, historyTitle: historyMsg);
+                if (ch.id == 'steps') provider.update(steps: val.toInt(), add: true, historyTitle: historyMsg);
+                if (ch.id == 'sleep') provider.update(sleep: val, add: true, historyTitle: historyMsg);
+                if (ch.id == 'calories') provider.update(cal: val.toInt(), add: true, historyTitle: historyMsg);
               }
               Navigator.pop(context);
             },

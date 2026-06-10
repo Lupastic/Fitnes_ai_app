@@ -10,6 +10,7 @@ import 'package:finallapp/generated/l10n/app_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'dart:developer' as developer;
+import 'package:flutter/foundation.dart';
 
 import 'models/daily_summary.dart';
 import 'models/history_entry.dart';
@@ -72,7 +73,9 @@ Future<void> main() async {
     final settingsRepo = SettingsRepository(prefs);
 
     developer.log("🏁 Запуск runApp", name: "Main");
-    await initializeService();
+    if (!kIsWeb && (defaultTargetPlatform == TargetPlatform.android || defaultTargetPlatform == TargetPlatform.iOS)) {
+      await initializeService();
+    }
     runApp(
       MultiProvider(
         providers: [

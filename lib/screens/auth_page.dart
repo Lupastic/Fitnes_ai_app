@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
+import 'package:finallapp/generated/l10n/app_localizations.dart';
 import '../providers/auth_provider.dart';
 import '../providers/settings_provider.dart';
 import 'register_page.dart';
@@ -83,6 +84,7 @@ class _AuthPageState extends State<AuthPage> {
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
     final isLoading = context.watch<AppAuthProvider>().isLoading;
 
     return Scaffold(
@@ -95,19 +97,19 @@ class _AuthPageState extends State<AuthPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text("С возвращением!", style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold)),
-                const Text("Войдите, чтобы продолжить прогресс", style: TextStyle(color: Colors.grey)),
+                Text(loc.welcomeBack, style: const TextStyle(fontSize: 32, fontWeight: FontWeight.bold)),
+                Text(loc.loginToContinue, style: const TextStyle(color: Colors.grey)),
                 const SizedBox(height: 50),
 
                 TextFormField(
                   controller: _emailController,
                   keyboardType: TextInputType.emailAddress,
                   decoration: InputDecoration(
-                    labelText: "Email",
+                    labelText: loc.email,
                     prefixIcon: const Icon(Icons.email_outlined),
                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
                   ),
-                  validator: (v) => (v == null || v.isEmpty) ? "Введите email" : null,
+                  validator: (v) => (v == null || v.isEmpty) ? loc.enterValidEmail : null,
                 ),
                 const SizedBox(height: 20),
 
@@ -115,7 +117,7 @@ class _AuthPageState extends State<AuthPage> {
                   controller: _passwordController,
                   obscureText: _obscurePassword,
                   decoration: InputDecoration(
-                    labelText: "Пароль",
+                    labelText: loc.password,
                     prefixIcon: const Icon(Icons.lock_outline),
                     suffixIcon: IconButton(
                       icon: Icon(_obscurePassword ? Icons.visibility_off : Icons.visibility),
@@ -123,14 +125,14 @@ class _AuthPageState extends State<AuthPage> {
                     ),
                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
                   ),
-                  validator: (v) => (v == null || v.isEmpty) ? "Введите пароль" : null,
+                  validator: (v) => (v == null || v.isEmpty) ? loc.password : null,
                 ),
                 const SizedBox(height: 10),
                 Align(
                   alignment: Alignment.centerRight,
                   child: TextButton(
                     onPressed: isLoading ? null : _forgotPassword,
-                    child: const Text("Забыли пароль?"),
+                    child: Text(loc.forgotPassword),
                   ),
                 ),
                 const SizedBox(height: 30),
@@ -146,7 +148,7 @@ class _AuthPageState extends State<AuthPage> {
                     ),
                     child: isLoading 
                       ? const CircularProgressIndicator(color: Colors.white)
-                      : const Text("Войти", style: TextStyle(fontSize: 18, color: Colors.white, fontWeight: FontWeight.bold)),
+                      : Text(loc.login, style: const TextStyle(fontSize: 18, color: Colors.white, fontWeight: FontWeight.bold)),
                   ),
                 ),
                 const SizedBox(height: 20),
@@ -157,7 +159,7 @@ class _AuthPageState extends State<AuthPage> {
                   child: OutlinedButton.icon(
                     onPressed: isLoading ? null : _signInWithGoogle,
                     icon: const Icon(Icons.login),
-                    label: const Text("Войти через Google"),
+                    label: Text(loc.loginWithGoogle),
                     style: OutlinedButton.styleFrom(
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
                       side: BorderSide(color: Colors.grey.shade300),
@@ -170,10 +172,10 @@ class _AuthPageState extends State<AuthPage> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Text("Нет аккаунта?"),
+                    Text(loc.noAccount),
                     TextButton(
                       onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (c) => const RegisterPage())),
-                      child: const Text("Создать", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.teal)),
+                      child: Text(loc.createAccount, style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.teal)),
                     ),
                   ],
                 ),
