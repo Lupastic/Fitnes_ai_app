@@ -24,10 +24,20 @@ class _AiChatPageState extends State<AiChatPage> {
   @override
   void initState() {
     super.initState();
-    _messages.add({
-      'role': 'ai',
-      'text': 'Hello! I am your AI Health Assistant. I have access to your goals, history, and body metrics. How can I help you?'
-    });
+    // We can't use AppLocalizations here as context is not fully ready,
+    // but initState is called once. We'll handle initial message in build or via post frame callback.
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_messages.isEmpty) {
+      final loc = AppLocalizations.of(context)!;
+      _messages.add({
+        'role': 'ai',
+        'text': loc.aiGreeting
+      });
+    }
   }
 
   void _scrollToBottom() {
@@ -124,10 +134,11 @@ class _AiChatPageState extends State<AiChatPage> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
+    final loc = AppLocalizations.of(context)!;
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("AI Health Assistant", style: TextStyle(fontWeight: FontWeight.bold)),
+        title: Text(loc.aiHealthAssistant, style: const TextStyle(fontWeight: FontWeight.bold)),
         centerTitle: true,
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -187,7 +198,7 @@ class _AiChatPageState extends State<AiChatPage> {
                   child: TextField(
                     controller: _controller,
                     decoration: InputDecoration(
-                      hintText: "Ask about your progress...",
+                      hintText: loc.askAboutProgress,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(30),
                         borderSide: BorderSide.none,

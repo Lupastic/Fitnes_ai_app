@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../providers/auth_provider.dart';
 import '../providers/settings_provider.dart';
 import 'register_page.dart';
+import 'package:finallapp/generated/l10n/app_localizations.dart';
 
 class AuthPage extends StatefulWidget {
   const AuthPage({super.key});
@@ -28,8 +29,6 @@ class _AuthPageState extends State<AuthPage> {
         _passwordController.text.trim(),
       );
       if (mounted) {
-        // Просто закрываем экран входа. 
-        // AuthGate сам переключится на Главную или ПИН-код.
         Navigator.pop(context);
       }
     } on FirebaseAuthException catch (e) {
@@ -41,7 +40,7 @@ class _AuthPageState extends State<AuthPage> {
       );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Ошибка: $e"), backgroundColor: Colors.red),
+        SnackBar(content: Text("Error: $e"), backgroundColor: Colors.red),
       );
     }
   }
@@ -55,16 +54,17 @@ class _AuthPageState extends State<AuthPage> {
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Ошибка Google Sign-In: $e"), backgroundColor: Colors.red),
+        SnackBar(content: Text("Google Sign-In Error: $e"), backgroundColor: Colors.red),
       );
     }
   }
 
   Future<void> _forgotPassword() async {
     final email = _emailController.text.trim();
+    final loc = AppLocalizations.of(context)!;
     if (email.isEmpty || !email.contains('@')) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Введите корректный email для сброса пароля")),
+        SnackBar(content: Text(loc.validEmailRequired)),
       );
       return;
     }
@@ -72,11 +72,11 @@ class _AuthPageState extends State<AuthPage> {
     try {
       await context.read<AppAuthProvider>().resetPassword(email);
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Инструкция по сбросу пароля отправлена на email"), backgroundColor: Colors.green),
+        SnackBar(content: Text(loc.passwordResetSent), backgroundColor: Colors.green),
       );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Ошибка при отправке письма"), backgroundColor: Colors.red),
+        SnackBar(content: Text(loc.emailError), backgroundColor: Colors.red),
       );
     }
   }
@@ -84,6 +84,7 @@ class _AuthPageState extends State<AuthPage> {
   @override
   Widget build(BuildContext context) {
     final isLoading = context.watch<AppAuthProvider>().isLoading;
+    final loc = AppLocalizations.of(context)!;
 
     return Scaffold(
       appBar: AppBar(backgroundColor: Colors.transparent, elevation: 0),
@@ -95,19 +96,19 @@ class _AuthPageState extends State<AuthPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text("С возвращением!", style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold)),
-                const Text("Войдите, чтобы продолжить прогресс", style: TextStyle(color: Colors.grey)),
+                Text(loc.welcomeBack, style: const TextStyle(fontSize: 32, fontWeight: FontWeight.bold)),
+                Text(loc.signInToContinue, style: const TextStyle(color: Colors.grey)),
                 const SizedBox(height: 50),
 
                 TextFormField(
                   controller: _emailController,
                   keyboardType: TextInputType.emailAddress,
                   decoration: InputDecoration(
-                    labelText: "Email",
+                    labelText: loc.email,
                     prefixIcon: const Icon(Icons.email_outlined),
                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
                   ),
-                  validator: (v) => (v == null || v.isEmpty) ? "Введите email" : null,
+                  validator: (v) => (v == null || v.isEmpty) ? loc.enterEmail : null,
                 ),
                 const SizedBox(height: 20),
 
@@ -115,7 +116,7 @@ class _AuthPageState extends State<AuthPage> {
                   controller: _passwordController,
                   obscureText: _obscurePassword,
                   decoration: InputDecoration(
-                    labelText: "Пароль",
+                    labelText: loc.password,
                     prefixIcon: const Icon(Icons.lock_outline),
                     suffixIcon: IconButton(
                       icon: Icon(_obscurePassword ? Icons.visibility_off : Icons.visibility),
@@ -123,14 +124,14 @@ class _AuthPageState extends State<AuthPage> {
                     ),
                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
                   ),
-                  validator: (v) => (v == null || v.isEmpty) ? "Введите пароль" : null,
+                  validator: (v) => (v == null || v.isEmpty) ? loc.enterPassword : null,
                 ),
                 const SizedBox(height: 10),
                 Align(
                   alignment: Alignment.centerRight,
                   child: TextButton(
                     onPressed: isLoading ? null : _forgotPassword,
-                    child: const Text("Забыли пароль?"),
+                    child: Text(loc.forgotPassword),
                   ),
                 ),
                 const SizedBox(height: 30),
@@ -146,7 +147,7 @@ class _AuthPageState extends State<AuthPage> {
                     ),
                     child: isLoading 
                       ? const CircularProgressIndicator(color: Colors.white)
-                      : const Text("Войти", style: TextStyle(fontSize: 18, color: Colors.white, fontWeight: FontWeight.bold)),
+                      : Text(loc.signIn, style: const TextStyle(fontSize: 18, color: Colors.white, fontWeight: FontWeight.bold)),
                   ),
                 ),
                 const SizedBox(height: 20),
@@ -157,7 +158,7 @@ class _AuthPageState extends State<AuthPage> {
                   child: OutlinedButton.icon(
                     onPressed: isLoading ? null : _signInWithGoogle,
                     icon: const Icon(Icons.login),
-                    label: const Text("Войти через Google"),
+                    label: Text(loc.signInWithGoogle),
                     style: OutlinedButton.styleFrom(
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
                       side: BorderSide(color: Colors.grey.shade300),
@@ -170,10 +171,10 @@ class _AuthPageState extends State<AuthPage> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Text("Нет аккаунта?"),
+                    Text(loc.dontHaveAccount),
                     TextButton(
                       onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (c) => const RegisterPage())),
-                      child: const Text("Создать", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.teal)),
+                      child: Text(loc.create, style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.teal)),
                     ),
                   ],
                 ),

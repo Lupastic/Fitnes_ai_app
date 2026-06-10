@@ -40,6 +40,7 @@ class _SettingsPageState extends State<SettingsPage> {
     setState(() => _isLoading = true);
     final settings = context.read<SettingsProvider>();
     final userDataService = context.read<UserDataService>();
+    final loc = AppLocalizations.of(context)!;
 
     try {
       if (_nameController.text != settings.name) {
@@ -74,7 +75,7 @@ class _SettingsPageState extends State<SettingsPage> {
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Account updated successfully")),
+          SnackBar(content: Text(loc.accountUpdatedSuccess)),
         );
       }
     } catch (e) {
@@ -89,20 +90,21 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   void _showReauthDialog() {
+    final loc = AppLocalizations.of(context)!;
     final TextEditingController passwordCheck = TextEditingController();
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text("Recent Login Required"),
+        title: Text(loc.recentLoginRequired),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Text("To change email or password, please enter your CURRENT password first:"),
-            TextField(controller: passwordCheck, obscureText: true, decoration: const InputDecoration(labelText: "Current Password")),
+            Text(loc.reauthPrompt),
+            TextField(controller: passwordCheck, obscureText: true, decoration: InputDecoration(labelText: loc.currentPassword)),
           ],
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(context), child: const Text("Cancel")),
+          TextButton(onPressed: () => Navigator.pop(context), child: Text(loc.cancel)),
           ElevatedButton(
             onPressed: () async {
               final user = FirebaseAuth.instance.currentUser;
@@ -112,10 +114,10 @@ class _SettingsPageState extends State<SettingsPage> {
                 Navigator.pop(context);
                 _updateAccount();
               } catch (e) {
-                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Wrong password"), backgroundColor: Colors.red));
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(loc.wrongPassword), backgroundColor: Colors.red));
               }
             },
-            child: const Text("Confirm"),
+            child: Text(loc.confirm),
           ),
         ],
       ),
@@ -178,29 +180,29 @@ class _SettingsPageState extends State<SettingsPage> {
               child: ListTile(
                 leading: const Icon(Icons.history, color: Colors.tealAccent),
                 title: Text(loc.history, style: const TextStyle(fontWeight: FontWeight.bold)),
-                subtitle: const Text("Check your past activity logs"),
+                subtitle: Text(loc.checkPastActivity),
                 trailing: const Icon(Icons.arrow_forward_ios, size: 16),
                 onTap: () => Navigator.pushNamed(context, '/history'),
               ),
             ),
             const SizedBox(height: 24),
 
-            Text("Account Settings", style: Theme.of(context).textTheme.titleLarge),
+            Text(loc.accountSettings, style: Theme.of(context).textTheme.titleLarge),
             const SizedBox(height: 12),
             Card(
               child: Padding(
                 padding: const EdgeInsets.all(16),
                 child: Column(
                   children: [
-                    TextField(controller: _nameController, decoration: const InputDecoration(labelText: "Display Name", prefixIcon: Icon(Icons.person))),
-                    TextField(controller: _emailController, decoration: const InputDecoration(labelText: "Email", prefixIcon: Icon(Icons.email))),
-                    TextField(controller: _passwordController, decoration: const InputDecoration(labelText: "New Password (optional)", prefixIcon: Icon(Icons.lock)), obscureText: true),
-                    TextField(controller: _pinController, decoration: const InputDecoration(labelText: "New PIN Code", prefixIcon: Icon(Icons.pin_outlined)), keyboardType: TextInputType.number, obscureText: true),
+                    TextField(controller: _nameController, decoration: InputDecoration(labelText: loc.displayName, prefixIcon: const Icon(Icons.person))),
+                    TextField(controller: _emailController, decoration: InputDecoration(labelText: loc.email, prefixIcon: const Icon(Icons.email))),
+                    TextField(controller: _passwordController, decoration: InputDecoration(labelText: loc.newPasswordOptional, prefixIcon: const Icon(Icons.lock)), obscureText: true),
+                    TextField(controller: _pinController, decoration: InputDecoration(labelText: loc.newPinCode, prefixIcon: const Icon(Icons.pin_outlined)), keyboardType: TextInputType.number, obscureText: true),
                     const SizedBox(height: 16),
                     ElevatedButton(
                       onPressed: _updateAccount,
                       style: ElevatedButton.styleFrom(backgroundColor: Colors.tealAccent.shade700, foregroundColor: Colors.white),
-                      child: const Text("Update Account"),
+                      child: Text(loc.updateAccount),
                     ),
                   ],
                 ),
@@ -208,12 +210,12 @@ class _SettingsPageState extends State<SettingsPage> {
             ),
             const SizedBox(height: 24),
 
-            Text("Notifications", style: Theme.of(context).textTheme.titleLarge),
+            Text(loc.notifications, style: Theme.of(context).textTheme.titleLarge),
             const SizedBox(height: 12),
             const NotificationSettingsCard(),
             const SizedBox(height: 24),
 
-            Text("Preferences", style: Theme.of(context).textTheme.titleLarge),
+            Text(loc.preferences, style: Theme.of(context).textTheme.titleLarge),
             const SizedBox(height: 12),
             Card(
               child: Column(
@@ -221,7 +223,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   ListTile(
                     leading: const Icon(Icons.brightness_6),
                     title: Text(loc.theme),
-                    subtitle: Text(themeProvider.themeMode == ThemeMode.dark ? "Dark Mode" : "Light Mode"),
+                    subtitle: Text(themeProvider.themeMode == ThemeMode.dark ? loc.darkMode : loc.lightMode),
                     trailing: Switch(
                       value: themeProvider.themeMode == ThemeMode.dark,
                       onChanged: (v) => themeProvider.toggleTheme(),

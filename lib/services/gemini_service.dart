@@ -5,11 +5,11 @@ import 'dart:developer' as developer;
 
 class GeminiService {
   final String _baseUrl = 'https://openrouter.ai/api/v1/chat/completions';
-  
+
   final List<Map<String, String>> _messages = [];
 
-    Future<String> getResponse(String text) async {
-    final apiKey = dotenv.env['OPENROUTER_API_KEY'] ?? '';
+  Future<String> getResponse(String text) async {
+    final apiKey = dotenv.env['GEMINI_API_KEY'] ?? '';
 
     // ✅ Добавьте логирование
     developer.log("API Key present: ${apiKey.isNotEmpty}", name: "GeminiService");
@@ -24,22 +24,21 @@ class GeminiService {
       final response = await http.post(
         Uri.parse(_baseUrl),
         headers: {
-        'Authorization': 'Bearer $apiKey',
-        'Content-Type': 'application/json',
-        'HTTP-Referer': 'https://localhost',
-        'X-Title': 'Health App',
+          'Authorization': 'Bearer $apiKey',
+          'Content-Type': 'application/json',
+          'HTTP-Referer': 'https://localhost',
+          'X-Title': 'Health App',
         },
         body: jsonEncode({
-          'model': 'openai/gpt-4-turbo',
+          'model': 'deepseek/deepseek-chat',
           'messages': _messages,
-          'max_tokens': 512,
-      }),
-    );
+        }),
+      );
 
       if (response.statusCode == 200) {
         final data = jsonDecode(utf8.decode(response.bodyBytes));
         final content = data['choices'][0]['message']['content'] as String;
-        
+
         _messages.add({'role': 'assistant', 'content': content});
         return content;
       } else {
@@ -53,7 +52,7 @@ class GeminiService {
   }
 
   dynamic startChat() => this;
-  
+
   Future<dynamic> sendMessage(dynamic content) async {
     final text = (content as dynamic).text ?? content.toString();
     final response = await getResponse(text);

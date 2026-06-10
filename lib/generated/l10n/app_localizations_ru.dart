@@ -241,10 +241,10 @@ class AppLocalizationsRu extends AppLocalizations {
   String get filterIncomplete => 'Не завершено';
 
   @override
-  String get synced => 'Синхронизировано';
+  String get synced => 'Синхрондалған';
 
   @override
-  String get local => 'Локально';
+  String get local => 'Жергілікті';
 
   @override
   String get viewAllHistory => 'Посмотреть всю историю';
@@ -357,4 +357,288 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get height => 'Рост';
+
+  @override
+  String get noDataLast7Days => 'Нет данных за последние 7 дней';
+
+  @override
+  String get weeklyProgress => 'Прогресс за неделю';
+
+  @override
+  String get averageValue => 'Среднее значение';
+
+  @override
+  String get dashboardEmpty => 'Ваша панель пуста';
+
+  @override
+  String get addGoalsFromChallenges => 'Добавьте цели из вкладки Челленджи';
+
+  @override
+  String get kcal => 'ккал';
+
+  @override
+  String get leaderboard => 'Таблица лидеров';
+
+  @override
+  String get userName => 'Имя пользователя';
+
+  @override
+  String get editBodyMetrics => 'Изменить параметры тела и цели';
+
+  @override
+  String get globalRank => 'Мировой рейтинг';
+
+  @override
+  String get viewAll => 'Посмотреть все';
+
+  @override
+  String get notSet => 'Не установлено';
+
+  @override
+  String get points => 'очков';
+
+  @override
+  String get quests => 'Задания';
+
+  @override
+  String get kg => 'кг';
+
+  @override
+  String get cm => 'см';
+
+  @override
+  String get checkPastActivity => 'Проверьте свои логи активности';
+
+  @override
+  String get displayName => 'Отображаемое имя';
+
+  @override
+  String get newPasswordOptional => 'Новый пароль (опционально)';
+
+  @override
+  String get newPinCode => 'Новый PIN-код';
+
+  @override
+  String get updateAccount => 'Обновить аккаунт';
+
+  @override
+  String get accountUpdatedSuccess => 'Аккаунт успешно обновлен';
+
+  @override
+  String get recentLoginRequired => 'Требуется повторный вход';
+
+  @override
+  String get reauthPrompt =>
+      'Чтобы изменить email или пароль, пожалуйста, введите ваш ТЕКУЩИЙ пароль:';
+
+  @override
+  String get currentPassword => 'Текущий пароль';
+
+  @override
+  String get confirm => 'Подтвердить';
+
+  @override
+  String get wrongPassword => 'Неверный пароль';
+
+  @override
+  String get aiHealthAssistant => 'AI Помощник по здоровью';
+
+  @override
+  String get aiGreeting =>
+      'Привет! Я твой AI помощник. У меня есть доступ к твоим целям, истории и параметрам тела. Чем я могу помочь?';
+
+  @override
+  String get globalLeaderboard => 'Мировая таблица лидеров';
+
+  @override
+  String get noUsersFound => 'Пользователи пока не найдены.';
+
+  @override
+  String get dailyQuests => 'Ежедневные задания';
+
+  @override
+  String get hydrationStarter => 'Начало гидратации';
+
+  @override
+  String get hydrationStarterDesc => 'Выпейте 5 стаканов воды сегодня';
+
+  @override
+  String get activeMover => 'Активное движение';
+
+  @override
+  String get activeMoverDesc => 'Пройдите 5 000 шагов';
+
+  @override
+  String get aquaMaster => 'Мастер воды';
+
+  @override
+  String get aquaMasterDesc => 'Выпейте 10 стаканов воды сегодня';
+
+  @override
+  String get stepLegend => 'Легенда шагов';
+
+  @override
+  String get stepLegendDesc => 'Пройдите 10 000 шагов';
+
+  @override
+  String get wellRested => 'Хороший отдых';
+
+  @override
+  String get wellRestedDesc => 'Спите 8 часов';
+
+  @override
+  String get ultimateChampion => 'Абсолютный чемпион';
+
+  @override
+  String get ultimateChampionDesc => 'Выполните все дневные цели';
+
+  @override
+  String get tellAboutYourself => 'Расскажите о себе';
+
+  @override
+  String get personalizeExperience =>
+      'Это поможет нам персонализировать приложение';
+
+  @override
+  String get loseWeight => 'Сбросить вес';
+
+  @override
+  String get gainWeight => 'Набрать вес';
+
+  @override
+  String get getFit => 'Быть в форме';
+
+  @override
+  String get finish => 'Завершить';
+
+  @override
+  String get fillAllFields => 'Пожалуйста, заполните все поля';
+
+  @override
+  String get yourGoal => 'Ваша цель';
+
+  @override
+  String get age => 'Возраст';
+
+  @override
+  String get securityCheck => 'Проверка безопасности';
+
+  @override
+  String get incorrectPin => 'Неверный ПИН-код';
+
+  @override
+  String get enterPin => 'Введите ПИН-код';
+
+  @override
+  String get pin => 'ПИН';
+
+  @override
+  String get unlock => 'Разблокировать';
+
+  @override
+  String get welcomeBack => 'С возвращением!';
+
+  @override
+  String get signInToContinue => 'Войдите, чтобы продолжить';
+
+  @override
+  String get enterEmail => 'Введите email';
+
+  @override
+  String get enterPassword => 'Введите пароль';
+
+  @override
+  String get forgotPassword => 'Забыли пароль?';
+
+  @override
+  String get signIn => 'Войти';
+
+  @override
+  String get signInWithGoogle => 'Войти через Google';
+
+  @override
+  String get dontHaveAccount => 'Нет аккаунта?';
+
+  @override
+  String get create => 'Создать';
+
+  @override
+  String get validEmailRequired => 'Введите корректный email';
+
+  @override
+  String get passwordResetSent =>
+      'Инструкция по сбросу пароля отправлена на email';
+
+  @override
+  String get emailError => 'Ошибка при отправке письма';
+
+  @override
+  String get createAccount => 'Создать аккаунт';
+
+  @override
+  String get enterDetails => 'Введите данные, чтобы начать';
+
+  @override
+  String get yourName => 'Ваше имя';
+
+  @override
+  String get createPin => 'Придумайте ПИН-код';
+
+  @override
+  String get confirmPassword => 'Подтвердите пароль';
+
+  @override
+  String get passwordsDontMatch => 'Пароли не совпадают';
+
+  @override
+  String get min6Chars => 'Минимум 6 символов';
+
+  @override
+  String get pinMin4Digits => 'ПИН-код должен быть от 4 цифр';
+
+  @override
+  String get signUp => 'Зарегистрироваться';
+
+  @override
+  String get password => 'Пароль';
+
+  @override
+  String get reminders => 'Напоминания';
+
+  @override
+  String get allow => 'Разрешить';
+
+  @override
+  String get permissionRequested => 'Запрошено разрешение на уведомления';
+
+  @override
+  String get waterReminder => 'Напоминание о воде';
+
+  @override
+  String get stepsReminder => 'Напоминание о шагах';
+
+  @override
+  String get sleepReminder => 'Напоминание о сне';
+
+  @override
+  String get caloriesReminder => 'Напоминание о калориях';
+
+  @override
+  String get dailySummaryReminder => 'Дневная сводка';
+
+  @override
+  String get off => 'Выкл';
+
+  @override
+  String get tapToChange => 'нажмите, чтобы изменить';
+
+  @override
+  String get testNotification => 'Проверить уведомление';
+
+  @override
+  String get testNotificationTitle => '🔔 Проверка уведомления';
+
+  @override
+  String get testNotificationBody =>
+      'Все работает! Вы готовы достигать своих целей.';
 }

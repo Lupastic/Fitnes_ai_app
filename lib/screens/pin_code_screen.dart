@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert'; 
 import 'package:crypto/crypto.dart';
 import '../providers/auth_provider.dart';
+import 'package:finallapp/generated/l10n/app_localizations.dart';
 
 class PinCodeScreen extends StatefulWidget {
   const PinCodeScreen({super.key});
@@ -20,27 +21,28 @@ class _PinCodeScreenState extends State<PinCodeScreen> {
     final prefs = await SharedPreferences.getInstance();
     final savedPin = (prefs.getString('pin_code') ?? '').trim();
     final enteredPin = _pinController.text.trim();
+    final loc = AppLocalizations.of(context)!;
 
     final bytes = utf8.encode(enteredPin);
     final hashedEnteredPin = sha256.convert(bytes).toString();
 
     if (hashedEnteredPin == savedPin || enteredPin == savedPin) {
       if (mounted) {
-        // Устанавливаем флаг верификации в провайдере
         context.read<AppAuthProvider>().verifyPin();
-        // Навигация произойдет автоматически через AuthGate
       }
     } else {
-      setState(() => _error = 'Incorrect PIN');
+      setState(() => _error = loc.incorrectPin);
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
+
     return Scaffold(
       backgroundColor: const Color(0xFFF7F8FA),
       appBar: AppBar(
-        title: const Text('Security Check'),
+        title: Text(loc.securityCheck),
         backgroundColor: Colors.teal,
         foregroundColor: Colors.white,
         elevation: 0,
@@ -52,9 +54,9 @@ class _PinCodeScreenState extends State<PinCodeScreen> {
           children: [
             const Icon(Icons.lock_outline, size: 80, color: Colors.teal),
             const SizedBox(height: 24),
-            const Text(
-              'Enter your PIN code',
-              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+            Text(
+              loc.enterPin,
+              style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16),
             TextField(
@@ -71,7 +73,7 @@ class _PinCodeScreenState extends State<PinCodeScreen> {
                   borderRadius: BorderRadius.circular(16),
                   borderSide: const BorderSide(color: Colors.teal, width: 2),
                 ),
-                labelText: 'PIN',
+                labelText: loc.pin,
                 errorText: _error.isEmpty ? null : _error,
               ),
             ),
@@ -85,9 +87,9 @@ class _PinCodeScreenState extends State<PinCodeScreen> {
                   backgroundColor: Colors.teal,
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                 ),
-                child: const Text(
-                  'Unlock',
-                  style: TextStyle(fontSize: 18, color: Colors.white, fontWeight: FontWeight.bold),
+                child: Text(
+                  loc.unlock,
+                  style: const TextStyle(fontSize: 18, color: Colors.white, fontWeight: FontWeight.bold),
                 ),
               ),
             ),

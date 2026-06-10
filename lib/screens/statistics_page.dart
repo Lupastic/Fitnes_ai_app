@@ -40,7 +40,7 @@ class _StatisticsPageState extends State<StatisticsPage> {
       {
         'id': 'calories', 
         'title': loc.calories, 
-        'value': '${summary.calories} kcal', 
+        'value': '${summary.calories} ${loc.kcal}', 
         'icon': Icons.bolt_rounded, 
         'color': Colors.orangeAccent
       },
@@ -69,7 +69,7 @@ class _StatisticsPageState extends State<StatisticsPage> {
               IconButton(
                 icon: const Icon(Icons.leaderboard_rounded, color: Colors.tealAccent),
                 onPressed: () => Navigator.pushNamed(context, '/leaderboard'),
-                tooltip: 'Leaderboard',
+                tooltip: loc.leaderboard,
               ),
               const SizedBox(width: 8),
             ],

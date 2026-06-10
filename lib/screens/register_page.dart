@@ -6,6 +6,7 @@ import '../providers/auth_provider.dart';
 import '../providers/settings_provider.dart';
 import '../services/user_data_service.dart';
 import 'onboarding_page.dart';
+import 'package:finallapp/generated/l10n/app_localizations.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -70,7 +71,7 @@ class _RegisterPageState extends State<RegisterPage> {
       );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Ошибка регистрации: $e"), backgroundColor: Colors.red),
+        SnackBar(content: Text("Error: $e"), backgroundColor: Colors.red),
       );
     }
   }
@@ -78,9 +79,10 @@ class _RegisterPageState extends State<RegisterPage> {
   @override
   Widget build(BuildContext context) {
     final isLoading = context.watch<AppAuthProvider>().isLoading;
+    final loc = AppLocalizations.of(context)!;
 
     return Scaffold(
-      appBar: AppBar(backgroundColor: Colors.transparent, elevation: 0, foregroundColor: Colors.black),
+      appBar: AppBar(backgroundColor: Colors.transparent, elevation: 0),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
@@ -89,31 +91,31 @@ class _RegisterPageState extends State<RegisterPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text("Создать аккаунт", style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold)),
-                const Text("Введите данные, чтобы начать", style: TextStyle(color: Colors.grey)),
+                Text(loc.createAccount, style: const TextStyle(fontSize: 32, fontWeight: FontWeight.bold)),
+                Text(loc.enterDetails, style: const TextStyle(color: Colors.grey)),
                 const SizedBox(height: 30),
                 
                 TextFormField(
                   controller: _nameController,
                   decoration: InputDecoration(
-                    labelText: "Ваше имя",
+                    labelText: loc.yourName,
                     prefixIcon: const Icon(Icons.person_outline),
                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
                   ),
-                  validator: (v) => (v == null || v.isEmpty) ? "Введите имя" : null,
+                  validator: (v) => (v == null || v.isEmpty) ? loc.enterName : null,
                 ),
                 const SizedBox(height: 20),
                 
                 TextFormField(
                   controller: _emailController,
                   decoration: InputDecoration(
-                    labelText: "Email",
+                    labelText: loc.email,
                     prefixIcon: const Icon(Icons.email_outlined),
                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
                   ),
                   keyboardType: TextInputType.emailAddress,
                   validator: (v) {
-                    if (v == null || !v.contains('@')) return "Введите корректный email";
+                    if (v == null || !v.contains('@')) return loc.validEmailRequired;
                     return null;
                   },
                 ),
@@ -122,13 +124,13 @@ class _RegisterPageState extends State<RegisterPage> {
                 TextFormField(
                   controller: _pinController,
                   decoration: InputDecoration(
-                    labelText: "Придумайте ПИН-код (для входа в приложение)",
+                    labelText: loc.createPin,
                     prefixIcon: const Icon(Icons.pin),
                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
                   ),
                   keyboardType: TextInputType.number,
                   obscureText: true,
-                  validator: (v) => (v == null || v.length < 4) ? "ПИН-код должен быть от 4 цифр" : null,
+                  validator: (v) => (v == null || v.length < 4) ? loc.pinMin4Digits : null,
                 ),
                 const SizedBox(height: 20),
                 
@@ -136,7 +138,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   controller: _passwordController,
                   obscureText: _obscurePassword,
                   decoration: InputDecoration(
-                    labelText: "Пароль",
+                    labelText: loc.password,
                     prefixIcon: const Icon(Icons.lock_outline),
                     suffixIcon: IconButton(
                       icon: Icon(_obscurePassword ? Icons.visibility_off : Icons.visibility),
@@ -144,7 +146,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     ),
                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
                   ),
-                  validator: (v) => (v == null || v.length < 6) ? "Минимум 6 символов" : null,
+                  validator: (v) => (v == null || v.length < 6) ? loc.min6Chars : null,
                 ),
                 const SizedBox(height: 20),
 
@@ -152,12 +154,12 @@ class _RegisterPageState extends State<RegisterPage> {
                   controller: _confirmPasswordController,
                   obscureText: _obscurePassword,
                   decoration: InputDecoration(
-                    labelText: "Подтвердите пароль",
+                    labelText: loc.confirmPassword,
                     prefixIcon: const Icon(Icons.lock_reset),
                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
                   ),
                   validator: (v) {
-                    if (v != _passwordController.text) return "Пароли не совпадают";
+                    if (v != _passwordController.text) return loc.passwordsDontMatch;
                     return null;
                   },
                 ),
@@ -174,7 +176,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     ),
                     child: isLoading 
                       ? const CircularProgressIndicator(color: Colors.white)
-                      : const Text("Зарегистрироваться", style: TextStyle(fontSize: 18, color: Colors.white, fontWeight: FontWeight.bold)),
+                      : Text(loc.signUp, style: const TextStyle(fontSize: 18, color: Colors.white, fontWeight: FontWeight.bold)),
                   ),
                 ),
                 const SizedBox(height: 20),

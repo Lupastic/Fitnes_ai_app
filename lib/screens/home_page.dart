@@ -41,7 +41,7 @@ class _HomePageState extends State<HomePage> {
       case 'water': return loc.cups;
       case 'steps': return loc.steps; 
       case 'sleep': return loc.hours;
-      case 'calories': return "kcal";
+      case 'calories': return loc.kcal;
       default: return "";
     }
   }
@@ -168,7 +168,7 @@ class _HomePageState extends State<HomePage> {
                       const SizedBox(height: 20),
 
                       if (selectedChallenges.isEmpty)
-                        _buildEmptyState(isDark)
+                        _buildEmptyState(isDark, loc)
                       else
                         GridView.builder(
                           shrinkWrap: true,
@@ -328,15 +328,15 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _buildEmptyState(bool isDark) {
+  Widget _buildEmptyState(bool isDark, AppLocalizations loc) {
     return Center(
       child: Column(
         children: [
           const SizedBox(height: 40),
           Icon(Icons.add_circle_outline_rounded, size: 80, color: isDark ? Colors.white10 : Colors.black12),
           const SizedBox(height: 20),
-          const Text("Your Dashboard is Empty", style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700)),
-          const Text("Add goals from the Challenges tab", style: TextStyle(color: Colors.grey, fontSize: 14)),
+          Text(loc.dashboardEmpty, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w700)),
+          Text(loc.addGoalsFromChallenges, style: const TextStyle(color: Colors.grey, fontSize: 14)),
         ],
       ),
     );

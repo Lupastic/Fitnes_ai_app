@@ -77,34 +77,42 @@ class ProfilePage extends StatelessWidget {
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    settings.name.isEmpty ? "User Name" : settings.name,
+                    settings.name.isEmpty ? loc.userName : settings.name,
                     style: const TextStyle(fontSize: 26, fontWeight: FontWeight.w900),
                   ),
                   Text(user?.email ?? "", style: TextStyle(color: theme.textTheme.bodyMedium?.color)),
                   const SizedBox(height: 25),
 
                   // КНОПКА РЕДАКТИРОВАНИЯ ДАННЫХ ТЕЛА
-                  ElevatedButton.icon(
-                    onPressed: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (c) => const OnboardingPage()),
-                    ),
-                    icon: const Icon(Icons.edit_note_rounded, size: 20),
-                    label: const Text("Edit Body Metrics & Goals"),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.tealAccent.withOpacity(0.1),
-                      foregroundColor: Colors.tealAccent,
-                      elevation: 0,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton.icon(
+                      onPressed: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (c) => const OnboardingPage()),
+                      ),
+                      icon: const Icon(Icons.edit_note_rounded, size: 20),
+                      label: Text(
+                        loc.editBodyMetrics,
+                        textAlign: TextAlign.center,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.tealAccent.withOpacity(0.1),
+                        foregroundColor: Colors.tealAccent,
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+                        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                      ),
                     ),
                   ),
                   const SizedBox(height: 35),
 
                   // --- SHOWCASE ---
-                  _buildSectionHeader("Quests & Progress", () {
+                  _buildSectionHeader(loc.questsAndProgress, () {
                     Navigator.push(context, MaterialPageRoute(builder: (c) => const QuestsPage()));
-                  }),
+                  }, loc),
                   const SizedBox(height: 16),
                   Container(
                     padding: const EdgeInsets.all(20),
@@ -116,26 +124,26 @@ class ProfilePage extends StatelessWidget {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
-                        _buildBadge(Icons.emoji_events_rounded, "${settings.points} pts", true),
-                        _buildBadge(Icons.task_alt_rounded, "${settings.completedQuests.length} Quests", settings.completedQuests.isNotEmpty),
-                        _buildBadge(Icons.leaderboard_rounded, "Global Rank", true),
+                        Expanded(child: _buildBadge(Icons.emoji_events_rounded, "${settings.points} ${loc.points}", true)),
+                        Expanded(child: _buildBadge(Icons.task_alt_rounded, "${settings.completedQuests.length} ${loc.quests}", settings.completedQuests.isNotEmpty)),
+                        Expanded(child: _buildBadge(Icons.leaderboard_rounded, loc.globalRank, true)),
                       ],
                     ),
                   ),
                   const SizedBox(height: 35),
 
                   // --- STAT CARDS ---
-                  _buildSectionHeader("Quick Stats", null),
+                  _buildSectionHeader(loc.quickStats, null, loc),
                   const SizedBox(height: 16),
-                  _buildInfoCard(theme, Icons.fitness_center_rounded, "Current Goal", settings.goalType ?? "Not set"),
+                  _buildInfoCard(theme, Icons.fitness_center_rounded, loc.currentGoal, settings.goalType ?? loc.notSet),
                   const SizedBox(height: 12),
-                  _buildInfoCard(theme, Icons.monitor_weight_rounded, "Weight", "${settings.weight ?? '--'} ${settings.weightUnit ?? 'kg'}"),
+                  _buildInfoCard(theme, Icons.monitor_weight_rounded, loc.weight, "${settings.weight ?? '--'} ${settings.weightUnit ?? loc.kg}"),
                   const SizedBox(height: 12),
-                  _buildInfoCard(theme, Icons.height_rounded, "Height", "${settings.height ?? '--'} ${settings.heightUnit ?? 'cm'}"),
+                  _buildInfoCard(theme, Icons.height_rounded, loc.height, "${settings.height ?? '--'} ${settings.heightUnit ?? loc.cm}"),
                   const SizedBox(height: 12),
-                  _buildInfoCard(theme, Icons.local_fire_department_rounded, "Total Burned", "${summary.calories} kcal"),
+                  _buildInfoCard(theme, Icons.local_fire_department_rounded, loc.totalBurned, "${summary.calories} ${loc.kcal}"),
                   const SizedBox(height: 12),
-                  _buildInfoCard(theme, Icons.nightlight_round, "Sleep Avg", "${summary.sleepHours.toStringAsFixed(1)} h"),
+                  _buildInfoCard(theme, Icons.nightlight_round, loc.sleepAvg, "${summary.sleepHours.toStringAsFixed(1)} ${loc.hours}"),
                 ],
               ),
             ),
@@ -145,19 +153,33 @@ class ProfilePage extends StatelessWidget {
     );
   }
 
-  Widget _buildSectionHeader(String title, VoidCallback? onTap) {
+  Widget _buildSectionHeader(String title, VoidCallback? onTap, AppLocalizations loc) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(title, style: const TextStyle(fontSize: 19, fontWeight: FontWeight.w800)),
+        Expanded(
+          child: Text(
+            title,
+            style: const TextStyle(fontSize: 19, fontWeight: FontWeight.w800),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
         if (onTap != null)
-          TextButton(onPressed: onTap, child: const Text("View All", style: TextStyle(fontWeight: FontWeight.bold))),
+          TextButton(
+            onPressed: onTap,
+            child: Text(
+              loc.viewAll,
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
+          ),
       ],
     );
   }
 
   Widget _buildBadge(IconData icon, String label, bool isDone) {
     return Column(
+      mainAxisSize: MainAxisSize.min,
       children: [
         Container(
           padding: const EdgeInsets.all(12),
@@ -169,7 +191,17 @@ class ProfilePage extends StatelessWidget {
           child: Icon(icon, color: isDone ? Colors.tealAccent : Colors.grey.withOpacity(0.4), size: 28),
         ),
         const SizedBox(height: 8),
-        Text(label, style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: isDone ? Colors.white : Colors.grey)),
+        Text(
+          label,
+          textAlign: TextAlign.center,
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
+          style: TextStyle(
+            fontSize: 11,
+            fontWeight: FontWeight.bold,
+            color: isDone ? Colors.white : Colors.grey,
+          ),
+        ),
       ],
     );
   }

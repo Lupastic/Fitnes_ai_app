@@ -72,4 +72,12 @@ class NotificationProvider extends ChangeNotifier {
       body: "You've completed your $name goal for today. Amazing!",
     );
   }
+
+  Future<void> testNotification({required String title, required String body}) async {
+    await ns.NotificationService().showInstant(
+      id: 999,
+      title: title,
+      body: body,
+    );
+  }
 }

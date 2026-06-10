@@ -34,7 +34,7 @@ class _ChallengesPageState extends State<ChallengesPage> {
       case 'water': return loc.cups;
       case 'steps': return loc.steps;
       case 'sleep': return loc.hours;
-      case 'calories': return "kcal";
+      case 'calories': return loc.kcal;
       default: return "";
     }
   }

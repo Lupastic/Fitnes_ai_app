@@ -9,9 +9,8 @@ class StepCounterProvider with ChangeNotifier {
   final SummaryProvider summaryProvider;
   
   StreamSubscription<StepCount>? _subscription;
-  int _lastKnownTotalSteps = -1;
   int _stepsOffset = 0;
-  String _status = 'Manual Mode';
+  String _status = 'Initializing...';
   bool _isInitialized = false;
 
   StepCounterProvider(this.summaryProvider);
@@ -20,29 +19,51 @@ class StepCounterProvider with ChangeNotifier {
   String get status => _status;
 
   Future<void> initPedometer() async {
-    // Automatic step counting disabled as per user request for manual input
-    /*
     if (_isInitialized) return;
     
-    // 1. Запрос разрешений
-    if (await Permission.activityRecognition.request().isGranted) {
+    debugPrint("Initializing Pedometer...");
+    _status = 'Requesting Permissions...';
+    notifyListeners();
+
+    // Check if permission is already granted
+    var status = await Permission.activityRecognition.status;
+    debugPrint("Current Activity Recognition status: $status");
+
+    if (!status.isGranted) {
+      status = await Permission.activityRecognition.request();
+      debugPrint("New Activity Recognition status: $status");
+    }
+    
+    if (status.isGranted) {
       _startListening();
+      _isInitialized = true;
     } else {
-      _status = 'Permission Denied';
+      _status = 'Permission Denied ($status)';
+      debugPrint("Pedometer failed: Permission Denied");
       notifyListeners();
     }
-    _isInitialized = true;
-    */
-    _status = 'Manual Mode';
-    notifyListeners();
   }
 
   void _startListening() {
+    debugPrint("Starting step count stream...");
+    _status = 'Connecting to sensor...';
+    notifyListeners();
+    
     _subscription = Pedometer.stepCountStream.listen(
-      _onStepCount,
-      onError: _onStepCountError,
+      (event) {
+        debugPrint("StepCount Event received: ${event.steps} total steps");
+        _onStepCount(event);
+      },
+      onError: (error) {
+        debugPrint("StepCount Stream Error: $error");
+        _onStepCountError(error);
+      },
+      cancelOnError: false,
     );
   }
+
+  int _lastStepsUpdate = -1;
+  final int _updateThreshold = 10; 
 
   void _onStepCount(StepCount event) async {
     final prefs = await SharedPreferences.getInstance();
@@ -51,28 +72,39 @@ class StepCounterProvider with ChangeNotifier {
     final lastResetDate = prefs.getString('last_step_reset_date') ?? "";
 
     if (lastResetDate != todayStr) {
+      debugPrint("New day detected in StepCounter. Resetting offset to ${event.steps}");
       _stepsOffset = event.steps;
       await prefs.setInt('step_offset', _stepsOffset);
       await prefs.setString('last_step_reset_date', todayStr);
       summaryProvider.update(steps: 0);
+      _lastStepsUpdate = 0;
     } else {
       _stepsOffset = prefs.getInt('step_offset') ?? event.steps;
     }
 
     int currentTodaySteps = event.steps - _stepsOffset;
+    
     if (currentTodaySteps < 0) {
+      debugPrint("Negative steps detected (reboot?). Resetting offset.");
       _stepsOffset = event.steps;
       await prefs.setInt('step_offset', _stepsOffset);
       currentTodaySteps = 0;
     }
 
-    summaryProvider.update(steps: currentTodaySteps);
-    _status = 'Walking';
+    // Update if first time or exceeded threshold
+    if (_lastStepsUpdate == -1 || (currentTodaySteps - _lastStepsUpdate).abs() >= _updateThreshold) {
+      debugPrint("Updating SummaryProvider with $currentTodaySteps steps");
+      summaryProvider.update(steps: currentTodaySteps);
+      _lastStepsUpdate = currentTodaySteps;
+    }
+
+    _status = 'Active';
     notifyListeners();
   }
 
   void _onStepCountError(error) {
-    _status = 'Step Count not available';
+    debugPrint("Pedometer Error: $error");
+    _status = 'Step sensor unavailable';
     notifyListeners();
   }
 

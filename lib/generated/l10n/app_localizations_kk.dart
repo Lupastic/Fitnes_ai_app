@@ -359,4 +359,289 @@ class AppLocalizationsKk extends AppLocalizations {
 
   @override
   String get height => 'Бойы';
+
+  @override
+  String get noDataLast7Days => 'Соңғы 7 күнде деректер жоқ';
+
+  @override
+  String get weeklyProgress => 'Апталық прогресс';
+
+  @override
+  String get averageValue => 'Орташа мән';
+
+  @override
+  String get dashboardEmpty => 'Бақылау тақтасы бос';
+
+  @override
+  String get addGoalsFromChallenges =>
+      'Челлендждер қойындысынан мақсаттар қосыңыз';
+
+  @override
+  String get kcal => 'ккал';
+
+  @override
+  String get leaderboard => 'Көшбасшылар тақтасы';
+
+  @override
+  String get userName => 'Пайдаланушы аты';
+
+  @override
+  String get editBodyMetrics => 'Дене өлшемдері мен мақсаттарды өзгерту';
+
+  @override
+  String get globalRank => 'Жаһандық рейтинг';
+
+  @override
+  String get viewAll => 'Барлығын көру';
+
+  @override
+  String get notSet => 'Орнатылмаған';
+
+  @override
+  String get points => 'ұпай';
+
+  @override
+  String get quests => 'Тапсырмалар';
+
+  @override
+  String get kg => 'кг';
+
+  @override
+  String get cm => 'см';
+
+  @override
+  String get checkPastActivity => 'Өткен әрекеттер журналын тексеріңіз';
+
+  @override
+  String get displayName => 'Көрсетілетін аты';
+
+  @override
+  String get newPasswordOptional => 'Жаңа құпия сөз (міндетті емес)';
+
+  @override
+  String get newPinCode => 'Жаңа PIN-код';
+
+  @override
+  String get updateAccount => 'Аккаунтты жаңарту';
+
+  @override
+  String get accountUpdatedSuccess => 'Аккаунт сәтті жаңартылды';
+
+  @override
+  String get recentLoginRequired => 'Жақында кіру қажет';
+
+  @override
+  String get reauthPrompt =>
+      'Электрондық поштаны немесе құпия сөзді өзгерту үшін алдымен АҒЫМДАҒЫ құпия сөзді енгізіңіз:';
+
+  @override
+  String get currentPassword => 'Ағымдағы құпия сөз';
+
+  @override
+  String get confirm => 'Растау';
+
+  @override
+  String get wrongPassword => 'Қате құпия сөз';
+
+  @override
+  String get aiHealthAssistant => 'AI денсаулық көмекшісі';
+
+  @override
+  String get aiGreeting =>
+      'Сәлем! Мен сіздің AI денсаулық көмекшіңізбін. Менде сіздің мақсаттарыңызға, тарихыңызға және дене өлшемдеріңізге рұқсат бар. Сізге қалай көмектесе аламын?';
+
+  @override
+  String get globalLeaderboard => 'Жаһандық көшбасшылар тақтасы';
+
+  @override
+  String get noUsersFound => 'Пайдаланушылар әлі табылған жоқ.';
+
+  @override
+  String get dailyQuests => 'Күнделікті тапсырмалар';
+
+  @override
+  String get hydrationStarter => 'Гидратация бастауы';
+
+  @override
+  String get hydrationStarterDesc => 'Бүгін 5 стақан су ішіңіз';
+
+  @override
+  String get activeMover => 'Белсенді қозғалыс';
+
+  @override
+  String get activeMoverDesc => '5 000 қадам жүріңіз';
+
+  @override
+  String get aquaMaster => 'Су шебері';
+
+  @override
+  String get aquaMasterDesc => 'Бүгін 10 стақан су ішіңіз';
+
+  @override
+  String get stepLegend => 'Қадам аңызы';
+
+  @override
+  String get stepLegendDesc => '10 000 қадам жүріңіз';
+
+  @override
+  String get wellRested => 'Жақсы демалыс';
+
+  @override
+  String get wellRestedDesc => '8 сағат ұйықтаңыз';
+
+  @override
+  String get ultimateChampion => 'Абсолютті чемпион';
+
+  @override
+  String get ultimateChampionDesc => 'Барлық күнделікті мақсаттарды орындаңыз';
+
+  @override
+  String get tellAboutYourself => 'Өзіңіз туралы айтып беріңіз';
+
+  @override
+  String get personalizeExperience =>
+      'Бұл бізге қолданбаны сізге бейімдеуге көмектеседі';
+
+  @override
+  String get loseWeight => 'Салмақ тастау';
+
+  @override
+  String get gainWeight => 'Салмақ қосу';
+
+  @override
+  String get getFit => 'Формада болу';
+
+  @override
+  String get finish => 'Аяқтау';
+
+  @override
+  String get fillAllFields => 'Барлық өрістерді толтырыңыз';
+
+  @override
+  String get yourGoal => 'Сіздің мақсатыңыз';
+
+  @override
+  String get age => 'Жасы';
+
+  @override
+  String get securityCheck => 'Қауіпсіздік тексеруі';
+
+  @override
+  String get incorrectPin => 'Қате ПИН-код';
+
+  @override
+  String get enterPin => 'ПИН-кодты енгізіңіз';
+
+  @override
+  String get pin => 'ПИН';
+
+  @override
+  String get unlock => 'Құлыпты ашу';
+
+  @override
+  String get welcomeBack => 'Қайта қош келдіңіз!';
+
+  @override
+  String get signInToContinue => 'Жалғастыру үшін жүйеге кіріңіз';
+
+  @override
+  String get enterEmail => 'Email енгізіңіз';
+
+  @override
+  String get enterPassword => 'Құпия сөзді енгізіңіз';
+
+  @override
+  String get forgotPassword => 'Құпия сөзді ұмыттыңыз ба?';
+
+  @override
+  String get signIn => 'Кіру';
+
+  @override
+  String get signInWithGoogle => 'Google арқылы кіру';
+
+  @override
+  String get dontHaveAccount => 'Аккаунт жоқ па?';
+
+  @override
+  String get create => 'Жасау';
+
+  @override
+  String get validEmailRequired => 'Дұрыс email енгізіңіз';
+
+  @override
+  String get passwordResetSent =>
+      'Құпия сөзді қалпына келтіру нұсқаулары email-ға жіберілді';
+
+  @override
+  String get emailError => 'Хат жіберу кезінде қате кетті';
+
+  @override
+  String get createAccount => 'Аккаунт жасау';
+
+  @override
+  String get enterDetails => 'Бастау үшін мәліметтерді енгізіңіз';
+
+  @override
+  String get yourName => 'Сіздің атыңыз';
+
+  @override
+  String get createPin => 'ПИН-код ойлап табыңыз';
+
+  @override
+  String get confirmPassword => 'Құпия сөзді растаңыз';
+
+  @override
+  String get passwordsDontMatch => 'Құпия сөздер сәйкес келмейді';
+
+  @override
+  String get min6Chars => 'Кемінде 6 таңба';
+
+  @override
+  String get pinMin4Digits => 'ПИН-код кемінде 4 цифрдан тұруы керек';
+
+  @override
+  String get signUp => 'Тіркелу';
+
+  @override
+  String get password => 'Құпия сөз';
+
+  @override
+  String get reminders => 'Еске салғыштар';
+
+  @override
+  String get allow => 'Рұқсат ету';
+
+  @override
+  String get permissionRequested => 'Хабарландыруларға рұқсат сұралды';
+
+  @override
+  String get waterReminder => 'Су туралы еске салу';
+
+  @override
+  String get stepsReminder => 'Қадамдар туралы еске салу';
+
+  @override
+  String get sleepReminder => 'Ұйқы туралы еске салу';
+
+  @override
+  String get caloriesReminder => 'Калориялар туралы еске салу';
+
+  @override
+  String get dailySummaryReminder => 'Күнделікті шолу';
+
+  @override
+  String get off => 'Өшірулі';
+
+  @override
+  String get tapToChange => 'өзгерту үшін басыңыз';
+
+  @override
+  String get testNotification => 'Хабарландыруды тексеру';
+
+  @override
+  String get testNotificationTitle => '🔔 Хабарландыруды тексеру';
+
+  @override
+  String get testNotificationBody =>
+      'Барлығы жұмыс істеп тұр! Сіз мақсаттарыңызға жетуге дайынсыз.';
 }
