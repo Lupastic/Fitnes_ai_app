@@ -17,8 +17,8 @@ class QuestsPage extends StatelessWidget {
     final List<Quest> allQuests = [
       Quest(
         id: 'water_5',
-        title: 'Hydration Starter',
-        description: 'Drink 5 cups of water today',
+        title: loc.questHydrationTitle,
+        description: loc.questHydrationDesc,
         icon: Icons.local_drink,
         difficulty: QuestDifficulty.easy,
         points: 10,
@@ -26,8 +26,8 @@ class QuestsPage extends StatelessWidget {
       ),
       Quest(
         id: 'steps_5k',
-        title: 'Active Mover',
-        description: 'Walk 5,000 steps',
+        title: loc.questActiveMoverTitle,
+        description: loc.questActiveMoverDesc,
         icon: Icons.directions_walk,
         difficulty: QuestDifficulty.easy,
         points: 15,
@@ -35,8 +35,8 @@ class QuestsPage extends StatelessWidget {
       ),
       Quest(
         id: 'water_10',
-        title: 'Aqua Master',
-        description: 'Drink 10 cups of water today',
+        title: loc.questAquaMasterTitle,
+        description: loc.questAquaMasterDesc,
         icon: Icons.water_drop,
         difficulty: QuestDifficulty.medium,
         points: 30,
@@ -44,8 +44,8 @@ class QuestsPage extends StatelessWidget {
       ),
       Quest(
         id: 'steps_10k',
-        title: 'Step Legend',
-        description: 'Walk 10,000 steps',
+        title: loc.questStepLegendTitle,
+        description: loc.questStepLegendDesc,
         icon: Icons.directions_run,
         difficulty: QuestDifficulty.medium,
         points: 50,
@@ -53,8 +53,8 @@ class QuestsPage extends StatelessWidget {
       ),
       Quest(
         id: 'sleep_8',
-        title: 'Well Rested',
-        description: 'Sleep for 8 hours',
+        title: loc.questWellRestedTitle,
+        description: loc.questWellRestedDesc,
         icon: Icons.bedtime,
         difficulty: QuestDifficulty.medium,
         points: 25,
@@ -62,8 +62,8 @@ class QuestsPage extends StatelessWidget {
       ),
       Quest(
         id: 'perfect_day',
-        title: 'Ultimate Champion',
-        description: 'Complete all your daily goals',
+        title: loc.questChampionTitle,
+        description: loc.questChampionDesc,
         icon: Icons.emoji_events,
         difficulty: QuestDifficulty.hard,
         points: 100,
@@ -91,13 +91,13 @@ class QuestsPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Daily Quests'),
+        title: Text(loc.dailyQuests),
         actions: [
           Center(
             child: Padding(
               padding: const EdgeInsets.only(right: 16),
               child: Text(
-                '${settings.points} pts',
+                '${settings.points} ${loc.points}',
                 style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: Colors.tealAccent),
               ),
             ),
@@ -133,7 +133,7 @@ class QuestsPage extends StatelessWidget {
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Text(
-                      '${quest.difficulty.name.toUpperCase()} • ${quest.points} pts',
+                      '${_getDifficultyText(quest.difficulty, loc)} • ${quest.points} ${loc.points}',
                       style: TextStyle(fontSize: 10, color: _getDifficultyColor(quest.difficulty), fontWeight: FontWeight.bold),
                     ),
                   ),
@@ -154,6 +154,14 @@ class QuestsPage extends StatelessWidget {
       case QuestDifficulty.easy: return Colors.green;
       case QuestDifficulty.medium: return Colors.orange;
       case QuestDifficulty.hard: return Colors.red;
+    }
+  }
+
+  String _getDifficultyText(QuestDifficulty d, AppLocalizations loc) {
+    switch (d) {
+      case QuestDifficulty.easy: return loc.difficultyEasy;
+      case QuestDifficulty.medium: return loc.difficultyMedium;
+      case QuestDifficulty.hard: return loc.difficultyHard;
     }
   }
 }

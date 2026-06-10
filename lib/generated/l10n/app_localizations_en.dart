@@ -78,7 +78,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get recentLoginRequired => 'Recent Login Required';
 
   @override
-  String get enterCurrentPassword => 'To change email or password, please enter your current password first:';
+  String get enterCurrentPassword =>
+      'To change email or password, please enter your current password first:';
 
   @override
   String get currentPassword => 'Current Password';
@@ -171,7 +172,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get nameUpdated => 'Name updated successfully!';
 
   @override
-  String get confirmResetSettings => 'Are you sure you want to reset all settings to their defaults?';
+  String get confirmResetSettings =>
+      'Are you sure you want to reset all settings to their defaults?';
 
   @override
   String get reset => 'Reset';
@@ -342,7 +344,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get confirmReset => 'Confirm Reset';
 
   @override
-  String get resetSettingsWarning => 'Are you sure you want to reset all settings to default? This action cannot be undone.';
+  String get resetSettingsWarning =>
+      'Are you sure you want to reset all settings to default? This action cannot be undone.';
 
   @override
   String get allSettingsReset => 'All settings have been reset to default!';
@@ -405,4 +408,122 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get height => 'Height';
+
+  @override
+  String get aiChatTitle => 'AI Health Assistant';
+
+  @override
+  String get aiChatInitialMessage =>
+      'Hello! I am your AI Health Assistant. I have access to your goals, history, and body metrics. How can I help you?';
+
+  @override
+  String get aiChatHint => 'Ask about your progress...';
+
+  @override
+  String get leaderboardTitle => 'Global Leaderboard';
+
+  @override
+  String get noUsersFound => 'No users found yet.';
+
+  @override
+  String get points => 'pts';
+
+  @override
+  String get onboardingTitle => 'Tell us about yourself';
+
+  @override
+  String get onboardingSubtitle => 'This helps us personalize your experience';
+
+  @override
+  String get age => 'Age';
+
+  @override
+  String get yourGoal => 'Your Goal';
+
+  @override
+  String get goalLoseWeight => 'Lose Weight';
+
+  @override
+  String get goalGainWeight => 'Gain Weight';
+
+  @override
+  String get goalGetFit => 'Get Fit';
+
+  @override
+  String get finish => 'Finish';
+
+  @override
+  String get fillAllFields => 'Please fill all fields';
+
+  @override
+  String get dailyQuests => 'Daily Quests';
+
+  @override
+  String get questHydrationTitle => 'Hydration Starter';
+
+  @override
+  String get questHydrationDesc => 'Drink 5 cups of water today';
+
+  @override
+  String get questActiveMoverTitle => 'Active Mover';
+
+  @override
+  String get questActiveMoverDesc => 'Walk 5,000 steps';
+
+  @override
+  String get questAquaMasterTitle => 'Aqua Master';
+
+  @override
+  String get questAquaMasterDesc => 'Drink 10 cups of water today';
+
+  @override
+  String get questStepLegendTitle => 'Step Legend';
+
+  @override
+  String get questStepLegendDesc => 'Walk 10,000 steps';
+
+  @override
+  String get questWellRestedTitle => 'Well Rested';
+
+  @override
+  String get questWellRestedDesc => 'Sleep for 8 hours';
+
+  @override
+  String get questChampionTitle => 'Ultimate Champion';
+
+  @override
+  String get questChampionDesc => 'Complete all your daily goals';
+
+  @override
+  String get difficultyEasy => 'EASY';
+
+  @override
+  String get difficultyMedium => 'MEDIUM';
+
+  @override
+  String get difficultyHard => 'HARD';
+
+  @override
+  String get viewAll => 'View All';
+
+  @override
+  String get quests => 'Quests';
+
+  @override
+  String get globalRank => 'Global Rank';
+
+  @override
+  String get reminders => 'Reminders';
+
+  @override
+  String get allow => 'Allow';
+
+  @override
+  String get notifPermissionRequested => 'Notification permission requested';
+
+  @override
+  String get tapToChange => '· tap to change';
+
+  @override
+  String get off => 'Off';
 }

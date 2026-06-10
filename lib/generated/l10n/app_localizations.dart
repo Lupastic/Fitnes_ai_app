@@ -63,7 +63,8 @@ import 'app_localizations_ru.dart';
 /// be consistent with the languages listed in the AppLocalizations.supportedLocales
 /// property.
 abstract class AppLocalizations {
-  AppLocalizations(String locale) : localeName = intl.Intl.canonicalizedLocale(locale.toString());
+  AppLocalizations(String locale)
+    : localeName = intl.Intl.canonicalizedLocale(locale.toString());
 
   final String localeName;
 
@@ -71,7 +72,8 @@ abstract class AppLocalizations {
     return Localizations.of<AppLocalizations>(context, AppLocalizations);
   }
 
-  static const LocalizationsDelegate<AppLocalizations> delegate = _AppLocalizationsDelegate();
+  static const LocalizationsDelegate<AppLocalizations> delegate =
+      _AppLocalizationsDelegate();
 
   /// A list of this localizations delegate along with the default localizations
   /// delegates.
@@ -83,18 +85,19 @@ abstract class AppLocalizations {
   /// Additional delegates can be added by appending to this list in
   /// MaterialApp. This list does not have to be used at all if a custom list
   /// of delegates is preferred or required.
-  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates = <LocalizationsDelegate<dynamic>>[
-    delegate,
-    GlobalMaterialLocalizations.delegate,
-    GlobalCupertinoLocalizations.delegate,
-    GlobalWidgetsLocalizations.delegate,
-  ];
+  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates =
+      <LocalizationsDelegate<dynamic>>[
+        delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+      ];
 
   /// A list of this localizations delegate's supported locales.
   static const List<Locale> supportedLocales = <Locale>[
     Locale('en'),
     Locale('kk'),
-    Locale('ru')
+    Locale('ru'),
   ];
 
   /// No description provided for @accountSettings.
@@ -876,9 +879,244 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Height'**
   String get height;
+
+  /// No description provided for @aiChatTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'AI Health Assistant'**
+  String get aiChatTitle;
+
+  /// No description provided for @aiChatInitialMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Hello! I am your AI Health Assistant. I have access to your goals, history, and body metrics. How can I help you?'**
+  String get aiChatInitialMessage;
+
+  /// No description provided for @aiChatHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask about your progress...'**
+  String get aiChatHint;
+
+  /// No description provided for @leaderboardTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Global Leaderboard'**
+  String get leaderboardTitle;
+
+  /// No description provided for @noUsersFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No users found yet.'**
+  String get noUsersFound;
+
+  /// No description provided for @points.
+  ///
+  /// In en, this message translates to:
+  /// **'pts'**
+  String get points;
+
+  /// No description provided for @onboardingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Tell us about yourself'**
+  String get onboardingTitle;
+
+  /// No description provided for @onboardingSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'This helps us personalize your experience'**
+  String get onboardingSubtitle;
+
+  /// No description provided for @age.
+  ///
+  /// In en, this message translates to:
+  /// **'Age'**
+  String get age;
+
+  /// No description provided for @yourGoal.
+  ///
+  /// In en, this message translates to:
+  /// **'Your Goal'**
+  String get yourGoal;
+
+  /// No description provided for @goalLoseWeight.
+  ///
+  /// In en, this message translates to:
+  /// **'Lose Weight'**
+  String get goalLoseWeight;
+
+  /// No description provided for @goalGainWeight.
+  ///
+  /// In en, this message translates to:
+  /// **'Gain Weight'**
+  String get goalGainWeight;
+
+  /// No description provided for @goalGetFit.
+  ///
+  /// In en, this message translates to:
+  /// **'Get Fit'**
+  String get goalGetFit;
+
+  /// No description provided for @finish.
+  ///
+  /// In en, this message translates to:
+  /// **'Finish'**
+  String get finish;
+
+  /// No description provided for @fillAllFields.
+  ///
+  /// In en, this message translates to:
+  /// **'Please fill all fields'**
+  String get fillAllFields;
+
+  /// No description provided for @dailyQuests.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily Quests'**
+  String get dailyQuests;
+
+  /// No description provided for @questHydrationTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Hydration Starter'**
+  String get questHydrationTitle;
+
+  /// No description provided for @questHydrationDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Drink 5 cups of water today'**
+  String get questHydrationDesc;
+
+  /// No description provided for @questActiveMoverTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Active Mover'**
+  String get questActiveMoverTitle;
+
+  /// No description provided for @questActiveMoverDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Walk 5,000 steps'**
+  String get questActiveMoverDesc;
+
+  /// No description provided for @questAquaMasterTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Aqua Master'**
+  String get questAquaMasterTitle;
+
+  /// No description provided for @questAquaMasterDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Drink 10 cups of water today'**
+  String get questAquaMasterDesc;
+
+  /// No description provided for @questStepLegendTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Step Legend'**
+  String get questStepLegendTitle;
+
+  /// No description provided for @questStepLegendDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Walk 10,000 steps'**
+  String get questStepLegendDesc;
+
+  /// No description provided for @questWellRestedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Well Rested'**
+  String get questWellRestedTitle;
+
+  /// No description provided for @questWellRestedDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Sleep for 8 hours'**
+  String get questWellRestedDesc;
+
+  /// No description provided for @questChampionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Ultimate Champion'**
+  String get questChampionTitle;
+
+  /// No description provided for @questChampionDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Complete all your daily goals'**
+  String get questChampionDesc;
+
+  /// No description provided for @difficultyEasy.
+  ///
+  /// In en, this message translates to:
+  /// **'EASY'**
+  String get difficultyEasy;
+
+  /// No description provided for @difficultyMedium.
+  ///
+  /// In en, this message translates to:
+  /// **'MEDIUM'**
+  String get difficultyMedium;
+
+  /// No description provided for @difficultyHard.
+  ///
+  /// In en, this message translates to:
+  /// **'HARD'**
+  String get difficultyHard;
+
+  /// No description provided for @viewAll.
+  ///
+  /// In en, this message translates to:
+  /// **'View All'**
+  String get viewAll;
+
+  /// No description provided for @quests.
+  ///
+  /// In en, this message translates to:
+  /// **'Quests'**
+  String get quests;
+
+  /// No description provided for @globalRank.
+  ///
+  /// In en, this message translates to:
+  /// **'Global Rank'**
+  String get globalRank;
+
+  /// No description provided for @reminders.
+  ///
+  /// In en, this message translates to:
+  /// **'Reminders'**
+  String get reminders;
+
+  /// No description provided for @allow.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow'**
+  String get allow;
+
+  /// No description provided for @notifPermissionRequested.
+  ///
+  /// In en, this message translates to:
+  /// **'Notification permission requested'**
+  String get notifPermissionRequested;
+
+  /// No description provided for @tapToChange.
+  ///
+  /// In en, this message translates to:
+  /// **'· tap to change'**
+  String get tapToChange;
+
+  /// No description provided for @off.
+  ///
+  /// In en, this message translates to:
+  /// **'Off'**
+  String get off;
 }
 
-class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
+class _AppLocalizationsDelegate
+    extends LocalizationsDelegate<AppLocalizations> {
   const _AppLocalizationsDelegate();
 
   @override
@@ -887,26 +1125,28 @@ class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> 
   }
 
   @override
-  bool isSupported(Locale locale) => <String>['en', 'kk', 'ru'].contains(locale.languageCode);
+  bool isSupported(Locale locale) =>
+      <String>['en', 'kk', 'ru'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_AppLocalizationsDelegate old) => false;
 }
 
 AppLocalizations lookupAppLocalizations(Locale locale) {
-
-
   // Lookup logic when only language code is specified.
   switch (locale.languageCode) {
-    case 'en': return AppLocalizationsEn();
-    case 'kk': return AppLocalizationsKk();
-    case 'ru': return AppLocalizationsRu();
+    case 'en':
+      return AppLocalizationsEn();
+    case 'kk':
+      return AppLocalizationsKk();
+    case 'ru':
+      return AppLocalizationsRu();
   }
 
   throw FlutterError(
     'AppLocalizations.delegate failed to load unsupported locale "$locale". This is likely '
     'an issue with the localizations generation tool. Please file an issue '
     'on GitHub with a reproducible sample app and the gen-l10n configuration '
-    'that was used.'
+    'that was used.',
   );
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../services/user_data_service.dart';
 import 'navigation_wrapper.dart';
+import 'package:finallapp/generated/l10n/app_localizations.dart';
 
 class OnboardingPage extends StatefulWidget {
   const OnboardingPage({super.key});
@@ -21,8 +22,9 @@ class _OnboardingPageState extends State<OnboardingPage> {
   bool _isLoading = false;
 
   Future<void> _saveData() async {
+    final loc = AppLocalizations.of(context)!;
     if (_weightController.text.isEmpty || _heightController.text.isEmpty || _ageController.text.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Please fill all fields")));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(loc.fillAllFields)));
       return;
     }
 
@@ -45,7 +47,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
         );
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Error: $e")));
+      if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Error: $e")));
     } finally {
       if (mounted) setState(() => _isLoading = false);
     }
@@ -53,6 +55,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
@@ -60,13 +63,13 @@ class _OnboardingPageState extends State<OnboardingPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text("Tell us about yourself", style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold)),
-              const Text("This helps us personalize your experience", style: TextStyle(color: Colors.grey)),
+              Text(loc.onboardingTitle, style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold)),
+              Text(loc.onboardingSubtitle, style: const TextStyle(color: Colors.grey)),
               const SizedBox(height: 40),
 
               // WEIGHT
               _buildInputCard(
-                "Weight",
+                loc.weight,
                 _weightController,
                 _weightUnit,
                 ['kg', 'lbs'],
@@ -76,7 +79,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
 
               // HEIGHT
               _buildInputCard(
-                "Height",
+                loc.height,
                 _heightController,
                 _heightUnit,
                 ['cm', 'inch'],
@@ -88,7 +91,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
               TextField(
                 controller: _ageController,
                 decoration: InputDecoration(
-                  labelText: "Age",
+                  labelText: loc.age,
                   prefixIcon: const Icon(Icons.calendar_today),
                   border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
                 ),
@@ -97,11 +100,11 @@ class _OnboardingPageState extends State<OnboardingPage> {
               const SizedBox(height: 30),
 
               // GOAL
-              const Text("Your Goal", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              Text(loc.yourGoal, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
               const SizedBox(height: 10),
-              _buildGoalOption('Lose Weight', Icons.trending_down),
-              _buildGoalOption('Gain Weight', Icons.trending_up),
-              _buildGoalOption('Get Fit', Icons.fitness_center),
+              _buildGoalOption('Lose Weight', loc.goalLoseWeight, Icons.trending_down),
+              _buildGoalOption('Gain Weight', loc.goalGainWeight, Icons.trending_up),
+              _buildGoalOption('Get Fit', loc.goalGetFit, Icons.fitness_center),
 
               const SizedBox(height: 40),
               SizedBox(
@@ -115,7 +118,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
                   ),
                   child: _isLoading 
                     ? const CircularProgressIndicator(color: Colors.white)
-                    : const Text("Finish", style: TextStyle(fontSize: 18, color: Colors.white)),
+                    : Text(loc.finish, style: const TextStyle(fontSize: 18, color: Colors.white)),
                 ),
               ),
             ],
@@ -150,10 +153,10 @@ class _OnboardingPageState extends State<OnboardingPage> {
     );
   }
 
-  Widget _buildGoalOption(String goal, IconData icon) {
-    bool isSelected = _selectedGoal == goal;
+  Widget _buildGoalOption(String goalKey, String goalLabel, IconData icon) {
+    bool isSelected = _selectedGoal == goalKey;
     return GestureDetector(
-      onTap: () => setState(() => _selectedGoal = goal),
+      onTap: () => setState(() => _selectedGoal = goalKey),
       child: Container(
         margin: const EdgeInsets.only(bottom: 10),
         padding: const EdgeInsets.all(15),
@@ -166,7 +169,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
           children: [
             Icon(icon, color: isSelected ? Colors.tealAccent.shade700 : Colors.grey),
             const SizedBox(width: 15),
-            Text(goal, style: TextStyle(fontWeight: isSelected ? FontWeight.bold : FontWeight.normal)),
+            Text(goalLabel, style: TextStyle(fontWeight: isSelected ? FontWeight.bold : FontWeight.normal)),
             const Spacer(),
             if (isSelected) Icon(Icons.check_circle, color: Colors.tealAccent.shade700),
           ],

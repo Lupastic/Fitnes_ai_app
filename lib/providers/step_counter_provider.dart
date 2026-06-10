@@ -4,19 +4,18 @@ import 'package:pedometer/pedometer.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../providers/summary_provider.dart';
+import 'dart:developer' as developer;
 
 class StepCounterProvider with ChangeNotifier {
   final SummaryProvider summaryProvider;
   
   StreamSubscription<StepCount>? _subscription;
-  int _lastKnownTotalSteps = -1;
-  int _stepsOffset = 0;
-  String _status = 'Manual Mode';
+  int _lastSensorSteps = -1;
+  String _status = 'Initializing...';
   bool _isInitialized = false;
 
   StepCounterProvider(this.summaryProvider);
 
-  int get todaySteps => summaryProvider.today.steps;
   String get status => _status;
 
   Future<void> initPedometer() async {
@@ -26,7 +25,7 @@ class StepCounterProvider with ChangeNotifier {
 
     if (status.isGranted) {
       _startListening();
-      _status = 'Initialized';
+      _status = 'Active';
     } else {
       _status = 'Permission Denied';
     }
@@ -36,7 +35,7 @@ class StepCounterProvider with ChangeNotifier {
   }
 
   Future<void> _startListening() async {
-    print("🚶 StepCounter: Начинаем прослушивание стрима...");
+    developer.log("🚶 StepCounter: Starting pedometer stream...", name: "StepCounter");
     _subscription = Pedometer.stepCountStream.listen(
       _onStepCount,
       onError: _onStepCountError,
@@ -44,36 +43,44 @@ class StepCounterProvider with ChangeNotifier {
   }
 
   void _onStepCount(StepCount event) async {
-    print("🚶 StepCounter: Получены данные от датчика: ${event.steps} шагов");
+    developer.log("🚶 Sensor steps: ${event.steps}", name: "StepCounter");
+    
     final prefs = await SharedPreferences.getInstance();
-    final now = DateTime.now();
-    final todayStr = "${now.year}-${now.month}-${now.day}";
-    final lastResetDate = prefs.getString('last_step_reset_date') ?? "";
-
-    if (lastResetDate != todayStr) {
-      _stepsOffset = event.steps;
-      await prefs.setInt('step_offset', _stepsOffset);
-      await prefs.setString('last_step_reset_date', todayStr);
-      summaryProvider.update(steps: 0);
-    } else {
-      _stepsOffset = prefs.getInt('step_offset') ?? event.steps;
+    
+    // 1. Initial run or sensor reset
+    if (_lastSensorSteps == -1) {
+      _lastSensorSteps = prefs.getInt('last_sensor_total') ?? event.steps;
     }
 
-    int currentTodaySteps = event.steps - _stepsOffset;
-    if (currentTodaySteps < 0) {
-      _stepsOffset = event.steps;
-      await prefs.setInt('step_offset', _stepsOffset);
-      currentTodaySteps = 0;
+    // 2. Calculate delta
+    int delta = event.steps - _lastSensorSteps;
+
+    // 3. Handle sensor reset (e.g., phone reboot)
+    if (delta < 0) {
+      developer.log("🔄 Sensor reset detected (Total decreased from $_lastSensorSteps to ${event.steps})", name: "StepCounter");
+      _lastSensorSteps = event.steps;
+      await prefs.setInt('last_sensor_total', _lastSensorSteps);
+      return;
     }
 
-    summaryProvider.update(steps: currentTodaySteps);
-    _status = 'Walking';
-    notifyListeners();
+    // 4. If we have new steps, add them to the daily total
+    if (delta > 0) {
+      developer.log("👣 Adding $delta steps to total", name: "StepCounter");
+      
+      // Update the daily summary by ADDING the delta
+      summaryProvider.update(steps: delta, add: true);
+      
+      _lastSensorSteps = event.steps;
+      await prefs.setInt('last_sensor_total', _lastSensorSteps);
+      
+      _status = 'Walking';
+      notifyListeners();
+    }
   }
 
   void _onStepCountError(error) {
-    print("❌ StepCounter Error: $error");
-    _status = 'Step Count not available';
+    developer.log("❌ StepCounter Error: $error", name: "StepCounter");
+    _status = 'Hardware error';
     notifyListeners();
   }
 

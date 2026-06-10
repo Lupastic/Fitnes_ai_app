@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import '../services/local_repository.dart';
 import '../services/user_data_service.dart';
 import '../models/daily_summary.dart';
+import 'dart:developer' as developer;
 
 class SummaryProvider with ChangeNotifier {
   final LocalRepository _repo;
@@ -62,14 +63,22 @@ class SummaryProvider with ChangeNotifier {
     double? running,
     bool add = false,
   }) async {
+    // Ensure we are working with the freshest data
     final currentToday = today;
+
+    int newSteps = add ? (currentToday.steps + (steps ?? 0)) : (steps ?? currentToday.steps);
+    
+    // Safety check: steps shouldn't decrease during the same day unless explicit reset
+    if (!add && steps != null && steps < currentToday.steps && steps != 0) {
+       developer.log("⚠️ Warning: Attempted to set steps to $steps which is less than current ${currentToday.steps}", name: "SummaryProvider");
+    }
 
     _today = DailySummary(
       date: currentToday.date,
       waterCups: add ? (currentToday.waterCups + (water ?? 0)) : (water ?? currentToday.waterCups),
       sleepHours: add ? (currentToday.sleepHours + (sleep ?? 0.0)) : (sleep ?? currentToday.sleepHours),
       calories: add ? (currentToday.calories + (cal ?? 0)) : (cal ?? currentToday.calories),
-      steps: add ? (currentToday.steps + (steps ?? 0)) : (steps ?? currentToday.steps),
+      steps: newSteps,
       yogaSessions: add ? (currentToday.yogaSessions + (yoga ?? 0)) : (yoga ?? currentToday.yogaSessions),
       runningKm: add ? (currentToday.runningKm + (running ?? 0.0)) : (running ?? currentToday.runningKm),
       synced: false,

@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../services/user_data_service.dart';
+import '../models/history_entry.dart';
 import 'package:finallapp/generated/l10n/app_localizations.dart';
+import 'package:intl/intl.dart';
 
-class LeaderboardPage extends StatelessWidget {
-  const LeaderboardPage({super.key});
+class HistoryPage extends StatelessWidget {
+  const HistoryPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -13,11 +15,11 @@ class LeaderboardPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(loc.leaderboardTitle),
+        title: Text(loc.history),
         centerTitle: true,
       ),
-      body: FutureBuilder<List<Map<String, dynamic>>>(
-        future: userDataService.getLeaderboard(),
+      body: FutureBuilder<List<HistoryEntry>>(
+        future: userDataService.getUserHistory(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
@@ -25,43 +27,30 @@ class LeaderboardPage extends StatelessWidget {
           if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
           }
-          final leaderboard = snapshot.data ?? [];
-          if (leaderboard.isEmpty) {
-            return Center(child: Text(loc.noUsersFound));
+          final history = snapshot.data ?? [];
+          if (history.isEmpty) {
+            return Center(child: Text(loc.noHistoryYet));
           }
 
           return ListView.builder(
             padding: const EdgeInsets.all(16),
-            itemCount: leaderboard.length,
+            itemCount: history.length,
             itemBuilder: (context, index) {
-              final user = leaderboard[index];
-              final isTop3 = index < 3;
-              
+              final entry = history[index];
               return Card(
                 margin: const EdgeInsets.only(bottom: 12),
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                 child: ListTile(
-                  leading: CircleAvatar(
-                    backgroundColor: isTop3 ? Colors.amber : Colors.teal.withOpacity(0.1),
-                    child: Text(
-                      '${index + 1}',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: isTop3 ? Colors.black : Colors.teal,
-                      ),
-                    ),
+                  leading: const CircleAvatar(
+                    backgroundColor: Colors.tealAccent,
+                    child: Icon(Icons.history_rounded, color: Colors.black),
                   ),
                   title: Text(
-                    user['name'],
+                    entry.title,
                     style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
-                  trailing: Text(
-                    '${user['points']} ${loc.points}',
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w900,
-                      color: Colors.tealAccent,
-                      fontSize: 16,
-                    ),
+                  subtitle: Text(
+                    DateFormat('MMM dd, yyyy - HH:mm').format(entry.timestamp),
                   ),
                 ),
               );

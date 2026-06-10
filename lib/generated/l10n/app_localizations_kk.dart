@@ -15,7 +15,8 @@ class AppLocalizationsKk extends AppLocalizations {
   String get displayName => 'Көрсетілетін атау';
 
   @override
-  String get editBodyMetricsGoals => 'Дене параметрлері мен мақсаттарды өзгерту';
+  String get editBodyMetricsGoals =>
+      'Дене параметрлері мен мақсаттарды өзгерту';
 
   @override
   String get waterReminder => 'Су ішу туралы еске салу';
@@ -78,7 +79,8 @@ class AppLocalizationsKk extends AppLocalizations {
   String get recentLoginRequired => 'Қайта кіру қажет';
 
   @override
-  String get enterCurrentPassword => 'Электрондық пошта немесе құпиясөзді өзгерту үшін ағымдағы құпиясөзді енгізіңіз:';
+  String get enterCurrentPassword =>
+      'Электрондық пошта немесе құпиясөзді өзгерту үшін ағымдағы құпиясөзді енгізіңіз:';
 
   @override
   String get currentPassword => 'Ағымдағы құпиясөз';
@@ -171,7 +173,8 @@ class AppLocalizationsKk extends AppLocalizations {
   String get nameUpdated => 'Аты сәтті жаңартылды!';
 
   @override
-  String get confirmResetSettings => 'Барлық параметрлерді әдепкі мәндеріне қалпына келтіргіңіз келетініне сенімдісіз бе?';
+  String get confirmResetSettings =>
+      'Барлық параметрлерді әдепкі мәндеріне қалпына келтіргіңіз келетініне сенімдісіз бе?';
 
   @override
   String get reset => 'Қалпына келтіру';
@@ -231,7 +234,8 @@ class AppLocalizationsKk extends AppLocalizations {
   String get noInternet => 'Интернет жоқ';
 
   @override
-  String get offlineSyncNotice => 'Сіз оффлайндасыз. Деректер кейінірек синхрондалады.';
+  String get offlineSyncNotice =>
+      'Сіз оффлайндасыз. Деректер кейінірек синхрондалады.';
 
   @override
   String get challengeStreakText => '7 күн қатарынан жүріңіз — медаль алыңыз!';
@@ -342,16 +346,19 @@ class AppLocalizationsKk extends AppLocalizations {
   String get confirmReset => 'Қалпына келтіруді растау';
 
   @override
-  String get resetSettingsWarning => 'Барлық параметрлерді әдепкіге қалпына келтіргіңіз келетініне сенімдісіз бе? Бұл әрекетті болдырмау мүмкін емес.';
+  String get resetSettingsWarning =>
+      'Барлық параметрлерді әдепкіге қалпына келтіргіңіз келетініне сенімдісіз бе? Бұл әрекетті болдырмау мүмкін емес.';
 
   @override
-  String get allSettingsReset => 'Барлық параметрлер әдепкіге қалпына келтірілді!';
+  String get allSettingsReset =>
+      'Барлық параметрлер әдепкіге қалпына келтірілді!';
 
   @override
   String get yourProgress => 'Сіздің үлгеріміңіз';
 
   @override
-  String get motivationQuote => 'Өзіңізге сеніңіз, сонда сіз мақсатқа жартылай жеттіңіз.';
+  String get motivationQuote =>
+      'Өзіңізге сеніңіз, сонда сіз мақсатқа жартылай жеттіңіз.';
 
   @override
   String get aiChat => 'AI Чат';
@@ -405,4 +412,123 @@ class AppLocalizationsKk extends AppLocalizations {
 
   @override
   String get height => 'Бойы';
+
+  @override
+  String get aiChatTitle => 'ИИ денсаулық көмекшісі';
+
+  @override
+  String get aiChatInitialMessage =>
+      'Сәлем! Мен сіздің ИИ денсаулық көмекшісімін. Менде сіздің мақсаттарыңызға, тарихыңызға және дене өлшемдеріңізге қол жетімділік бар. Сізге қалай көмектесе аламын?';
+
+  @override
+  String get aiChatHint => 'Прогрессіңіз туралы сұраңыз...';
+
+  @override
+  String get leaderboardTitle => 'Жалпы рейтинг';
+
+  @override
+  String get noUsersFound => 'Пайдаланушылар әлі табылған жоқ.';
+
+  @override
+  String get points => 'ұпай';
+
+  @override
+  String get onboardingTitle => 'Өзіңіз туралы айтып беріңіз';
+
+  @override
+  String get onboardingSubtitle =>
+      'Бұл бізге тәжірибеңізді жекелендіруге көмектеседі';
+
+  @override
+  String get age => 'Жас';
+
+  @override
+  String get yourGoal => 'Сіздің мақсатыңыз';
+
+  @override
+  String get goalLoseWeight => 'Салмақ тастау';
+
+  @override
+  String get goalGainWeight => 'Салмақ қосу';
+
+  @override
+  String get goalGetFit => 'Формаға келу';
+
+  @override
+  String get finish => 'Аяқтау';
+
+  @override
+  String get fillAllFields => 'Барлық өрістерді толтырыңыз';
+
+  @override
+  String get dailyQuests => 'Күнделікті тапсырмалар';
+
+  @override
+  String get questHydrationTitle => 'Су ішудің басталуы';
+
+  @override
+  String get questHydrationDesc => 'Бүгін 5 стақан су ішіңіз';
+
+  @override
+  String get questActiveMoverTitle => 'Белсенді қозғалыс';
+
+  @override
+  String get questActiveMoverDesc => '5000 қадам жүріңіз';
+
+  @override
+  String get questAquaMasterTitle => 'Су шебері';
+
+  @override
+  String get questAquaMasterDesc => 'Бүгін 10 стақан су ішіңіз';
+
+  @override
+  String get questStepLegendTitle => 'Қадам аңызы';
+
+  @override
+  String get questStepLegendDesc => '10 000 қадам жүріңіз';
+
+  @override
+  String get questWellRestedTitle => 'Жақсы демалыс';
+
+  @override
+  String get questWellRestedDesc => '8 сағат ұйықтаңыз';
+
+  @override
+  String get questChampionTitle => 'Нағыз чемпион';
+
+  @override
+  String get questChampionDesc => 'Барлық күнделікті мақсаттарды орындаңыз';
+
+  @override
+  String get difficultyEasy => 'ОҢАЙ';
+
+  @override
+  String get difficultyMedium => 'ОРТАША';
+
+  @override
+  String get difficultyHard => 'ҚИЫН';
+
+  @override
+  String get viewAll => 'Барлығын көру';
+
+  @override
+  String get quests => 'Тапсырмалар';
+
+  @override
+  String get globalRank => 'Жалпы рейтинг';
+
+  @override
+  String get reminders => 'Еске салғыштар';
+
+  @override
+  String get allow => 'Рұқсат ету';
+
+  @override
+  String get notifPermissionRequested => 'Хабарландыруларға рұқсат сұралды';
+
+  @override
+  String get tapToChange => '· өзгерту үшін басыңыз';
+
+  @override
+  String get off => 'Өшірулі';
 }

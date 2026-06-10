@@ -6,13 +6,18 @@ import 'dart:developer' as developer;
 class GeminiService {
   final String _baseUrl = 'https://openrouter.ai/api/v1/chat/completions';
 
-  // Храним историю сообщений для контекста
   final List<Map<String, String>> _messages = [];
 
   Future<String> getResponse(String text) async {
     final apiKey = dotenv.env['GEMINI_API_KEY'] ?? '';
 
-    // Добавляем сообщение пользователя в историю
+    // ✅ Добавьте логирование
+    developer.log("API Key present: ${apiKey.isNotEmpty}", name: "GeminiService");
+    if (apiKey.isEmpty) {
+      developer.log("WARNING: OPENROUTER_API_KEY not found in .env!", name: "GeminiService");
+      developer.log("Available keys: ${dotenv.env.keys.toList()}", name: "GeminiService");
+    }
+
     _messages.add({'role': 'user', 'content': text});
 
     try {
@@ -25,17 +30,16 @@ class GeminiService {
           'X-Title': 'Health App',
         },
         body: jsonEncode({
-          'model': 'openai/gpt-4-turbo',
+          'model': 'deepseek/deepseek-chat',
           'messages': _messages,
           'max_tokens': 512,
-      }),
-    );
+        }),
+      );
 
       if (response.statusCode == 200) {
         final data = jsonDecode(utf8.decode(response.bodyBytes));
         final content = data['choices'][0]['message']['content'] as String;
 
-        // Добавляем ответ ИИ в историю
         _messages.add({'role': 'assistant', 'content': content});
         return content;
       } else {

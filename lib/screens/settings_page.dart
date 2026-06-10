@@ -9,6 +9,7 @@ import '../providers/locale_provider.dart';
 import '../providers/theme_provider.dart';
 import '../services/user_data_service.dart';
 import '../widgets/notification_settings_card.dart';
+import 'history_page.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -228,6 +229,19 @@ class _SettingsPageState extends State<SettingsPage> {
                 ],
               ),
             ),
+            const SizedBox(height: 24),
+
+            Text(loc.history, style: Theme.of(context).textTheme.titleLarge),
+            const SizedBox(height: 12),
+            Card(
+              child: ListTile(
+                leading: const Icon(Icons.history_rounded),
+                title: Text(loc.checkPastActivityLogs),
+                trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+                onTap: () => Navigator.push(context, MaterialPageRoute(builder: (c) => const HistoryPage())),
+              ),
+            ),
+            const SizedBox(height: 40),
           ],
         ),
       ),

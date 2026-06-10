@@ -78,7 +78,8 @@ class AppLocalizationsRu extends AppLocalizations {
   String get recentLoginRequired => 'Требуется повторный вход';
 
   @override
-  String get enterCurrentPassword => 'Для изменения электронной почты или пароля введите текущий пароль:';
+  String get enterCurrentPassword =>
+      'Для изменения электронной почты или пароля введите текущий пароль:';
 
   @override
   String get currentPassword => 'Текущий пароль';
@@ -171,7 +172,8 @@ class AppLocalizationsRu extends AppLocalizations {
   String get nameUpdated => 'Имя успешно обновлено!';
 
   @override
-  String get confirmResetSettings => 'Вы уверены, что хотите сбросить все настройки до значений по умолчанию?';
+  String get confirmResetSettings =>
+      'Вы уверены, что хотите сбросить все настройки до значений по умолчанию?';
 
   @override
   String get reset => 'Сбросить';
@@ -342,10 +344,12 @@ class AppLocalizationsRu extends AppLocalizations {
   String get confirmReset => 'Подтвердите сброс';
 
   @override
-  String get resetSettingsWarning => 'Вы уверены, что хотите сбросить все настройки к значениям по умолчанию? Это действие нельзя отменить.';
+  String get resetSettingsWarning =>
+      'Вы уверены, что хотите сбросить все настройки к значениям по умолчанию? Это действие нельзя отменить.';
 
   @override
-  String get allSettingsReset => 'Все настройки сброшены к значениям по умолчанию!';
+  String get allSettingsReset =>
+      'Все настройки сброшены к значениям по умолчанию!';
 
   @override
   String get yourProgress => 'Твой прогресс';
@@ -405,4 +409,122 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get height => 'Рост';
+
+  @override
+  String get aiChatTitle => 'ИИ Помощник по здоровью';
+
+  @override
+  String get aiChatInitialMessage =>
+      'Привет! Я твой ИИ Помощник по здоровью. У меня есть доступ к твоим целям, истории и показателям тела. Чем я могу тебе помочь?';
+
+  @override
+  String get aiChatHint => 'Спроси о своем прогрессе...';
+
+  @override
+  String get leaderboardTitle => 'Мировой рейтинг';
+
+  @override
+  String get noUsersFound => 'Пользователи пока не найдены.';
+
+  @override
+  String get points => 'очков';
+
+  @override
+  String get onboardingTitle => 'Расскажите о себе';
+
+  @override
+  String get onboardingSubtitle => 'Это поможет нам персонализировать ваш опыт';
+
+  @override
+  String get age => 'Возраст';
+
+  @override
+  String get yourGoal => 'Ваша цель';
+
+  @override
+  String get goalLoseWeight => 'Сбросить вес';
+
+  @override
+  String get goalGainWeight => 'Набрать вес';
+
+  @override
+  String get goalGetFit => 'Прийти в форму';
+
+  @override
+  String get finish => 'Завершить';
+
+  @override
+  String get fillAllFields => 'Пожалуйста, заполните все поля';
+
+  @override
+  String get dailyQuests => 'Ежедневные квесты';
+
+  @override
+  String get questHydrationTitle => 'Начало гидратации';
+
+  @override
+  String get questHydrationDesc => 'Выпейте 5 стаканов воды сегодня';
+
+  @override
+  String get questActiveMoverTitle => 'Активный двигатель';
+
+  @override
+  String get questActiveMoverDesc => 'Пройдите 5000 шагов';
+
+  @override
+  String get questAquaMasterTitle => 'Мастер воды';
+
+  @override
+  String get questAquaMasterDesc => 'Выпейте 10 стаканов воды сегодня';
+
+  @override
+  String get questStepLegendTitle => 'Легенда шагов';
+
+  @override
+  String get questStepLegendDesc => 'Пройдите 10 000 шагов';
+
+  @override
+  String get questWellRestedTitle => 'Хороший отдых';
+
+  @override
+  String get questWellRestedDesc => 'Сон в течение 8 часов';
+
+  @override
+  String get questChampionTitle => 'Абсолютный чемпион';
+
+  @override
+  String get questChampionDesc => 'Выполните все свои ежедневные цели';
+
+  @override
+  String get difficultyEasy => 'ЛЕГКО';
+
+  @override
+  String get difficultyMedium => 'СРЕДНЕ';
+
+  @override
+  String get difficultyHard => 'СЛОЖНО';
+
+  @override
+  String get viewAll => 'Смотреть все';
+
+  @override
+  String get quests => 'Квесты';
+
+  @override
+  String get globalRank => 'Мировой ранг';
+
+  @override
+  String get reminders => 'Напоминания';
+
+  @override
+  String get allow => 'Разрешить';
+
+  @override
+  String get notifPermissionRequested => 'Запрос на уведомления отправлен';
+
+  @override
+  String get tapToChange => '· нажмите, чтобы изменить';
+
+  @override
+  String get off => 'Выкл';
 }
